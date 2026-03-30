@@ -19,6 +19,10 @@ let searchTerm      = '';
 let showChangesOnly = false;
 let selectedItemId  = null;
 
+// ── Loadout state ─────────────────────────────────────────
+const loadoutSlots = [null, null, null, null, null, null];
+let loadoutOpen = false;
+
 // Cached items for the current render — avoids repeated deep copies
 let _cachedItems = [];
 let _cachedChangedIds = new Set();
@@ -264,6 +268,7 @@ function buildItemCard(item) {
       <span class="item-cost">${costLabel}</span>
     </div>
     ${statsHtml}${tagsHtml}
+    <button class="add-loadout-btn" title="Add to Loadout">+</button>
     <button class="edit-btn" title="Edit">Edit</button>
   `;
 
@@ -273,6 +278,11 @@ function buildItemCard(item) {
   card.addEventListener('click',      () => {
     selectedItemId = selectedItemId === item.id ? null : item.id;
     if (selectedItemId) highlightTree(selectedItemId); else clearHighlights();
+  });
+
+  card.querySelector('.add-loadout-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    addToLoadout(item.id);
   });
 
   card.querySelector('.edit-btn').addEventListener('click', e => {
@@ -472,6 +482,91 @@ function hideTooltip() {
   document.getElementById('tooltip').classList.remove('visible');
 }
 
+// ── Loadout functions ─────────────────────────────────────
+
+function addToLoadout(itemId) {
+  if (!loadoutOpen) toggleLoadoutPanel(true);
+
+  const idx = loadoutSlots.indexOf(null);
+  if (idx === -1) {
+    const panel = document.getElementById('loadoutPanel');
+    panel.classList.remove('flash');
+    void panel.offsetWidth;
+    panel.classList.add('flash');
+    return;
+  }
+  loadoutSlots[idx] = itemId;
+  renderLoadout();
+}
+
+function removeFromSlot(index) {
+  loadoutSlots[index] = null;
+  renderLoadout();
+}
+
+function resetLoadout() {
+  for (let i = 0; i < loadoutSlots.length; i++) loadoutSlots[i] = null;
+  renderLoadout();
+}
+
+function renderLoadout() {
+  const container = document.getElementById('loadoutSlots');
+  if (!container) return;
+  container.innerHTML = '';
+
+  const catColors = { offensive: 'var(--c-offensive)', defensive: 'var(--c-defensive)', both: 'var(--c-both)', utility: 'var(--c-utility)' };
+
+  let totalCost = 0;
+
+  for (let i = 0; i < loadoutSlots.length; i++) {
+    const slot = document.createElement('div');
+    slot.className = 'loadout-slot';
+
+    const itemId = loadoutSlots[i];
+    if (itemId) {
+      const item = cachedGetItem(itemId);
+      if (!item) {
+        // Item no longer exists in cache (version changed, etc)
+        loadoutSlots[i] = null;
+        slot.textContent = i + 1;
+        container.appendChild(slot);
+        continue;
+      }
+
+      slot.classList.add('loadout-slot-filled');
+      slot.style.setProperty('--slot-cat-color', catColors[item.category] || 'var(--border)');
+
+      const cost = item.totalCost || item.cost || 0;
+      totalCost += cost;
+
+      slot.innerHTML = `
+        <span class="loadout-slot-name">${item.name}</span>
+        <span class="loadout-slot-cost">${cost}g</span>
+        <span class="loadout-slot-tier">${TIER_DISPLAY[item.tier] || item.tier}</span>
+        <button class="loadout-slot-remove" title="Remove">✕</button>
+      `;
+
+      slot.querySelector('.loadout-slot-remove').addEventListener('click', () => removeFromSlot(i));
+    } else {
+      slot.textContent = i + 1;
+    }
+
+    container.appendChild(slot);
+  }
+
+  document.getElementById('loadoutTotal').textContent = totalCost.toLocaleString();
+}
+
+function toggleLoadoutPanel(open) {
+  const panel = document.getElementById('loadoutPanel');
+  const btn = document.getElementById('loadoutToggle');
+  if (open === undefined) open = !loadoutOpen;
+  loadoutOpen = open;
+  panel.classList.toggle('open', loadoutOpen);
+  btn.classList.toggle('active', loadoutOpen);
+  if (loadoutOpen) renderLoadout();
+}
+
 // ── Status bar ────────────────────────────────────────────
 
 function updateStatusBar(count) {
@@ -542,12 +637,18 @@ document.addEventListener('versionchange', () => {
   selectedItemId  = null;
   showChangesOnly = false;
   document.getElementById('changesToggle').classList.remove('active');
-  updateChangesToggle();
   buildTree();
+  updateChangesToggle();
 });
+
+// ── Loadout panel wiring ──────────────────────────────────
+
+document.getElementById('loadoutToggle').addEventListener('click', () => toggleLoadoutPanel());
+document.getElementById('loadoutClose').addEventListener('click', () => toggleLoadoutPanel(false));
+document.getElementById('loadoutReset').addEventListener('click', () => resetLoadout());
 
 // ── Init ─────────────────────────────────────────────────
 
 versions.initPicker('versionPicker');
-updateChangesToggle();
 buildTree();
+updateChangesToggle();

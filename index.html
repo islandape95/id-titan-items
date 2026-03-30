@@ -33,12 +33,28 @@
     <div class="search-box">
       <input type="text" id="searchInput" placeholder="Search items…" autocomplete="off">
     </div>
+    <button class="loadout-toggle" id="loadoutToggle" title="Toggle Loadout">⬡ Loadout</button>
   </div>
 
-  <!-- Canvas -->
-  <div class="canvas-wrapper" id="canvasWrapper">
-    <div class="tree-container" id="treeContainer"></div>
-    <svg class="connectors-svg" id="connectorsSvg"></svg>
+  <!-- Canvas + Loadout wrapper -->
+  <div class="canvas-row">
+    <div class="canvas-wrapper" id="canvasWrapper">
+      <div class="tree-container" id="treeContainer"></div>
+      <svg class="connectors-svg" id="connectorsSvg"></svg>
+    </div>
+
+    <!-- Loadout Panel -->
+    <aside class="loadout-panel" id="loadoutPanel">
+      <div class="loadout-header">
+        <span>⬡ Loadout</span>
+        <button class="loadout-close" id="loadoutClose" title="Close">✕</button>
+      </div>
+      <div class="loadout-slots" id="loadoutSlots"></div>
+      <div class="loadout-footer">
+        <div class="loadout-total">Total: <b id="loadoutTotal">0</b>g</div>
+        <button class="btn-secondary loadout-reset" id="loadoutReset">Reset</button>
+      </div>
+    </aside>
   </div>
 
   <!-- Status bar -->
