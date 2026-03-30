@@ -831,6 +831,28 @@ document.addEventListener('versionchange', () => {
     `<div class="empty-state"><h3>Version changed</h3><p>Select an item to edit.</p></div>`;
 });
 
+// ── Mobile sidebar toggle ─────────────────────────────────
+
+(function() {
+  const toggle = document.getElementById('sidebarToggle');
+  const sidebar = document.getElementById('editorSidebar');
+  const overlay = document.getElementById('sidebarOverlay');
+  if (!toggle || !sidebar || !overlay) return;
+
+  function openSidebar()  { sidebar.classList.add('mobile-open'); overlay.classList.add('mobile-open'); }
+  function closeSidebar() { sidebar.classList.remove('mobile-open'); overlay.classList.remove('mobile-open'); }
+
+  toggle.addEventListener('click', openSidebar);
+  overlay.addEventListener('click', closeSidebar);
+
+  // Close sidebar on item select (mobile)
+  const origSelect = selectItem;
+  selectItem = function(id) {
+    closeSidebar();
+    origSelect(id);
+  };
+})();
+
 // ── Init ─────────────────────────────────────────────────
 
 versions.initPicker('versionPicker');

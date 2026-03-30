@@ -2,6 +2,7 @@
 //  Tree Visualizer  –  barycenter column layout
 // ============================================================
 
+const IS_TOUCH = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
 const CARD_W      = 148;
 const COL_W       = 164;
 const PAD_X       = 28;
@@ -240,9 +241,13 @@ function buildItemCard(item) {
       </div>
       <div class="item-removed-label">REMOVED</div>
     `;
-    card.addEventListener('mouseenter', e  => { showTooltip(item, e); });
-    card.addEventListener('mouseleave', () => { hideTooltip(); });
-    card.addEventListener('mousemove',  e  => positionTooltip(e));
+    if (IS_TOUCH) {
+      card.addEventListener('click', e => { e.stopPropagation(); showTooltip(item, e); });
+    } else {
+      card.addEventListener('mouseenter', e  => { showTooltip(item, e); });
+      card.addEventListener('mouseleave', () => { hideTooltip(); });
+      card.addEventListener('mousemove',  e  => positionTooltip(e));
+    }
     return card;
   }
 
@@ -274,21 +279,35 @@ function buildItemCard(item) {
     <button class="edit-btn" title="Edit">Edit</button>
   `;
 
-  card.addEventListener('mouseenter', e  => {
-    showTooltip(item, e);
-    if (!selectedItemId) highlightTree(item.id);
-    // When selected, don't re-highlight on hover — keep the selection stable
-  });
-  card.addEventListener('mouseleave', () => {
-    hideTooltip();
-    if (!selectedItemId) clearHighlights();
-    // When selected, keep selection highlights intact
-  });
-  card.addEventListener('mousemove',  e  => positionTooltip(e));
-  card.addEventListener('click',      () => {
-    selectedItemId = selectedItemId === item.id ? null : item.id;
-    if (selectedItemId) highlightTree(selectedItemId); else clearHighlights();
-  });
+  if (IS_TOUCH) {
+    card.addEventListener('click', e => {
+      if (e.target.closest('.edit-btn, .add-loadout-btn')) return;
+      const wasSelected = selectedItemId === item.id;
+      if (wasSelected) {
+        selectedItemId = null;
+        clearHighlights();
+        hideTooltip();
+      } else {
+        selectedItemId = item.id;
+        highlightTree(item.id);
+        showTooltip(item, e);
+      }
+    });
+  } else {
+    card.addEventListener('mouseenter', e  => {
+      showTooltip(item, e);
+      if (!selectedItemId) highlightTree(item.id);
+    });
+    card.addEventListener('mouseleave', () => {
+      hideTooltip();
+      if (!selectedItemId) clearHighlights();
+    });
+    card.addEventListener('mousemove',  e  => positionTooltip(e));
+    card.addEventListener('click',      () => {
+      selectedItemId = selectedItemId === item.id ? null : item.id;
+      if (selectedItemId) highlightTree(selectedItemId); else clearHighlights();
+    });
+  }
 
   card.querySelector('.add-loadout-btn').addEventListener('click', e => {
     e.stopPropagation();
@@ -563,15 +582,27 @@ function showTooltip(item, e) {
 function positionTooltip(e) {
   const tt = document.getElementById('tooltip');
   const w = tt.offsetWidth || 320, h = tt.offsetHeight || 200;
-  let x = e.clientX + 18, y = e.clientY + 18;
-  if (x + w > window.innerWidth  - 14) x = e.clientX - w - 18;
-  if (y + h > window.innerHeight - 14) y = e.clientY - h - 18;
+  const cx = e.clientX || (e.touches && e.touches[0]?.clientX) || 0;
+  const cy = e.clientY || (e.touches && e.touches[0]?.clientY) || 0;
+  let x = cx + 18, y = cy + 18;
+  if (x + w > window.innerWidth  - 14) x = cx - w - 18;
+  if (y + h > window.innerHeight - 14) y = cy - h - 18;
   tt.style.left = Math.max(14, x) + 'px';
   tt.style.top  = Math.max(14, y) + 'px';
 }
 
 function hideTooltip() {
   document.getElementById('tooltip').classList.remove('visible');
+}
+
+// Tap-elsewhere-to-dismiss on touch devices
+if (IS_TOUCH) {
+  document.addEventListener('click', e => {
+    if (!e.target.closest('#tooltip') && !e.target.closest('.item-card')) {
+      hideTooltip();
+      if (selectedItemId) { selectedItemId = null; clearHighlights(); }
+    }
+  });
 }
 
 // ── Loadout functions ─────────────────────────────────────

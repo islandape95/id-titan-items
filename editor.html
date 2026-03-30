@@ -24,8 +24,11 @@
 
   <div class="editor-layout">
 
+    <!-- Sidebar overlay (mobile) -->
+    <div class="editor-sidebar-overlay" id="sidebarOverlay"></div>
+
     <!-- Sidebar: item list -->
-    <aside class="editor-sidebar">
+    <aside class="editor-sidebar" id="editorSidebar">
       <div class="editor-sidebar-header">
         <span>Items</span>
         <button class="add-btn" id="addItemBtn" style="font-size:10px;padding:3px 7px">+ New</button>
@@ -39,6 +42,7 @@
 
     <!-- Main editing area -->
     <main class="editor-main" id="editorMain">
+      <button class="sidebar-toggle-btn" id="sidebarToggle">☰ Items</button>
       <div class="empty-state" id="emptyState">
         <h3>Select an item to edit</h3>
         <p>Choose from the list on the left, or create a new item.</p>
