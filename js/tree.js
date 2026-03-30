@@ -671,7 +671,19 @@ function renderLoadout() {
         <button class="loadout-slot-remove" title="Remove">✕</button>
       `;
 
-      slot.querySelector('.loadout-slot-remove').addEventListener('click', () => removeFromSlot(i));
+      slot.querySelector('.loadout-slot-remove').addEventListener('click', e => { e.stopPropagation(); removeFromSlot(i); });
+
+      // Tooltip on loadout slot
+      if (IS_TOUCH) {
+        slot.addEventListener('click', e => {
+          if (e.target.closest('.loadout-slot-remove')) return;
+          showTooltip(item, e);
+        });
+      } else {
+        slot.addEventListener('mouseenter', e => showTooltip(item, e));
+        slot.addEventListener('mouseleave', () => hideTooltip());
+        slot.addEventListener('mousemove', e => positionTooltip(e));
+      }
     } else {
       slot.textContent = i + 1;
     }
