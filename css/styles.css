@@ -1420,6 +1420,209 @@ body {
 
 /* ── Scrollbar ──────────────────────────────────────────── */
 
+/* ── Editor Header Cost ───────────────────────────────── */
+
+.editor-total-cost {
+  margin-left: auto;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--tier-consumable);
+  white-space: nowrap;
+}
+.editor-recipe-cost {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* ── Editor Requirement Chips ──────────────────────────── */
+
+.req-chip-row {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 10px 6px 13px;
+  margin-bottom: 5px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  position: relative;
+  transition: border-color 0.15s;
+  cursor: default;
+}
+.req-chip-row::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 6px; bottom: 6px;
+  width: 3px;
+  border-radius: 2px;
+  background: var(--chip-cat-color, var(--border));
+}
+.req-chip-row:hover {
+  border-color: var(--chip-cat-color, var(--accent));
+}
+
+.req-chip-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.req-chip-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text);
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.req-chip-tier {
+  font-size: 9px;
+  padding: 1px 5px;
+  border-radius: 3px;
+  background: rgba(255,255,255,0.06);
+  color: var(--text-muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  flex-shrink: 0;
+}
+
+.req-chip-cost {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--tier-consumable);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.req-chip-change {
+  padding: 2px 7px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 10px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.12s;
+  flex-shrink: 0;
+}
+.req-chip-change:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.req-chip-hidden-select {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 5px 7px;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 11px;
+  outline: none;
+  font-family: inherit;
+}
+
+/* ── Used By Chips ─────────────────────────────────────── */
+
+.used-by-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.used-by-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+.used-by-chip:hover {
+  border-color: var(--chip-cat-color, var(--accent));
+  background: rgba(255,255,255,0.04);
+}
+
+.used-by-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* ── Mini Build Tree ──────────────────────────────────── */
+
+.editor-build-tree {
+  padding: 4px 0 4px 2px;
+}
+
+.build-tree-level {
+  padding-left: 18px;
+  border-left: 1px solid var(--border);
+  margin-left: 4px;
+}
+
+.build-tree-node {
+  position: relative;
+  padding: 3px 0;
+}
+
+.build-tree-connector {
+  position: absolute;
+  left: -18px;
+  top: 13px;
+  width: 14px;
+  height: 1px;
+  background: var(--border);
+}
+
+.build-tree-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+.build-tree-chip:hover {
+  border-color: var(--chip-cat-color, var(--accent));
+}
+
+.build-tree-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.build-tree-cost {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--tier-consumable);
+  margin-left: 2px;
+}
+
 ::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }

@@ -62,6 +62,8 @@ function renderSidebar() {
       list.appendChild(entry);
     });
   });
+
+  wireSidebarTooltips();
 }
 
 // ── Select & render form ──────────────────────────────────
@@ -98,6 +100,9 @@ function renderForm() {
       <h2>
         <span style="color:${catColors[item.category]||'#94a3b8'}" id="formCatDot">●</span>
         <span id="formTitle">${esc(item.name)}</span>
+        ${item.totalCost && item.totalCost !== item.cost
+          ? `<span class="editor-total-cost">${item.totalCost}g total <span class="editor-recipe-cost">(${item.cost}g recipe)</span></span>`
+          : `<span class="editor-total-cost">${item.cost}g</span>`}
       </h2>
       ${readonlyBanner}
 
@@ -138,10 +143,12 @@ function renderForm() {
       </div>
       ${isReadOnly?'': '<button class="add-btn" id="addStatBtn">+ Stat</button>'}
 
-      <!-- Use -->
-      <div class="form-section-title">Use (consumable)</div>
-      <div class="form-group">
-        <textarea id="f-use" rows="2" ${disabledAttr}>${esc(item.use||'')}</textarea>
+      <!-- Use (only for consumables) -->
+      <div id="useSection" style="${item.tier === 'consumable' ? '' : 'display:none'}">
+        <div class="form-section-title">Use (consumable)</div>
+        <div class="form-group">
+          <textarea id="f-use" rows="2" ${disabledAttr}>${esc(item.use||'')}</textarea>
+        </div>
       </div>
 
       <!-- Active -->
@@ -181,6 +188,17 @@ function renderForm() {
       </div>
       ${isReadOnly?'':'<button class="add-btn" id="addRequireBtn">+ Component</button>'}
 
+      <!-- Mini Build Tree -->
+      ${item.requires?.length ? `
+        <div class="form-section-title">Build Tree</div>
+        <div class="editor-build-tree" id="buildTree">
+          ${buildTreeHtml(item, 0, new Set())}
+        </div>
+      ` : ''}
+
+      <!-- Used By (reverse dependencies) -->
+      ${renderUsedBy(item)}
+
       <!-- Actions -->
       ${isReadOnly ? '' : `
         <div class="action-row">
@@ -219,7 +237,7 @@ function passiveRow(p, idx, readOnly) {
     </div>`;
 }
 
-function requireRow(r, idx, readOnly) {
+function buildRequireOptions(selectedId) {
   const tierOrd = { consumable: 0, t1: 1, t2: 2, t3: 3 };
   const sorted = [...workingItems].sort((a, b) => (tierOrd[a.tier] || 0) - (tierOrd[b.tier] || 0) || a.name.localeCompare(b.name));
   let options = '';
@@ -230,18 +248,100 @@ function requireRow(r, idx, readOnly) {
       options += `<optgroup label="${TIER_LABELS[i.tier] || i.tier}">`;
       lastTier = i.tier;
     }
-    options += `<option value="${i.id}" ${i.id===r.id?'selected':''}>${i.name}</option>`;
+    options += `<option value="${i.id}" ${i.id===selectedId?'selected':''}>${i.name}</option>`;
   });
   if (lastTier !== null) options += '</optgroup>';
+  return options;
+}
+
+function requireRow(r, idx, readOnly) {
+  const resolved = r.id ? workingItems.find(i => i.id === r.id) : null;
+
+  // No item selected yet — show dropdown
+  if (!resolved) {
+    return `
+      <div class="list-item-row" data-idx="${idx}">
+        <select class="req-id-select" style="flex:1;padding:5px 7px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:11px;outline:none;font-family:inherit" ${readOnly?'disabled':''}>
+          <option value="">— Select —</option>${buildRequireOptions('')}
+        </select>
+        <input type="number" value="${r.count||1}" min="1" max="9" class="req-count-input"
+          style="width:44px;padding:5px 5px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;outline:none;font-family:inherit;text-align:center" ${readOnly?'disabled':''}>
+        ${readOnly?'':'<button class="remove-btn req-remove">×</button>'}
+      </div>`;
+  }
+
+  // Item selected — show chip
+  const catColors = { offensive:'var(--c-offensive)', defensive:'var(--c-defensive)', both:'var(--c-both)', utility:'var(--c-utility)' };
+  const catColor = catColors[resolved.category] || 'var(--border)';
+  const tierDisplay = { consumable:'Consumable', t1:'T1', t2:'T2', t3:'T3' };
+  const costDisplay = resolved.totalCost && resolved.totalCost !== resolved.cost
+    ? `${resolved.totalCost}g` : `${resolved.cost}g`;
+
   return `
-    <div class="list-item-row" data-idx="${idx}">
-      <select class="req-id-select" style="flex:1;padding:5px 7px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:11px;outline:none;font-family:inherit" ${readOnly?'disabled':''}>
-        <option value="">— Select —</option>${options}
-      </select>
+    <div class="req-chip-row" data-idx="${idx}" data-item-id="${resolved.id}" style="--chip-cat-color:${catColor}">
+      <span class="req-chip-dot" style="background:${catColor}"></span>
+      <span class="req-chip-name">${esc(resolved.name)}</span>
+      <span class="req-chip-tier">${tierDisplay[resolved.tier] || resolved.tier}</span>
+      <span class="req-chip-cost">${costDisplay}</span>
       <input type="number" value="${r.count||1}" min="1" max="9" class="req-count-input"
-        style="width:44px;padding:5px 5px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:12px;outline:none;font-family:inherit;text-align:center" ${readOnly?'disabled':''}>
-      ${readOnly?'':'<button class="remove-btn req-remove">×</button>'}
+        style="width:40px;padding:3px 4px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:11px;outline:none;font-family:inherit;text-align:center" ${readOnly?'disabled':''}>
+      ${readOnly ? '' : `<button class="req-chip-change" title="Change component">&#9662;</button>`}
+      ${readOnly ? '' : '<button class="remove-btn req-remove">×</button>'}
+      <select class="req-id-select req-chip-hidden-select" ${readOnly?'disabled':''}>
+        <option value="">— Select —</option>${buildRequireOptions(r.id)}
+      </select>
     </div>`;
+}
+
+// ── Used By (reverse deps) ────────────────────────────────
+
+function renderUsedBy(item) {
+  const parents = workingItems.filter(i =>
+    (i.requires || []).some(r => r.id === item.id)
+  );
+  if (!parents.length) return '';
+
+  const catColors = { offensive:'var(--c-offensive)', defensive:'var(--c-defensive)', both:'var(--c-both)', utility:'var(--c-utility)' };
+  const chips = parents.map(p => {
+    const color = catColors[p.category] || 'var(--border)';
+    return `<span class="used-by-chip" data-item-id="${p.id}" style="--chip-cat-color:${color}">
+      <span class="used-by-dot" style="background:${color}"></span>
+      ${esc(p.name)}
+    </span>`;
+  }).join('');
+
+  return `
+    <div class="form-section-title">Used By</div>
+    <div class="used-by-list">${chips}</div>`;
+}
+
+// ── Mini Build Tree ──────────────────────────────────────
+
+function buildTreeHtml(item, depth, visited) {
+  if (!item.requires?.length || visited.has(item.id)) return '';
+  visited.add(item.id);
+
+  const catColors = { offensive:'var(--c-offensive)', defensive:'var(--c-defensive)', both:'var(--c-both)', utility:'var(--c-utility)' };
+  let html = '<div class="build-tree-level">';
+
+  item.requires.forEach(req => {
+    const child = workingItems.find(i => i.id === req.id);
+    if (!child) return;
+    const color = catColors[child.category] || 'var(--border)';
+    const countLabel = req.count > 1 ? ` ×${req.count}` : '';
+    html += `<div class="build-tree-node" data-item-id="${child.id}">
+      <span class="build-tree-connector"></span>
+      <span class="build-tree-chip" style="--chip-cat-color:${color}">
+        <span class="build-tree-dot" style="background:${color}"></span>
+        ${esc(child.name)}${countLabel}
+        <span class="build-tree-cost">${child.cost}g</span>
+      </span>
+      ${depth < 3 ? buildTreeHtml(child, depth + 1, visited) : ''}
+    </div>`;
+  });
+
+  html += '</div>';
+  return html;
 }
 
 // ── Wire buttons ──────────────────────────────────────────
@@ -254,6 +354,8 @@ function wireFormButtons(item, isReadOnly) {
       const v = versions.create(name, versions.getActiveId());
       versions.setActive(v.id);
     });
+    wireChipTooltips();
+    wireNavigableChips();
     return;
   }
 
@@ -276,6 +378,8 @@ function wireFormButtons(item, isReadOnly) {
     document.getElementById('requiresList')
       .insertAdjacentHTML('beforeend', requireRow({id:'',count:1}, 99, false));
     wireRemoveBtns();
+    wireChipEvents();
+    wireChipTooltips();
     markUnsaved();
   });
 
@@ -293,17 +397,224 @@ function wireFormButtons(item, isReadOnly) {
     document.getElementById('formCatDot').style.color = colors[e.target.value] || '#94a3b8';
     markUnsaved();
   });
+  document.getElementById('f-tier').addEventListener('change', e => {
+    document.getElementById('useSection').style.display = e.target.value === 'consumable' ? '' : 'none';
+    markUnsaved();
+  });
 
   // Mark unsaved on any input change
   document.getElementById('editorMain').querySelectorAll('input, select, textarea').forEach(el => {
     el.addEventListener('change', markUnsaved);
+  });
+
+  // Wire chip change buttons and tooltips
+  wireChipEvents();
+  wireChipTooltips();
+  wireNavigableChips();
+}
+
+function wireChipEvents() {
+  document.querySelectorAll('.req-chip-change').forEach(btn => {
+    btn.onclick = () => {
+      const row = btn.closest('.req-chip-row');
+      const sel = row.querySelector('.req-chip-hidden-select');
+      sel.style.display = 'block';
+      sel.focus();
+      sel.addEventListener('change', () => {
+        // Re-render the row as a chip (or dropdown if cleared)
+        const newId = sel.value;
+        const countInput = row.querySelector('.req-count-input');
+        const count = parseInt(countInput?.value) || 1;
+        const idx = row.dataset.idx;
+        const tmp = document.createElement('div');
+        tmp.innerHTML = requireRow({ id: newId, count }, idx, false);
+        row.replaceWith(tmp.firstElementChild);
+        wireRemoveBtns();
+        wireChipEvents();
+        wireChipTooltips();
+        markUnsaved();
+      }, { once: true });
+      sel.addEventListener('blur', () => {
+        sel.style.display = '';
+      }, { once: true });
+    };
+  });
+
+  // When a bare dropdown (no chip yet) gets a selection, convert to chip
+  document.querySelectorAll('#requiresList .list-item-row .req-id-select').forEach(sel => {
+    sel.addEventListener('change', () => {
+      if (!sel.value) return;
+      const row = sel.closest('.list-item-row');
+      const countInput = row.querySelector('.req-count-input');
+      const count = parseInt(countInput?.value) || 1;
+      const idx = row.dataset.idx;
+      const tmp = document.createElement('div');
+      tmp.innerHTML = requireRow({ id: sel.value, count }, idx, false);
+      row.replaceWith(tmp.firstElementChild);
+      wireRemoveBtns();
+      wireChipEvents();
+      wireChipTooltips();
+      markUnsaved();
+    });
+  });
+}
+
+// ── Editor Tooltip ───────────────────────────────────────
+
+const EDITOR_TIER_DISPLAY = { consumable: 'Consumable', t1: 'Tier 1', t2: 'Tier 2', t3: 'Tier 3' };
+
+function showEditorTooltip(item, e) {
+  const tt = document.getElementById('tooltip');
+  if (!tt || !item) return;
+
+  let html = `
+    <div class="tt-header">
+      <span class="tt-name">${esc(item.name)}</span>
+      <div class="tt-cost-block">
+        ${item.totalCost && item.totalCost !== item.cost
+          ? `<div class="tt-cost">${item.totalCost}g total</div><div class="tt-total-cost">(${item.cost}g recipe)</div>`
+          : `<div class="tt-cost">${item.cost}g</div>`}
+      </div>
+    </div>
+    <div class="tt-badges">
+      <span class="tt-badge tier">${EDITOR_TIER_DISPLAY[item.tier] || item.tier}</span>
+      <span class="tt-badge cat-${item.category}">${item.category}</span>
+    </div>`;
+
+  if (item.stats?.length) {
+    html += `<div class="tt-section"><div class="tt-section-title">Stats</div><div class="tt-stats">
+      ${item.stats.map(s => `<span class="tt-stat">${esc(s)}</span>`).join('')}</div></div>`;
+  }
+  if (item.use) {
+    html += `<div class="tt-section"><div class="tt-section-title">Use</div><div class="tt-desc tt-use">${esc(item.use)}</div></div>`;
+  }
+  if (item.active) {
+    const cd = item.active.cooldown ? `<span class="tt-cooldown">[${esc(item.active.cooldown)}]</span>` : '';
+    html += `<div class="tt-section"><div class="tt-section-title">Active</div>
+      <div class="tt-desc"><span class="tt-active-name">${esc(item.active.name)}</span>${cd} — ${esc(item.active.description)}</div></div>`;
+  }
+  if (item.passives?.length) {
+    html += `<div class="tt-section"><div class="tt-section-title">Passives</div>`;
+    item.passives.forEach(p => {
+      html += `<div class="tt-desc" style="margin-bottom:4px"><span class="tt-passive-name">${esc(p.name)}</span> — ${esc(p.description)}</div>`;
+    });
+    html += `</div>`;
+  }
+  if (item.requires?.length) {
+    html += `<div class="tt-divider"></div><div class="tt-section"><div class="tt-section-title">Requires</div><div class="tt-requires">`;
+    item.requires.forEach(req => {
+      const r = workingItems.find(i => i.id === req.id);
+      html += `<span class="tt-req-chip">${r ? esc(r.name) : esc(req.id)}${req.count > 1 ? ` ×${req.count}` : ''}</span>`;
+    });
+    html += `</div></div>`;
+  }
+  if (item.comment) {
+    html += `<div class="tt-divider"></div><div class="tt-section"><div class="tt-section-title">Comment</div>
+      <div class="tt-comment">${esc(item.comment)}</div></div>`;
+  }
+
+  tt.innerHTML = html;
+  editorPositionTooltip(e);
+  tt.classList.add('visible');
+}
+
+function editorPositionTooltip(e) {
+  const tt = document.getElementById('tooltip');
+  const w = tt.offsetWidth || 320, h = tt.offsetHeight || 200;
+  let x = e.clientX + 18, y = e.clientY + 18;
+  if (x + w > window.innerWidth  - 14) x = e.clientX - w - 18;
+  if (y + h > window.innerHeight - 14) y = e.clientY - h - 18;
+  tt.style.left = Math.max(14, x) + 'px';
+  tt.style.top  = Math.max(14, y) + 'px';
+}
+
+function editorHideTooltip() {
+  const tt = document.getElementById('tooltip');
+  if (tt) tt.classList.remove('visible');
+}
+
+function wireChipTooltips() {
+  // Component chip rows
+  document.querySelectorAll('.req-chip-row').forEach(row => {
+    const itemId = row.dataset.itemId;
+    const item = workingItems.find(i => i.id === itemId);
+    if (!item) return;
+    row.addEventListener('mouseenter', e => showEditorTooltip(item, e));
+    row.addEventListener('mousemove',  e => editorPositionTooltip(e));
+    row.addEventListener('mouseleave', () => editorHideTooltip());
+  });
+}
+
+function wireSidebarTooltips() {
+  document.querySelectorAll('.editor-item-entry').forEach(entry => {
+    const itemId = entry.dataset.id;
+    const item = workingItems.find(i => i.id === itemId);
+    if (!item) return;
+    entry.addEventListener('mouseenter', e => showEditorTooltip(item, e));
+    entry.addEventListener('mousemove',  e => editorPositionTooltip(e));
+    entry.addEventListener('mouseleave', () => editorHideTooltip());
+  });
+}
+
+function wireNavigableChips() {
+  // Click component chip name to navigate to that item
+  document.querySelectorAll('.req-chip-name').forEach(el => {
+    const row = el.closest('.req-chip-row');
+    if (!row) return;
+    el.style.cursor = 'pointer';
+    el.addEventListener('click', e => {
+      e.stopPropagation();
+      editorHideTooltip();
+      const id = row.dataset.itemId;
+      if (id) selectItem(id);
+    });
+  });
+
+  // Click used-by chips to navigate
+  document.querySelectorAll('.used-by-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      editorHideTooltip();
+      selectItem(chip.dataset.itemId);
+    });
+  });
+
+  // Click build tree chips to navigate
+  document.querySelectorAll('.build-tree-chip').forEach(chip => {
+    const node = chip.closest('.build-tree-node');
+    if (!node) return;
+    chip.addEventListener('click', () => {
+      editorHideTooltip();
+      selectItem(node.dataset.itemId);
+    });
+  });
+
+  // Wire tooltips on build tree chips
+  document.querySelectorAll('.build-tree-node').forEach(node => {
+    const itemId = node.dataset.itemId;
+    const item = workingItems.find(i => i.id === itemId);
+    if (!item) return;
+    const chip = node.querySelector('.build-tree-chip');
+    if (!chip) return;
+    chip.addEventListener('mouseenter', e => showEditorTooltip(item, e));
+    chip.addEventListener('mousemove',  e => editorPositionTooltip(e));
+    chip.addEventListener('mouseleave', () => editorHideTooltip());
+  });
+
+  // Wire tooltips on used-by chips
+  document.querySelectorAll('.used-by-chip').forEach(chip => {
+    const itemId = chip.dataset.itemId;
+    const item = workingItems.find(i => i.id === itemId);
+    if (!item) return;
+    chip.addEventListener('mouseenter', e => showEditorTooltip(item, e));
+    chip.addEventListener('mousemove',  e => editorPositionTooltip(e));
+    chip.addEventListener('mouseleave', () => editorHideTooltip());
   });
 }
 
 function wireRemoveBtns() {
   document.querySelectorAll('.stat-remove').forEach(b    => { b.onclick = () => { b.closest('.list-item-row').remove(); markUnsaved(); }; });
   document.querySelectorAll('.passive-remove').forEach(b => { b.onclick = () => { b.closest('.list-item-row').remove(); markUnsaved(); }; });
-  document.querySelectorAll('.req-remove').forEach(b     => { b.onclick = () => { b.closest('.list-item-row').remove(); markUnsaved(); }; });
+  document.querySelectorAll('.req-remove').forEach(b     => { b.onclick = () => { const row = b.closest('.list-item-row') || b.closest('.req-chip-row'); if (row) row.remove(); markUnsaved(); }; });
 }
 
 function markUnsaved() {
@@ -336,10 +647,18 @@ function collectForm() {
       name:        row.querySelector('.passive-name-input')?.value.trim() || '',
       description: row.querySelector('.passive-desc-input')?.value.trim() || ''
     })).filter(p => p.name),
-    requires: Array.from(document.querySelectorAll('#requiresList .list-item-row')).map(row => ({
-      id:    row.querySelector('.req-id-select')?.value || '',
-      count: parseInt(row.querySelector('.req-count-input')?.value) || 1
-    })).filter(r => r.id)
+    requires: Array.from(document.querySelectorAll('#requiresList .list-item-row, #requiresList .req-chip-row')).map(row => {
+      if (row.classList.contains('req-chip-row')) {
+        return {
+          id:    row.dataset.itemId || row.querySelector('.req-id-select')?.value || '',
+          count: parseInt(row.querySelector('.req-count-input')?.value) || 1
+        };
+      }
+      return {
+        id:    row.querySelector('.req-id-select')?.value || '',
+        count: parseInt(row.querySelector('.req-count-input')?.value) || 1
+      };
+    }).filter(r => r.id)
   };
 }
 
@@ -454,3 +773,14 @@ if (initId && workingItems.find(i => i.id === initId)) {
 } else {
   renderSidebar();
 }
+
+// ── Keyboard shortcut: Ctrl+S to save ────────────────────
+
+document.addEventListener('keydown', e => {
+  if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+    e.preventDefault();
+    if (selectedId && unsaved && !versions.isBase(versions.getActiveId())) {
+      saveItem(selectedId);
+    }
+  }
+});
