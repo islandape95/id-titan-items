@@ -1,0 +1,365 @@
+Consumables:
+Beast scroll (30G)
+Use: Consume the item and increases attack damage of allied units within the range of 500 by 10% for 10 seconds
+
+Potion of Recovery (25G)
+Use: Consumes this item and replenishes 1000 hit points and 750 mana poits over 7.5 seconds. Only works out of combat
+
+Wand of the wind (50G)
+Use: consume the item, and cyclone non-allied unit within the range of 500 for 5 seconds. For the duration, unit cannot be interatcted with.
+
+Watcher eye (30G)
+Use: Consume the item, marking the non-allied target unit within the range of 800. You have vision of the marked target. Marked unit can be cured to remove the effect with a dispel
+
+Floating eye (75G)
+Use: consume this item and spawn a fragile invisible flying entity that provides vision for 240 seconds. This entity can move, but it is very slow.
+
+Healing ward (35G)
+Use: consume this item, and drop a healing ward up to the range of 500, healing all allied units within same range for next 30 seconds.
+
+Wand of neutralization (100G)
+Consumes this item and sends out a chain of dispelling magic that neutralizes the target unit and up to 5 additional targets nearby, killing summoned units. Bounces are focused on units on the same side as the primary target
+
+
+Staff of teleportation (50G)
+Consume this item and teleports you to the allied target structure after 3 seconds of channeling
+
+Manual of Health (150G)
+Increase hit points by 100
+
+Manual of power (200G)
+Increases damage by 15
+
+Manual of retraining (50G)
+Unlearns all the hero abilities and return the skill points
+
+
+
+T1
+Pearl of Vision (90G)
+Use: Reveal 2250 area for 10 seconds, 25 seconds cooldown.
+
+Chimera Pendant (95G)
+Use: Summon chimera scout. Last 450 seconds.
+Passive: Scouting ability refunds 25% mana cost and 10% of cooldown
+
+Webbed feet (100G)
++60 Movement speed
+
+Shadow Shard (85G)
+Use (25 seconds cd): Invisibility for 3 seconds. For duration, move through units, and damage reduced by 50% for slightly longer
+
+Reef Shield (85G)
+2 Armor
+
+Regenerative Spines (70G)
++3 hit point regeneration
+
+Tide's Heart (100G)
++150 Hit Points
+
+Magic Coral (100G)
++150 mana points
++4/s mana regeneration
+
+Surge Trident (85G)
++10 attack damage
+
+Rune Fragment (70G)
+Passive: basic attacks apply runic mark on the target for 2.5 seconds, causing them to deal 10 bonus magic damage on-hit consuming the mark
+
+Gem of Haste (85G)
++10% attack speed
+
+
+T2
+
+Reef Armor (65G)
++4 armor
++150 hit points
+Passive: Reduce incoming damage by 1%. Holder also gains 1 extra armor
+Requires: 2 reef shield, 1 tide's heart
+
+
+Super Regenerative Spines (80G)
++3 armor
++8 hit point regeneration per second
+Passive: When below 50%, health regeneration granted by this item is doubled
+Requires: 2 regenerative spines, 1 reef shield
+
+Heart of the Sea Recipe (70G)
+250 mana points
+4 mana per second
+250 hit points
+4 hit point second
+Passive: allied units within the range of 800 regenerate 5 mana points and hit point per second
+Requires: 1 magic coral, 1 regenerative spines, 1 tide's heart
+
+Stormrider Cloak (75G)
++10% attack speed
++60 movement speed
+Use: Shadow Walk (120 seconds cd). Turn the holder invisible and grant 20% movement speed for 15 + 1 hero level seconds over 0.5 seconds. For the duration the holder can move through units.
+Passive: The holder vision is not reduced during night time.
+Requires: 1 gem of haste, 1 shadow shard, 1 webbed feed
+
+Casque of Valor (80G)
+200 hit points
+2 armor
+active: select an allied unit that becomes bound to the caster. For the next 7.5 seconds 15% of the damage that the units take is shared between them as pure damage, and both of the units gain 2 bonus armor.
+Requires: 1 reef shield, 1 regenerative spine, 1 tide heart
+
+Caster Scroll (45G)
+250 hit points
+Passive: casting a scouting or healing ability heals you for 200% vitality hit points and grants you 25% movement speed for 3.5 seconds
+Requires: 1x chimaera pendant, 1 rune fragment, 1 tide heart
+
+Enchantress' Fluid (120G)
+250 Mana points
+4 mana regeneration per second
+ACtive: Abysmal drink (60 seconds). Replenishes 650 mana points over the next 2.75 seconds. For the duration, the user is invulnerable.
+Requires: 1x potion of recovery, 1x magic coral, 1x rune fragment, 1x enchantress Fluid recipe
+
+Ethereal Mirror (265G)
+300 Mana points
+Active: Etherity (90 seconds cd). Turns unit and structure within the target area ethereal for 5 seconds. Structures will fade out and lose their collision briefly after cast, but this effect will end, if the structures are attacked. The number of nearby towers also increase the delay of the etherrity. While ethereal, units take 15% increased damage from magic. 
+Passive: nightsight. The holder's vision is not reduced during night time.
+Requires: 1 shadow shard, 1 magic coral
+
+Blasting wand (120G)
++250 mana points
+Active: Energy Blast (120 seconds). Sends out a lighting to the target non-alluied unit within the range of 650, dealing 195 magic damage to the target and nearby units within the range of 250 around the target. Titan hunters take additional damage equal to 15% of their maximum health. Builder units take 50% reduced damage. Killing a target with the blast refunds 40% of the cooldown.
+Requires: 1 magic coral, 1 rune fragment
+
+Magic Armor (50G)
+15% magic damage reduction
+150 mana points
+Passive: upon casting a healing spell, you get healed for an additional 15%.
+Requires: 1x magic coral, 1x rune fragment, 1 reef shield
+
+Pearl of Grand Vision (95G)
+Active (25s): reveal a circular area on the map with a radius of 3000, granting you true sight for 12.5 seconds.
+Requires: 1 pearl of vision
+
+Farseer's staff (75G)
+300 mana points
+3 mana regeneration per second
+Active: apparition (15s). On cast, all enemy units within 2500 range are marked with apparition for 10 seconds.
+Passive: Killing an enemy restores 100% windsomn mana. If the enemy is marked with apparition, your maximum mana is also increased by 10.
+Requires: Pearl of Vision, Magic Coral
+
+
+Tidal Guardian's Grace (155G)
++15% attack speed.
+Passive: Killing critters spawn shallow spawns for 45 seconds. These fragile and mobile units can be used for scouting. You may control up to 1 at a time
+Requires: Chimaera pendant, gem of haste
+
+Voodoo Doll (55G)
++15 attack damage
+ACtive (30 seconds) Create a fragile voodoo ward at the target point, within the range of 1000, for 150 seconds.
+Passive: Each voodoo ward grants you 5 extra attack damage, and causes your basic attacks to heal you for 20+25% vitality.
+Requires: 1x surge trident, 3x watcher eye
+
+Guantlets of Emebres (55G)
++15% attack speed
+Passive: Your attack burn enemy structure for 5 seconds, dealing 20 damage per second
+Passive: Emberhearth (20 seconds). Attacks on structure reveal the immediate surroundsing for 10 + 10% celerity seconds.
+Requires: 1 gem of haste, 3 watcher eyes, 1 rune fragment
+
+Runic Axe (75G)
++10 attack damage
+Passive: Basic attacks apply a runic mark on the target for 2.5 seconds. Attacking a marked target consumes the mark and deals 25 magic damage and 200 magic damage to hunters
+Requires: 1 watcher eye, 1 rune fragment, 1 surge trident
+
+Spectral Blade Recipe (90G)
+20 attack damage
+Active (5 seconds cd). Instantly transmutes the scrap items within the target area and grants you gold equal to 100% of the items's value
+
+Passive: spectral gold. Harvesters yield 1 gold pon dying.
+Requires: 1 staff of teleportation, 1 rune fgragment, 1 surge trident
+
+
+Titanic Tridents (100G)
++35 attack damage
+Passive: Basic attacks on structure deal 10+2x Level bonus pure damage on hit, up to a maximum of 30 bonus damage
+Requires: 3x surge trident
+
+
+Warbanner Recipe (100G)
++15 attack damage
++10% attack speed
+Passive: Aura of War. Increase the attack damage of nearby allied units within the range of 750 by 10%. After killing an enemy, the holder gains an additional 5% attack damage bonus for 2.5 seconds
+Requires: 1 beast scroll, 1 gem of haste, 1 surge trident, 1 warbanner recipe
+
+Eternal Wards Recipe (80G)
+5 hit point /s regeneration.
+Active: Eternal Wards [60 seconds]. Spawn a healing ward at the target location for 30 seconds. The healing ward recovers lost hit points to all friendly units within range 600.
+Requires: 2 healing ward, 1 regenerative spines
+
+T3
+Mystic Staff of Gods (70G)
+250 Hit Points
++10 hit point regeneration seconds
++350 mana points
++10 mana regeneration. 
+
+This item is passable to reset teh cooldown
+
+ACtive: point target. Reveals a circular area on the map within a radius of 3000+30%windsom granting you vision of that area for 12.5 seconds. Revaeel also invisible uinits.
+Passive: While farsight is ready for cast, the holder has true sight, allowing it to see invisible units within the range of 1100.
+Requires: 1x heart of the sea, 1x pearl of rgand vision.
+
+
+
+Tidal Scepter (250G)
+500 mana points
+10/s mana regeneration.
+Active: Energy blast (90 seconds). Sends out a lighting to the targeted non-allied unit within the range of  750, dealing 200 magic damage to the target and nearby enemy units within the range 250 around the target. Titan hunters take additional damage equal to 15% of their maximum health . Builders units take 50% reduced damage.
+Passive: killing an enemy restores 100% windsom mana. If the enemy is marked with apparition, your maximum mana is also increased by 10.
+Passive: Nukemaster. Titan's nuke deals 20% bonus damage.
+Requires: Blasting wand, farseer staff
+
+
+Mace of Mortaility (105G)
+40 attack damage
+400 hit points
+40 movement speed
+Passive: casting a summoning spell grants you 15% bonus attack damage for 15 seconds and reduce enemy armor for 3 seconds.
+Passive: Casting a scouting ability refunds 50% of its mana cost, and 50% of its cooldown. 
+Passive: Casting a scouting or healing ability heals you for 250% vitality + 10% of your missing health, and grants you 35% movement speed for 3.5 seconds.
+Requires: caster scroll, tidal guardian's grace, warbanner
+
+Essence of pure magic (195 G)
+400 mana points
+400 hit points 
+Active (60 seconds). Regenerate 1500+500% windsom of your mana and health over 4 seconds.
+Passive: Unstable magic. Allied units within the range of 800 units rengenerate 8 obnus mana nd hit points per second. 
+Requires: enchantress fluid, 1 heart of the sea
+
+Armor of tides (200G)
+4 armor
+300 hit points
+8 hit point regeneration
+Passive: damage taken is reduced by 2%. The holder also gains 4 bonus armor
+Pasive: when below 50% health the regeneration grated by this item is doubled.
+Requires: 1 reef armor, 1 super regenerative armored spines
+
+Robe of Spellcraft (105G) 
+6 armor 
+300 hit points
+500 mana points
+Active: realmshift (80 seconds). Turn you ethereal for up to 10 seconds, broken once you cast a spell. While ethereal, incoming healing is increased by 10% +25%windsom.
+Passive: spellcasts heal you for 10% max mana and increases your armor by 2 for 5 seconds. This effect stacks up to 3 times, renewing itself on each spell cast.
+Requires: 1 ethereal mirror, 1 reef armor.
+
+Dawnkeeper (220G)
+5 armor
+500 hit points
+
+Active: Call of valor (45 seconds). Select a target allied unit within the range of 1000. For the enxt 10 seconds the two unit share 25% of the damage they take as pure damage and their armor is increased by 5. 
+
+Passive: Casting a scouting ability refunds 50% of its mana xost and 25% of its cooldown.
+
+Passive: Casting a scouting or healing ability heals you for the 200% vitality hit pioiitns and grants you 10% movement speed for 2.5 seconds
+
+Requires: Casque of valor, caster scrool
+
+
+
+Highseer Slippers (140G)
+25 attack damage
+15% attack speed
+40 movement speed
+Passive: Unique spell cast grants you 8% stacking attack speed for 8 seconds. This effect stacks up to 6 times. Upon gainin full stacks, this item becomes overcharged and puts this effect on a cooldown. While overcharged, dealing magic damage relesases the charge, healing you for 35% windsom percent of your maximum mana.
+
+Passive: Casting a scouting ability refunds 50% of its mana cost and 50% of its cooldown and repreatedly cleanses you of all negative effects for the next 8 seconds
+Requires: tidal guardian's grac, runic axe, gem of haste
+
+
+Enchanted druid leaf (100G)
+Enchanted wards (75 seconds cd). places a healing ward without consuming this item. The healing wards last 30 seconds healing all friendly units within range of 600. Enchanted druid leaf is passable, resetting the cooldown.
+requires 1 eternal wards
+
+
+Enchanted Magic ARmor (100G)
+30% magic damage reduction
+400 mana points
+Passive: upon casting a healing spell, you get healed for an additional 30%.
+Requires: 1 magic armor, 1 caster scroll
+
+Endelune (120G)
++10 damage
+Active (5 seconds). Transmute the scrap items within the taget area and grants gold equal to 100% of their value.
+Passive: Basic attacks apply a runic mark on the target 2.5 seconds. Attacking a marked target consumes the mark and deals 50 magic damage and 300 magic damage to hunters.
+Passive: Upon dying, harvester yield 1 gold
+Requires: runic axe, spectral blade
+
+Foreteller's Sickle (325G)
+20 attack damage
+250 mana points
+5 mana regeneration
+Passive: your attack deals bonus magic damage equal to 30% windsom + 2% maximum mana to structures. Spell casts grand additional ratio of 3% windsom and 1% maximum mana for 5 seconds
+Requires: 1 farseer staff, 1 runic axe
+
+Helmet of the damned recipe (275G)
+30 attack damage
+Active: Voodo wards (30 seconds). Creates a fragile voodoo ward at the target point within the range of 1000 for 200 seconds.
+Passive: Aura of war: increases the attack damage of nearby allied units within the range of 950 by 15%. After killing an enemy, the holder gains an additional 5% attack damage bonus for 5 seconds.
+
+Passive: Voodoo. Each voodoo ward grants you 10 extra attack damage and causes your basic attacks to heal you for 20 +40% vitality. 
+
+Requires: voodoo idol, warbanner
+
+Mistlord's cape (100G)
+3 armor
+15% attack speed
+8 hit point regeneration
+60 movement speed
+Active (Shadow Walk). Turns the holder invisible and grants him 20% bonus movement speed for 20 + hero level*2 seconds over 0.5 seconds. For the duration the holder can move through units.
+Passive: the holder vision is not reduced during night time.
+Passive: When unseen, regenerate 45% vitality hit points, and 25% windsom mana points per second.
+Requires: stormrider cloak, super spines of regeneration
+
+
+Molten blade recipe (180G)
+25 attack damage
+20% attack speed
+Passive: attacks on structures reveal the immediate surroundings for 15 + 25% vitality seconds.
+Passive: Fiery touch. Your attacks burn enemy structure for 5 seconds, dealing 40 damage per second
+Passive: Spectral fire. Killing an enemy cause a fiery explosion that deals 49 damage to nearby enemy units and structures. If the ikilling damage is magic explosion radius is reduced and won't it affect buildings. Harvester yield 2 gold upon dying.
+Requires: Guantlests of emeber, spectral blade
+
+Poseidon's Trident (180G)
+40 attack damage
+10% attack speed
+30 movement speed
+
+
+Active: Unleashed rage (60 seconds cd). Gain 25% bonus in your attack damage for 1*hero level seconds.
+Passive: Basic atatcks on structures deal 20 + (5 hero elvel) bonus damage ON HIt, up to maximum of 50 bonus damage.
+
+Requires: 1 titanic trident, 1 stormrider cloak
+
+Spear of Fervor (255G)
+30 damage
+20% attack sspeed
+Passive: basic attacks grant bonus attack speed for 2.5 seconds, stakcing up to 10 times up to 33% bonus attack speed.
+Passive: Basic attacks heal you for 20 + 35% vitality.
+
+Requires:Guantlets of embers Voodoo doll
+
+Ankh of superiority (180G)
+20 attack damage
+5 vitality
+5 celerity
+5 windsom
+Active: consume the ankh, getting the bonus granted bay this item.
+Passive: upon death, respawn with 2500 hit points, activating s uperiority.
+Requires: Ankh of reincarnation
+
+
+
+
+
+
+
+

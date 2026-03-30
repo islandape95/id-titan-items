@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Tree — Visualizer</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- Top Bar -->
+  <header class="topbar">
+    <span class="topbar-title">⬡ Item Tree</span>
+    <div class="version-picker" id="versionPicker"></div>
+    <div class="topbar-spacer"></div>
+    <nav class="topbar-nav">
+      <a class="nav-btn active" href="index.html">Visualizer</a>
+      <a class="nav-btn" href="editor.html">Editor</a>
+      <a class="nav-btn" href="changelog.html">Changelog</a>
+    </nav>
+  </header>
+
+  <!-- Filter Bar -->
+  <div class="category-bar">
+    <button class="cat-tab active" data-cat="all">⬡ All</button>
+    <button class="cat-tab" data-cat="offensive">⚔ Offensive</button>
+    <button class="cat-tab" data-cat="defensive">🛡 Defensive</button>
+    <button class="cat-tab" data-cat="both">⚡ Hybrid</button>
+    <button class="cat-tab" data-cat="utility">✦ Utility</button>
+    <button class="changes-toggle" id="changesToggle" hidden>◑ <span class="changes-count">0</span> Changes</button>
+    <div class="search-box">
+      <input type="text" id="searchInput" placeholder="Search items…" autocomplete="off">
+    </div>
+  </div>
+
+  <!-- Canvas -->
+  <div class="canvas-wrapper" id="canvasWrapper">
+    <div class="tree-container" id="treeContainer"></div>
+    <svg class="connectors-svg" id="connectorsSvg"></svg>
+  </div>
+
+  <!-- Status bar -->
+  <footer class="statusbar">
+    <span>Showing <b id="statVisible">0</b> items</span>
+    <span id="statChanges" hidden>·  <b id="statChangesCount" style="color:#fbbf24">0</b> changes from Base</span>
+    <span style="margin-left:auto"><b id="statVersion">–</b></span>
+  </footer>
+
+</div>
+
+<div id="tooltip"></div>
+
+<script src="js/items-data.js"></script>
+<script src="js/versions.js"></script>
+<script src="js/suggestions-data.js"></script>
+<script src="js/tree.js"></script>
+</body>
+</html>
