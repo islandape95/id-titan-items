@@ -488,9 +488,10 @@ function showTooltip(item, e) {
     if (baseItem) {
       const diffResults = versions.diffItemSets([baseItem], [item]);
       const diff = diffResults[0];
-      if (diff && diff.changes && diff.changes.length > 0) {
+      const realChanges = (diff?.changes || []).filter(c => c.from !== c.to);
+      if (realChanges.length > 0) {
         html += `<div class="tt-diff">`;
-        diff.changes.forEach(c => {
+        realChanges.forEach(c => {
           html += `<div class="tt-diff-row">`;
           html += `<span class="tt-diff-field">${c.field}</span>`;
           if (c.from && c.to) {
