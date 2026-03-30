@@ -50,13 +50,6 @@ function renderSidebar() {
       .filter(i => i.tier === tier)
       .filter(i => !q || i.name.toLowerCase().includes(q));
 
-    if (!tierItems.length) return;
-
-    const hdr = document.createElement('div');
-    hdr.className = 'sidebar-tier-header';
-    hdr.textContent = TIER_LABELS[tier];
-    list.appendChild(hdr);
-
     // Collect removed base items for this tier
     const removedInTier = !versions.isBase(versions.getActiveId())
       ? versions.getBaseItems()
