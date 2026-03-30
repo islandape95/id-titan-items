@@ -574,16 +574,18 @@ function showTooltip(item, e) {
       <div class="tt-comment">${item.comment}</div></div>`;
   }
 
+  if (IS_TOUCH) html = `<button class="tt-close-btn" onclick="hideTooltip()">✕</button>` + html;
+
   tt.innerHTML = html;
-  positionTooltip(e);
+  if (!IS_TOUCH) positionTooltip(e);
   tt.classList.add('visible');
 }
 
 function positionTooltip(e) {
   const tt = document.getElementById('tooltip');
   const w = tt.offsetWidth || 320, h = tt.offsetHeight || 200;
-  const cx = e.clientX || (e.touches && e.touches[0]?.clientX) || 0;
-  const cy = e.clientY || (e.touches && e.touches[0]?.clientY) || 0;
+  const cx = e.clientX || 0;
+  const cy = e.clientY || 0;
   let x = cx + 18, y = cy + 18;
   if (x + w > window.innerWidth  - 14) x = cx - w - 18;
   if (y + h > window.innerHeight - 14) y = cy - h - 18;

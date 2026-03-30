@@ -593,7 +593,7 @@ function editorHideTooltip() {
 }
 
 function wireChipTooltips() {
-  // Component chip rows
+  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
   document.querySelectorAll('.req-chip-row').forEach(row => {
     const itemId = row.dataset.itemId;
     const item = workingItems.find(i => i.id === itemId);
@@ -605,6 +605,7 @@ function wireChipTooltips() {
 }
 
 function wireSidebarTooltips() {
+  if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
   document.querySelectorAll('.editor-item-entry').forEach(entry => {
     const itemId = entry.dataset.id;
     const item = workingItems.find(i => i.id === itemId);
