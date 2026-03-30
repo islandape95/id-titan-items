@@ -687,6 +687,43 @@ body {
   font-weight: 500;
 }
 
+/* ── Tooltip inline diff ───────────────────────────────── */
+
+.tt-diff {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 5px;
+  padding: 5px 8px;
+  margin-bottom: 8px;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.tt-diff-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.tt-diff-field {
+  color: rgba(255,255,255,0.45);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+.tt-diff-field::after {
+  content: ':';
+}
+.tt-diff-old {
+  color: #f87171;
+  text-decoration: line-through;
+}
+.tt-diff-new {
+  color: #34d399;
+}
+.tt-diff-arrow {
+  color: rgba(255,255,255,0.25);
+  font-size: 9px;
+}
+
 /* ── Status bar ─────────────────────────────────────────── */
 
 .statusbar {
@@ -766,6 +803,35 @@ body {
 .editor-item-entry .entry-cost { font-size: 10px; color: var(--text-muted); white-space: nowrap; }
 .entry-changed-dot { font-size: 9px; color: #fbbf24; flex-shrink: 0; }
 .entry-added-dot   { font-size: 9px; color: #34d399; flex-shrink: 0; }
+.entry-removed-dot { font-size: 9px; color: #f87171; flex-shrink: 0; }
+
+.editor-item-entry.entry-removed {
+  opacity: 0.45;
+}
+.editor-item-entry.entry-removed .entry-name {
+  text-decoration: line-through;
+  color: #f87171;
+}
+.editor-item-entry.entry-removed:hover {
+  opacity: 0.7;
+}
+
+.entry-restore-btn {
+  background: none;
+  border: 1px solid rgba(248,113,113,0.3);
+  color: #f87171;
+  font-size: 11px;
+  border-radius: 4px;
+  padding: 1px 5px;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+.entry-restore-btn:hover {
+  background: rgba(52,211,153,0.12);
+  border-color: #34d399;
+  color: #34d399;
+}
 
 .sidebar-tier-header {
   font-size: 10px;
@@ -1496,6 +1562,30 @@ body {
   color: var(--tier-consumable);
   white-space: nowrap;
   flex-shrink: 0;
+}
+
+/* Missing / removed requirement chip */
+.req-chip-missing {
+  border-color: rgba(248,113,113,0.35) !important;
+  background: rgba(248,113,113,0.06);
+}
+.req-chip-missing::before {
+  background: rgba(248,113,113,0.25) !important;
+}
+.req-chip-missing .req-chip-name {
+  color: #f87171;
+  text-decoration: line-through;
+}
+.req-chip-removed-label {
+  font-size: 9px;
+  color: #f87171;
+  background: rgba(248,113,113,0.12);
+  border: 1px solid rgba(248,113,113,0.25);
+  border-radius: 3px;
+  padding: 1px 5px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .req-chip-change {

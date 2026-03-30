@@ -482,6 +482,33 @@ function showTooltip(item, e) {
   else if (isChanged)
     html += `<div class="tt-changed-banner">◑ Modified in this version</div>`;
 
+  // Inline diff for modified items
+  if (_cachedChangeTypes.modified.has(item.id)) {
+    const baseItem = versions.getBaseItems().find(i => i.id === item.id);
+    if (baseItem) {
+      const diffResults = versions.diffItemSets([baseItem], [item]);
+      const diff = diffResults[0];
+      if (diff && diff.changes && diff.changes.length > 0) {
+        html += `<div class="tt-diff">`;
+        diff.changes.forEach(c => {
+          html += `<div class="tt-diff-row">`;
+          html += `<span class="tt-diff-field">${c.field}</span>`;
+          if (c.from && c.to) {
+            html += `<span class="tt-diff-old">${c.from}</span>`;
+            html += `<span class="tt-diff-arrow">→</span>`;
+            html += `<span class="tt-diff-new">${c.to}</span>`;
+          } else if (c.to) {
+            html += `<span class="tt-diff-new">${c.to}</span>`;
+          } else if (c.from) {
+            html += `<span class="tt-diff-old">${c.from}</span>`;
+          }
+          html += `</div>`;
+        });
+        html += `</div>`;
+      }
+    }
+  }
+
   html += `
     <div class="tt-header">
       <span class="tt-name">${item.name}</span>

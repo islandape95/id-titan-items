@@ -57,6 +57,20 @@ function renderSidebar() {
     hdr.textContent = TIER_LABELS[tier];
     list.appendChild(hdr);
 
+    // Collect removed base items for this tier
+    const removedInTier = !versions.isBase(versions.getActiveId())
+      ? versions.getBaseItems()
+          .filter(bi => bi.tier === tier && changeTypes.removed.has(bi.id))
+          .filter(bi => !q || bi.name.toLowerCase().includes(q))
+      : [];
+
+    if (!tierItems.length && !removedInTier.length) return;
+
+    const hdr = document.createElement('div');
+    hdr.className = 'sidebar-tier-header';
+    hdr.textContent = TIER_LABELS[tier];
+    list.appendChild(hdr);
+
     tierItems.forEach(item => {
       const entry = document.createElement('div');
       entry.className = 'editor-item-entry' + (item.id === selectedId ? ' selected' : '');
@@ -77,6 +91,25 @@ function renderSidebar() {
         <span class="entry-cost">${item.cost}g</span>
       `;
       entry.addEventListener('click', () => selectItem(item.id));
+      list.appendChild(entry);
+    });
+
+    // Show removed items as ghost entries with restore button
+    removedInTier.forEach(bi => {
+      const entry = document.createElement('div');
+      entry.className = 'editor-item-entry entry-removed';
+      entry.dataset.category = bi.category;
+      entry.dataset.id = bi.id;
+      entry.innerHTML = `
+        <span class="dot"></span>
+        <span class="entry-name">${bi.name}</span>
+        <span class="entry-removed-dot" title="Removed in this version">✕</span>
+        <button class="entry-restore-btn" title="Restore item">↩</button>
+      `;
+      entry.querySelector('.entry-restore-btn').addEventListener('click', (e) => {
+        e.stopPropagation();
+        restoreItem(bi.id);
+      });
       list.appendChild(entry);
     });
   });
@@ -274,6 +307,21 @@ function buildRequireOptions(selectedId) {
 
 function requireRow(r, idx, readOnly) {
   const resolved = r.id ? workingItems.find(i => i.id === r.id) : null;
+
+  // Item ID set but not found — show missing/removed chip in red
+  if (r.id && !resolved) {
+    const baseName = versions.getBaseItems().find(i => i.id === r.id);
+    const displayName = baseName ? baseName.name : r.id;
+    return `
+      <div class="req-chip-row req-chip-missing" data-idx="${idx}" data-item-id="${r.id}">
+        <span class="req-chip-dot" style="background:var(--c-offensive)"></span>
+        <span class="req-chip-name">${esc(displayName)}</span>
+        <span class="req-chip-removed-label">removed</span>
+        <input type="number" value="${r.count||1}" min="1" max="9" class="req-count-input"
+          style="width:40px;padding:3px 4px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:11px;outline:none;font-family:inherit;text-align:center" ${readOnly?'disabled':''}>
+        ${readOnly ? '' : '<button class="remove-btn req-remove">×</button>'}
+      </div>`;
+  }
 
   // No item selected yet — show dropdown
   if (!resolved) {
@@ -706,6 +754,17 @@ function revertItem(id) {
   flash('Reverted ✓', 'var(--c-defensive)');
   renderForm();
   renderSidebar();
+}
+
+function restoreItem(id) {
+  const orig = versions.getBaseItems().find(i => i.id === id);
+  if (!orig) return;
+  workingItems.push(JSON.parse(JSON.stringify(orig)));
+  recomputeTotalCosts();
+  versions.saveItems(versions.getActiveId(), workingItems);
+  flash('Restored ✓', 'var(--c-defensive)');
+  renderSidebar();
+  selectItem(id);
 }
 
 function deleteItem(id) {
