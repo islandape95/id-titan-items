@@ -2,6 +2,13 @@
 //  COMMUNITY VERSIONS LOADER
 //  Fetches versions from the versions/ folder (via manifest.json)
 //  and imports them into localStorage if not already present.
+//
+//  To add a new community version:
+//    1. Export the version as .json from the version picker
+//    2. Place the file in the /versions/ folder
+//    3. Add the filename to /versions/manifest.json array, e.g.:
+//       ["yokola95_version.json", "another_version.json"]
+//    4. It will auto-import for all users on their next page load
 // ============================================================
 
 (function () {
@@ -37,6 +44,9 @@
         });
         localStorage.setItem(IMPORTED_KEY, JSON.stringify(already));
         console.log('[Community] Imported', toLoad.length, 'version(s)');
+        // Notify picker to re-render with new versions
+        versions.reload();
+        document.dispatchEvent(new CustomEvent('versionchange', { detail: { id: versions.getActiveId() } }));
       });
     })
     .catch(() => { /* offline or no manifest — that's fine */ });
