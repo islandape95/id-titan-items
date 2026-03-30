@@ -102,7 +102,7 @@ function renderAddedItem(item, itemName) {
     </div>`;
 }
 
-// ── Removed item: full card in red with strikethrough ─────
+// ── Removed item: header only, no body ───────────────────
 
 function renderRemovedItem(item, itemName) {
   return `
@@ -113,9 +113,6 @@ function renderRemovedItem(item, itemName) {
         <span class="cl-tier">${TIER_DISPLAY[item.tier] || item.tier}</span>
         <span class="cl-cat" style="color:${CAT_COLORS[item.category] || '#94a3b8'}">${item.category}</span>
         <span class="cl-cost">${costLabel(item)}</span>
-      </div>
-      <div class="cl-card cl-card-removed">
-        ${renderItemBody(item, itemName)}
       </div>
     </div>`;
 }
@@ -313,6 +310,9 @@ function renderChangedItem(fromItem, toItem, changes, itemName) {
   const commentHtml = commentItem?.comment
     ? `<div class="cl-comment"><span class="cl-comment-label">Comment:</span> ${esc(commentItem.comment)}</div>` : '';
 
+  // Build the changes-only section
+  const hasChanges = statsHtml || useHtml || activeHtml || passivesHtml || compsHtml;
+
   return `
     <div class="cl-entry cl-entry-changed">
       <div class="cl-entry-header">
@@ -322,9 +322,13 @@ function renderChangedItem(fromItem, toItem, changes, itemName) {
         <span class="cl-cat" style="color:${CAT_COLORS[toItem.category] || '#94a3b8'}">${toItem.category}</span>
         ${costHtml}
       </div>
-      <div class="cl-card">
-        ${statsHtml}${useHtml}${activeHtml}${passivesHtml}${compsHtml}
+      <div class="cl-card cl-card-current">
+        ${renderItemBody(toItem, itemName)}
       </div>
+      ${hasChanges ? `<div class="cl-changes-title">Changes</div>
+      <div class="cl-card cl-card-diff">
+        ${statsHtml}${useHtml}${activeHtml}${passivesHtml}${compsHtml}
+      </div>` : ''}
       ${commentHtml}
     </div>`;
 }
@@ -371,22 +375,65 @@ function renderItemBody(item, itemName) {
 
 // ── Export ────────────────────────────────────────────────
 
+function exportItemText(item, itemName, indent) {
+  let text = '';
+  if (item.stats?.length)
+    text += `${indent}Stats: ${item.stats.join(', ')}\n`;
+  if (item.use)
+    text += `${indent}Use: ${item.use}\n`;
+  if (item.active)
+    text += `${indent}Active: ${item.active.name}${item.active.cooldown ? ` [${item.active.cooldown}]` : ''} — ${item.active.description}\n`;
+  if (item.passives?.length)
+    item.passives.forEach(p => { text += `${indent}Passive: ${p.name} — ${p.description}\n`; });
+  if (item.requires?.length) {
+    const comps = item.requires.map(r => {
+      const name = itemName(r.id);
+      return r.count > 1 ? `${name} ×${r.count}` : name;
+    });
+    text += `${indent}Components: ${comps.join(', ')}\n`;
+  }
+  return text;
+}
+
 function exportText(results, fromLabel, toLabel) {
+  // Build name lookup from results
+  const nameMap = new Map();
+  results.forEach(r => {
+    [r.item, r.fromItem].forEach(it => {
+      if (!it) return;
+      nameMap.set(it.id, it.name);
+      (it.requires || []).forEach(req => { if (!nameMap.has(req.id)) nameMap.set(req.id, req.id); });
+    });
+  });
+  const itemName = id => nameMap.get(id) || id;
+
   let text = `ITEM TREE CHANGELOG\n`;
   text += `From: ${fromLabel}  →  To: ${toLabel}\n`;
   text += `Generated: ${new Date().toLocaleString()}\n`;
   text += `${'─'.repeat(50)}\n\n`;
+
   results.forEach(r => {
     const item = r.item || r.fromItem;
-    text += `[${r.type.toUpperCase()}] ${item?.name} (${TIER_DISPLAY[item?.tier]})\n`;
-    if (r.type === 'changed') {
+    const tier = TIER_DISPLAY[item?.tier] || item?.tier;
+    const cost = item?.totalCost && item?.totalCost !== item?.cost
+      ? `${item.totalCost}g (${item.cost}g recipe)` : `${item?.cost}g`;
+
+    if (r.type === 'added') {
+      text += `[NEW] ${item.name} — ${tier} | ${item.category} | ${cost}\n`;
+      text += exportItemText(item, itemName, '  ');
+    } else if (r.type === 'removed') {
+      text += `[REMOVED] ${item.name} — ${tier} | ${item.category} | ${cost}\n`;
+    } else {
+      text += `[CHANGED] ${item.name} — ${tier} | ${item.category} | ${cost}\n`;
+      text += exportItemText(r.item, itemName, '  ');
+      text += `  ── Changes ──\n`;
       r.changes.forEach(c => {
-        if (c.from === null)    text += `  + ${c.field}: ${c.to}\n`;
-        else if (c.to === null) text += `  - ${c.field}: ${c.from}\n`;
-        else                    text += `  ~ ${c.field}: "${c.from}" → "${c.to}"\n`;
+        if (c.from === null)    text += `    + ${c.field}: ${c.to}\n`;
+        else if (c.to === null) text += `    - ${c.field}: ${c.from}\n`;
+        else                    text += `    ~ ${c.field}: "${c.from}" → "${c.to}"\n`;
       });
     }
-    if (item?.comment) text += `  COMMENT: ${item.comment}\n`;
+    if (item?.comment) text += `  Note: ${item.comment}\n`;
     text += '\n';
   });
   const blob = new Blob([text], { type: 'text/plain' });

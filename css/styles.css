@@ -1114,6 +1114,23 @@ body {
   background: rgba(52,211,153,0.03);
   border-left: 3px solid rgba(52,211,153,0.4);
 }
+.cl-card-current {
+  background: rgba(255,255,255,0.02);
+  border-left: 3px solid rgba(255,255,255,0.1);
+}
+.cl-changes-title {
+  padding: 6px 18px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fbbf24;
+  border-top: 1px dashed rgba(251,191,36,0.2);
+}
+.cl-card-diff {
+  background: rgba(251,191,36,0.03);
+  border-left: 3px solid rgba(251,191,36,0.3);
+}
 .cl-card-removed {
   background: rgba(248,113,113,0.03);
   border-left: 3px solid rgba(248,113,113,0.4);
