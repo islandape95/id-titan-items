@@ -255,8 +255,9 @@ const versions = (() => {
 
   function diffSingleItem(a, b, nameResolver) {
     const changes = [];
+    const norm = v => (v === undefined || v === null || v === '') ? null : v;
     const scalar = (field, label) => {
-      if (JSON.stringify(a[field]) !== JSON.stringify(b[field]))
+      if (JSON.stringify(norm(a[field])) !== JSON.stringify(norm(b[field])))
         changes.push({ field: label || field, from: fmt(a[field]), to: fmt(b[field]) });
     };
     scalar('name', 'Name');
@@ -264,7 +265,6 @@ const versions = (() => {
     scalar('tier', 'Tier');
     scalar('category', 'Category');
     scalar('use', 'Use');
-    scalar('comment', 'Comment');
 
     const aStats = a.stats || [], bStats = b.stats || [];
     if (JSON.stringify(aStats) !== JSON.stringify(bStats)) {
