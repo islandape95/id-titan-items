@@ -27,6 +27,7 @@ let loadoutOpen = false;
 let _cachedItems = [];
 let _cachedChangedIds = new Set();
 let _cachedChangeTypes = { added: new Set(), removed: new Set(), modified: new Set() };
+let _reorderTimer = 0;
 
 function refreshCache() {
   _cachedItems = versions.getActiveItems();
@@ -180,6 +181,7 @@ function buildTree() {
       card.style.left = x + 'px';
       card.style.top  = cardY + 'px';
       card.style.zIndex = '5';
+      card.dataset.baseLeft = x + 'px';
       container.appendChild(card);
     });
   });
@@ -272,8 +274,16 @@ function buildItemCard(item) {
     <button class="edit-btn" title="Edit">Edit</button>
   `;
 
-  card.addEventListener('mouseenter', e  => { showTooltip(item, e); highlightTree(item.id); });
-  card.addEventListener('mouseleave', () => { hideTooltip(); if (!selectedItemId) clearHighlights(); else highlightTree(selectedItemId); });
+  card.addEventListener('mouseenter', e  => {
+    showTooltip(item, e);
+    if (!selectedItemId) highlightTree(item.id);
+    // When selected, don't re-highlight on hover — keep the selection stable
+  });
+  card.addEventListener('mouseleave', () => {
+    hideTooltip();
+    if (!selectedItemId) clearHighlights();
+    // When selected, keep selection highlights intact
+  });
   card.addEventListener('mousemove',  e  => positionTooltip(e));
   card.addEventListener('click',      () => {
     selectedItemId = selectedItemId === item.id ? null : item.id;
@@ -319,6 +329,51 @@ function getRelatedSet(id) {
   return new Set([...getAncestors(id), ...getDescendants(id)]);
 }
 
+function _animateConnectors(highlightedSet) {
+  // Redraw connectors every frame during the slide animation
+  cancelAnimationFrame(_reorderTimer);
+  const start = performance.now();
+  const duration = 380; // slightly longer than the 350ms CSS transition
+  function tick() {
+    drawConnectors(highlightedSet);
+    if (performance.now() - start < duration) {
+      _reorderTimer = requestAnimationFrame(tick);
+    }
+  }
+  _reorderTimer = requestAnimationFrame(tick);
+}
+
+function reorderForSelection(selectedId) {
+  const related = getRelatedSet(selectedId);
+  // Group cards by their top value (i.e. by tier row)
+  const tierGroups = new Map();
+  document.querySelectorAll('.item-card').forEach(card => {
+    const top = card.style.top;
+    if (!tierGroups.has(top)) tierGroups.set(top, []);
+    tierGroups.get(top).push(card);
+  });
+
+  tierGroups.forEach(cards => {
+    // Sort each group by original baseLeft so relative order is preserved
+    cards.sort((a, b) => parseFloat(a.dataset.baseLeft) - parseFloat(b.dataset.baseLeft));
+    const relatedCards = cards.filter(c => related.has(c.dataset.id));
+    const unrelatedCards = cards.filter(c => !related.has(c.dataset.id));
+    const ordered = [...relatedCards, ...unrelatedCards];
+    ordered.forEach((card, i) => {
+      card.style.left = (PAD_X + i * COL_W) + 'px';
+    });
+  });
+
+  _animateConnectors(related);
+}
+
+function restoreBasePositions() {
+  document.querySelectorAll('.item-card').forEach(card => {
+    if (card.dataset.baseLeft) card.style.left = card.dataset.baseLeft;
+  });
+  _animateConnectors(null);
+}
+
 function catColor(cat) {
   return { offensive: '#f87171', defensive: '#60a5fa', both: '#a78bfa', utility: '#34d399' }[cat] || '#58a6ff';
 }
@@ -327,25 +382,34 @@ function highlightTree(id) {
   const related = getRelatedSet(id);
   document.querySelectorAll('.item-card').forEach(card => {
     const cid = card.dataset.id;
+    card.classList.remove('selected');
     if (related.has(cid)) {
       card.classList.remove('dimmed');
       card.classList.add('highlighted');
       const item = cachedGetItem(cid);
       card.style.setProperty('--highlight-color', catColor(item?.category));
+      if (cid === selectedItemId) card.classList.add('selected');
     } else {
       card.classList.add('dimmed');
       card.classList.remove('highlighted');
     }
   });
-  drawConnectors(related);
+  // If there's a click-selection, reorder cards and let the timer redraw connectors
+  // after the slide animation finishes. Skip immediate drawConnectors to avoid the
+  // "snap then jump" glitch. On hover (no selection), draw connectors immediately.
+  if (selectedItemId) {
+    reorderForSelection(id);
+  } else {
+    drawConnectors(related);
+  }
 }
 
 function clearHighlights() {
   document.querySelectorAll('.item-card').forEach(c => {
-    c.classList.remove('highlighted', 'dimmed');
+    c.classList.remove('highlighted', 'dimmed', 'selected');
     c.style.removeProperty('--highlight-color');
   });
-  drawConnectors();
+  restoreBasePositions();
 }
 
 // ── Connectors ────────────────────────────────────────────
@@ -630,6 +694,14 @@ wrapper.addEventListener('scroll', () => {
   scrollRaf = requestAnimationFrame(() => drawConnectors(selectedItemId ? getRelatedSet(selectedItemId) : null));
 });
 window.addEventListener('resize', () => drawConnectors(selectedItemId ? getRelatedSet(selectedItemId) : null));
+
+// Click empty space to deselect
+wrapper.addEventListener('mousedown', e => {
+  if (!selectedItemId) return;
+  if (e.target.closest('.item-card')) return;
+  selectedItemId = null;
+  clearHighlights();
+});
 
 // ── Version change ────────────────────────────────────────
 

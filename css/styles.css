@@ -382,7 +382,7 @@ body {
   border: 1px solid var(--border);
   background: var(--surface);
   cursor: pointer;
-  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, opacity 0.15s;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s, opacity 0.15s, left 0.35s ease;
   user-select: none;
 }
 
@@ -396,6 +396,15 @@ body {
   border-color: var(--highlight-color, var(--accent));
   box-shadow: 0 0 0 2px var(--highlight-color, var(--accent)), var(--shadow);
   z-index: 20;
+}
+
+.item-card.selected {
+  border-color: var(--highlight-color, var(--accent));
+  box-shadow: 0 0 0 2px var(--highlight-color, var(--accent)),
+              0 0 16px 2px var(--highlight-color, var(--accent)),
+              var(--shadow);
+  transform: translateY(-3px) scale(1.04);
+  z-index: 25;
 }
 
 .item-card.dimmed {
@@ -1411,7 +1420,7 @@ body {
 
 /* ── Scrollbar ──────────────────────────────────────────── */
 
-::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar { width: 10px; height: 10px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 5px; }
 ::-webkit-scrollbar-thumb:hover { background: #484f58; }
