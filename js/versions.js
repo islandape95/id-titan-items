@@ -79,6 +79,42 @@ const versions = (() => {
 
   let _store = loadStore();
 
+  // ── Load community versions from manifest ────────────────
+  // To add a new shared version:
+  //   1. Place the exported .json file in the /versions/ folder
+  //   2. Add an entry to /versions/manifest.json:
+  //      { "file": "my_version.json", "name": "My Version" }
+  //   3. The version will auto-load for all users on next page load
+
+  function loadManifestVersions() {
+    return fetch('versions/manifest.json')
+      .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+      .then(manifest => {
+        if (!Array.isArray(manifest) || !manifest.length) return;
+        const loads = manifest.map(entry =>
+          fetch('versions/' + entry.file)
+            .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
+            .then(data => {
+              if (data._format !== 'item-tree-version' || !Array.isArray(data.items)) return;
+              const tag = 'manifest:' + entry.file;
+              // Skip if already loaded (by tag)
+              if (_store.versions.find(v => v._manifestTag === tag)) return;
+              const v = create(entry.name || data.name || entry.file, BASE_ID);
+              v.items = deepCopy(data.items);
+              v._manifestTag = tag;
+              persist(_store);
+            })
+            .catch(() => {})  // silently skip broken files
+        );
+        return Promise.all(loads);
+      })
+      .then(() => {
+        // Re-render picker if versions were added
+        renderPickerDropdown();
+      })
+      .catch(() => {});  // manifest not found — no-op
+  }
+
   function reload() {
     _store = loadStore();
   }
@@ -382,6 +418,9 @@ const versions = (() => {
     document.addEventListener('versionchange', () => {
       renderPickerDropdown();
     });
+
+    // Auto-load community versions from manifest
+    loadManifestVersions();
   }
 
   function renderPickerDropdown() {
@@ -543,7 +582,8 @@ const versions = (() => {
     getBaseItems,
     initPicker,
     exportVersion,
-    importVersion
+    importVersion,
+    loadManifestVersions
   };
 
 })();

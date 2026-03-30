@@ -1,0 +1,1665 @@
+{
+  "_format": "item-tree-version",
+  "_version": 1,
+  "name": "yokola95 version",
+  "exportedAt": "2026-03-30T05:56:19.612Z",
+  "items": [
+    {
+      "id": "beast-scroll",
+      "name": "Beast Scroll",
+      "tier": "consumable",
+      "cost": 30,
+      "category": "offensive",
+      "stats": [],
+      "use": "Increases attack damage of allied units within range 500 by 10% for 10 seconds.",
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 30
+    },
+    {
+      "id": "potion-of-recovery",
+      "name": "Potion of Recovery",
+      "tier": "consumable",
+      "cost": 25,
+      "category": "defensive",
+      "stats": [],
+      "use": "Replenishes 1000 hit points and 750 mana over 7.5 seconds. Only works out of combat.",
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 25
+    },
+    {
+      "id": "wand-of-wind",
+      "name": "Wand of the Wind",
+      "tier": "consumable",
+      "cost": 50,
+      "category": "utility",
+      "stats": [],
+      "use": "Cyclone a non-allied unit within range 500 for 5 seconds. For the duration, unit cannot be interacted with.",
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 50
+    },
+    {
+      "id": "watcher-eye",
+      "name": "Watcher Eye",
+      "tier": "consumable",
+      "cost": 30,
+      "category": "utility",
+      "stats": [],
+      "use": "Mark a non-allied target within range 800. You have vision of the marked target. Can be dispelled.",
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 30
+    },
+    {
+      "id": "floating-eye",
+      "name": "Floating Eye",
+      "tier": "consumable",
+      "cost": 75,
+      "category": "utility",
+      "stats": [],
+      "use": "Spawn a fragile invisible flying entity that provides vision for 240 seconds. The entity can move, but is very slow.",
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 75
+    },
+    {
+      "id": "healing-ward",
+      "name": "Healing Ward",
+      "tier": "consumable",
+      "cost": 35,
+      "category": "defensive",
+      "stats": [],
+      "use": "Drop a healing ward up to range 500, healing all allied units within same range for next 30 seconds.",
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 35
+    },
+    {
+      "id": "wand-of-neutralization",
+      "name": "Wand of Neutralization",
+      "tier": "consumable",
+      "cost": 100,
+      "category": "utility",
+      "stats": [],
+      "use": "Sends out a chain of dispelling magic that neutralizes the target unit and up to 5 additional nearby targets, killing summoned units. Bounces focus on units on the same side as the primary target.",
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 100
+    },
+    {
+      "id": "staff-of-teleportation",
+      "name": "Staff of Teleportation",
+      "tier": "consumable",
+      "cost": 50,
+      "category": "utility",
+      "stats": [],
+      "use": "Teleports you to the allied target structure after 3 seconds of channeling.",
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 50
+    },
+    {
+      "id": "manual-of-health",
+      "name": "Manual of Health",
+      "tier": "consumable",
+      "cost": 150,
+      "category": "defensive",
+      "stats": [
+        "+100 Hit Points"
+      ],
+      "use": null,
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 150
+    },
+    {
+      "id": "manual-of-power",
+      "name": "Manual of Power",
+      "tier": "consumable",
+      "cost": 200,
+      "category": "offensive",
+      "stats": [
+        "+15 Damage"
+      ],
+      "use": null,
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 200
+    },
+    {
+      "id": "manual-of-retraining",
+      "name": "Manual of Retraining",
+      "tier": "consumable",
+      "cost": 50,
+      "category": "utility",
+      "stats": [],
+      "use": "Unlearns all hero abilities and returns the skill points.",
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 50
+    },
+    {
+      "id": "pearl-of-vision",
+      "name": "Pearl of Vision",
+      "tier": "t1",
+      "cost": 90,
+      "category": "utility",
+      "stats": [],
+      "active": {
+        "name": "Reveal",
+        "cooldown": "25s",
+        "description": "Reveal a 2250 area for 10 seconds."
+      },
+      "passives": [],
+      "requires": [],
+      "totalCost": 90
+    },
+    {
+      "id": "chimera-pendant",
+      "name": "Chimera Pendant",
+      "tier": "t1",
+      "cost": 50,
+      "category": "utility",
+      "stats": [],
+      "active": {
+        "name": "Summon Chimera Scout",
+        "cooldown": null,
+        "description": "Summon a chimera scout. Lasts 450 seconds."
+      },
+      "passives": [],
+      "requires": [],
+      "totalCost": 50,
+      "comment": "Item without an identity and breaks the \"rules\" of items. Only use case is grabbing \"stolen items\" in seeds and should be kept simply for that."
+    },
+    {
+      "id": "webbed-feet",
+      "name": "Webbed Feet",
+      "tier": "t1",
+      "cost": 100,
+      "category": "utility",
+      "stats": [
+        "+60 Movement Speed"
+      ],
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 100
+    },
+    {
+      "id": "shadow-shard",
+      "name": "Shadow Shard",
+      "tier": "t1",
+      "cost": 85,
+      "category": "utility",
+      "stats": [],
+      "active": {
+        "name": "Invisibility",
+        "cooldown": "25s",
+        "description": "Invisibility for 3 seconds. For the duration, move through units and damage is reduced by 50% for slightly longer."
+      },
+      "passives": [],
+      "requires": [],
+      "totalCost": 85
+    },
+    {
+      "id": "reef-shield",
+      "name": "Reef Shield",
+      "tier": "t1",
+      "cost": 85,
+      "category": "defensive",
+      "stats": [
+        "+2 Armor"
+      ],
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 85
+    },
+    {
+      "id": "regenerative-spines",
+      "name": "Regenerative Spines",
+      "tier": "t1",
+      "cost": 70,
+      "category": "defensive",
+      "stats": [
+        "+3 HP Regeneration"
+      ],
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 70
+    },
+    {
+      "id": "tides-heart",
+      "name": "Tide's Heart",
+      "tier": "t1",
+      "cost": 100,
+      "category": "defensive",
+      "stats": [
+        "+150 Hit Points"
+      ],
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 100
+    },
+    {
+      "id": "magic-coral",
+      "name": "Magic Coral",
+      "tier": "t1",
+      "cost": 100,
+      "category": "utility",
+      "stats": [
+        "+150 Mana Points",
+        "+4 Mana Regeneration/s"
+      ],
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 100
+    },
+    {
+      "id": "surge-trident",
+      "name": "Surge Trident",
+      "tier": "t1",
+      "cost": 85,
+      "category": "offensive",
+      "stats": [
+        "+10 Attack Damage"
+      ],
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 85
+    },
+    {
+      "id": "rune-fragment",
+      "name": "Rune Fragment",
+      "tier": "t1",
+      "cost": 70,
+      "category": "offensive",
+      "stats": [],
+      "active": null,
+      "passives": [
+        {
+          "name": "Runic Mark",
+          "description": "Basic attacks apply a runic mark on the target for 2.5 seconds, causing them to deal 10 bonus magic damage on-hit consuming the mark."
+        }
+      ],
+      "requires": [],
+      "totalCost": 70
+    },
+    {
+      "id": "gem-of-haste",
+      "name": "Gem of Haste",
+      "tier": "t1",
+      "cost": 85,
+      "category": "offensive",
+      "stats": [
+        "+10% Attack Speed"
+      ],
+      "active": null,
+      "passives": [],
+      "requires": [],
+      "totalCost": 85
+    },
+    {
+      "id": "reef-armor",
+      "name": "Reef Armor",
+      "tier": "t2",
+      "cost": 65,
+      "category": "defensive",
+      "stats": [
+        "+4 Armor",
+        "+150 Hit Points"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Tidal Fortitude",
+          "description": "Reduce incoming damage by 1%. Holder also gains 1 extra armor."
+        }
+      ],
+      "requires": [
+        {
+          "id": "reef-shield",
+          "count": 2
+        },
+        {
+          "id": "tides-heart",
+          "count": 1
+        }
+      ],
+      "totalCost": 335
+    },
+    {
+      "id": "super-regenerative-spines",
+      "name": "Super Regenerative Spines",
+      "tier": "t2",
+      "cost": 80,
+      "category": "defensive",
+      "stats": [
+        "+3 Armor",
+        "+8 HP Regeneration/s"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Crisis Regen",
+          "description": "When below 50% health, regeneration granted by this item is doubled."
+        }
+      ],
+      "requires": [
+        {
+          "id": "regenerative-spines",
+          "count": 2
+        },
+        {
+          "id": "reef-shield",
+          "count": 1
+        }
+      ],
+      "totalCost": 305
+    },
+    {
+      "id": "heart-of-the-sea",
+      "name": "Heart of the Sea",
+      "tier": "t2",
+      "cost": 70,
+      "category": "both",
+      "stats": [
+        "+250 Mana Points",
+        "+4 Mana Regen/s",
+        "+250 Hit Points",
+        "+4 HP Regen/s"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Tidal Aura",
+          "description": "Allied units within range 800 regenerate 5 mana and 5 hit points per second."
+        }
+      ],
+      "requires": [
+        {
+          "id": "magic-coral",
+          "count": 1
+        },
+        {
+          "id": "regenerative-spines",
+          "count": 1
+        },
+        {
+          "id": "tides-heart",
+          "count": 1
+        }
+      ],
+      "totalCost": 340
+    },
+    {
+      "id": "stormrider-cloak",
+      "name": "Stormrider Cloak",
+      "tier": "t2",
+      "cost": 75,
+      "category": "utility",
+      "stats": [
+        "+10% Attack Speed",
+        "+60 Movement Speed"
+      ],
+      "active": {
+        "name": "Shadow Walk",
+        "cooldown": "120s",
+        "description": "Turn the holder invisible and grant 20% movement speed for (15 + hero level) seconds over 0.5 seconds. For the duration the holder can move through units."
+      },
+      "passives": [
+        {
+          "name": "Nightsight",
+          "description": "The holder's vision is not reduced during night time."
+        }
+      ],
+      "requires": [
+        {
+          "id": "gem-of-haste",
+          "count": 1
+        },
+        {
+          "id": "shadow-shard",
+          "count": 1
+        },
+        {
+          "id": "webbed-feet",
+          "count": 1
+        }
+      ],
+      "totalCost": 345
+    },
+    {
+      "id": "casque-of-valor",
+      "name": "Casque of Valor",
+      "tier": "t2",
+      "cost": 80,
+      "category": "defensive",
+      "stats": [
+        "+200 Hit Points",
+        "+2 Armor"
+      ],
+      "active": {
+        "name": "Bond",
+        "cooldown": null,
+        "description": "Select an allied unit. For the next 7.5 seconds, 15% of the damage both units take is shared as pure damage, and both gain 2 bonus armor."
+      },
+      "passives": [],
+      "requires": [
+        {
+          "id": "reef-shield",
+          "count": 1
+        },
+        {
+          "id": "regenerative-spines",
+          "count": 1
+        },
+        {
+          "id": "tides-heart",
+          "count": 1
+        }
+      ],
+      "totalCost": 335
+    },
+    {
+      "id": "caster-scroll",
+      "name": "Caster Scroll",
+      "tier": "t2",
+      "cost": 40,
+      "category": "both",
+      "stats": [
+        "+300 Hit Points"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Arcane Surge",
+          "description": "Casting a scouting or healing ability heals you for 200% vitality hit points and grants 25% movement speed for 3.5 seconds."
+        }
+      ],
+      "requires": [
+        {
+          "id": "rune-fragment",
+          "count": 1
+        },
+        {
+          "id": "tides-heart",
+          "count": 2
+        }
+      ],
+      "totalCost": 310,
+      "comment": "Removing Chimaera Pendant for build path and replacing it with another HP component."
+    },
+    {
+      "id": "enchantress-fluid",
+      "name": "Enchantress' Fluid",
+      "tier": "t2",
+      "cost": 120,
+      "category": "utility",
+      "stats": [
+        "+250 Mana Points",
+        "+4 Mana Regen/s"
+      ],
+      "active": {
+        "name": "Abysmal Drink",
+        "cooldown": "60s",
+        "description": "Replenishes 650 mana points over 2.75 seconds. For the duration, the user is invulnerable."
+      },
+      "passives": [],
+      "requires": [
+        {
+          "id": "potion-of-recovery",
+          "count": 1
+        },
+        {
+          "id": "magic-coral",
+          "count": 1
+        },
+        {
+          "id": "rune-fragment",
+          "count": 1
+        }
+      ],
+      "totalCost": 315
+    },
+    {
+      "id": "ethereal-mirror",
+      "name": "Ethereal Mirror",
+      "tier": "t2",
+      "cost": 265,
+      "category": "utility",
+      "stats": [
+        "+300 Mana Points"
+      ],
+      "active": {
+        "name": "Ethernity",
+        "cooldown": "90s",
+        "description": "Turns units and structures within the target area ethereal for 5 seconds. Structures briefly lose collision after cast, but this ends if attacked. Nearby towers increase the delay. While ethereal, units take 15% increased magic damage."
+      },
+      "passives": [
+        {
+          "name": "Nightsight",
+          "description": "The holder's vision is not reduced during night time."
+        }
+      ],
+      "requires": [
+        {
+          "id": "shadow-shard",
+          "count": 1
+        },
+        {
+          "id": "magic-coral",
+          "count": 1
+        }
+      ],
+      "totalCost": 450
+    },
+    {
+      "id": "blasting-wand",
+      "name": "Blasting Wand",
+      "tier": "t2",
+      "cost": 120,
+      "category": "offensive",
+      "stats": [
+        "+250 Mana Points"
+      ],
+      "active": {
+        "name": "Energy Blast",
+        "cooldown": "120s",
+        "description": "Sends lightning to a non-allied unit within range 650, dealing 195 magic damage to the target and nearby units within range 250. Titan hunters take additional damage equal to 15% of their max health. Builder units take 50% reduced damage. Killing a target refunds 40% of the cooldown."
+      },
+      "passives": [],
+      "requires": [
+        {
+          "id": "magic-coral",
+          "count": 1
+        },
+        {
+          "id": "rune-fragment",
+          "count": 1
+        }
+      ],
+      "totalCost": 290
+    },
+    {
+      "id": "magic-armor",
+      "name": "Magic Armor",
+      "tier": "t2",
+      "cost": 50,
+      "category": "defensive",
+      "stats": [
+        "15% Magic Damage Reduction",
+        "+150 Mana Points"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Healing Amplification",
+          "description": "Upon casting a healing spell, you get healed for an additional 15%."
+        }
+      ],
+      "requires": [
+        {
+          "id": "magic-coral",
+          "count": 1
+        },
+        {
+          "id": "rune-fragment",
+          "count": 1
+        },
+        {
+          "id": "reef-shield",
+          "count": 1
+        }
+      ],
+      "totalCost": 305
+    },
+    {
+      "id": "pearl-of-grand-vision",
+      "name": "Pearl of Grand Vision",
+      "tier": "t2",
+      "cost": 95,
+      "category": "utility",
+      "stats": [],
+      "active": {
+        "name": "Grand Reveal",
+        "cooldown": "25s",
+        "description": "Reveal a circular area on the map with radius 3000, granting true sight for 12.5 seconds."
+      },
+      "passives": [],
+      "requires": [
+        {
+          "id": "pearl-of-vision",
+          "count": 1
+        }
+      ],
+      "totalCost": 185
+    },
+    {
+      "id": "farseers-staff",
+      "name": "Farseer's Staff",
+      "tier": "t2",
+      "cost": 75,
+      "category": "utility",
+      "stats": [
+        "+300 Mana Points",
+        "+4 Mana Regen/s"
+      ],
+      "active": {
+        "name": "Apparition",
+        "cooldown": "15s",
+        "description": "All enemy units within range 2500 are marked with apparition for 10 seconds."
+      },
+      "passives": [
+        {
+          "name": "Windsom Restoration",
+          "description": "Killing an enemy restores 100% windsom mana. If the enemy is marked with apparition, your maximum mana is also increased by 10."
+        }
+      ],
+      "requires": [
+        {
+          "id": "pearl-of-vision",
+          "count": 1
+        },
+        {
+          "id": "magic-coral",
+          "count": 1
+        }
+      ],
+      "totalCost": 265,
+      "comment": "To match the rule of no stat decrease."
+    },
+    {
+      "id": "tidal-guardians-grace",
+      "name": "Tidal Guardian's Grace",
+      "tier": "t2",
+      "cost": 215,
+      "category": "utility",
+      "stats": [],
+      "active": null,
+      "passives": [
+        {
+          "name": "Shallow Spawns",
+          "description": "Killing critters spawns shallow spawns for 45 seconds. These fragile mobile units can be used for scouting. You may control up to 1 at a time."
+        }
+      ],
+      "requires": [],
+      "totalCost": 215,
+      "comment": "Should be considered a pure utility item pre first mini kill and therefore should be easier to invest into and sell later. Also removing Chimaera Pendant from build path."
+    },
+    {
+      "id": "voodoo-doll",
+      "name": "Voodoo Doll",
+      "tier": "t2",
+      "cost": 75,
+      "category": "offensive",
+      "stats": [
+        "+15 Attack Damage"
+      ],
+      "active": {
+        "name": "Voodoo Ward",
+        "cooldown": "30s",
+        "description": "Create a fragile voodoo ward at the target point within range 1000, lasting 150 seconds."
+      },
+      "passives": [
+        {
+          "name": "Voodoo Power",
+          "description": "Each voodoo ward grants 5 extra attack damage and causes basic attacks to heal you for 20 + 25% vitality."
+        }
+      ],
+      "requires": [
+        {
+          "id": "surge-trident",
+          "count": 1
+        },
+        {
+          "id": "healing-ward",
+          "count": 2
+        }
+      ],
+      "totalCost": 230
+    },
+    {
+      "id": "gauntlets-of-embers",
+      "name": "Gauntlets of Embers",
+      "tier": "t2",
+      "cost": 130,
+      "category": "offensive",
+      "stats": [],
+      "active": null,
+      "passives": [
+        {
+          "name": "Structure Burn",
+          "description": "Attacks burn enemy structures for 10 seconds, dealing 5% of the maximum hit point of the structure per second"
+        }
+      ],
+      "requires": [
+        {
+          "id": "rune-fragment",
+          "count": 1
+        }
+      ],
+      "totalCost": 200,
+      "comment": "Should have a simple identity as the wall farmer. Reducing gold costs makes the item easier to access and replace later if the Titan wishes.\n\nyokola95 change: you can bring a wall to half health, and then it will die. The fact that you need to go beyond half health, makes it easy to use to any kind of structure. This makes it a very good farming item, because it basically doubles your damage against walls. On the other hand, the item is very bad for sieging. Note that since the effect is over 10 seconds, it can be countered by repairing. It is only strong for wall outs and for farming (note that if you want to break a lumber base, it will still take you a long time to go through walls).\n\nI would recommend to make this effect maybe dispellable with worker deto.",
+      "use": null
+    },
+    {
+      "id": "runic-axe",
+      "name": "Runic Axe",
+      "tier": "t2",
+      "cost": 75,
+      "category": "offensive",
+      "stats": [
+        "+10 Attack Damage"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Runic Mark",
+          "description": "Basic attacks apply a runic mark for 2.5 seconds. Attacking a marked target consumes the mark and deals 25 magic damage (200 magic damage to hunters)."
+        }
+      ],
+      "requires": [
+        {
+          "id": "watcher-eye",
+          "count": 1
+        },
+        {
+          "id": "rune-fragment",
+          "count": 1
+        },
+        {
+          "id": "surge-trident",
+          "count": 1
+        }
+      ],
+      "totalCost": 260
+    },
+    {
+      "id": "spectral-blade",
+      "name": "Spectral Blade",
+      "tier": "t2",
+      "cost": 90,
+      "category": "offensive",
+      "stats": [
+        "+20 Attack Damage"
+      ],
+      "active": {
+        "name": "Transmute",
+        "cooldown": "5s",
+        "description": "Instantly transmutes scrap items within the target area and grants gold equal to 100% of their value."
+      },
+      "passives": [
+        {
+          "name": "Spectral Gold",
+          "description": "Harvesters yield 1 gold upon dying."
+        }
+      ],
+      "requires": [
+        {
+          "id": "staff-of-teleportation",
+          "count": 1
+        },
+        {
+          "id": "rune-fragment",
+          "count": 1
+        },
+        {
+          "id": "surge-trident",
+          "count": 1
+        }
+      ],
+      "totalCost": 295
+    },
+    {
+      "id": "titanic-tridents",
+      "name": "Titanic Tridents",
+      "tier": "t2",
+      "cost": 100,
+      "category": "offensive",
+      "stats": [
+        "+35 Attack Damage"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Structure Crusher",
+          "description": "Basic attacks on structures deal 10 + 2×Level bonus pure damage on hit, up to a maximum of 30 bonus damage."
+        }
+      ],
+      "requires": [
+        {
+          "id": "surge-trident",
+          "count": 3
+        }
+      ],
+      "totalCost": 355
+    },
+    {
+      "id": "warbanner",
+      "name": "Warbanner",
+      "tier": "t2",
+      "cost": 100,
+      "category": "offensive",
+      "stats": [
+        "+15 Attack Damage",
+        "+10% Attack Speed"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Aura of War",
+          "description": "Increase attack damage of nearby allied units within range 750 by 10%. After killing an enemy, gain an additional 5% attack damage bonus for 2.5 seconds."
+        }
+      ],
+      "requires": [
+        {
+          "id": "beast-scroll",
+          "count": 1
+        },
+        {
+          "id": "gem-of-haste",
+          "count": 1
+        },
+        {
+          "id": "surge-trident",
+          "count": 1
+        }
+      ],
+      "totalCost": 300
+    },
+    {
+      "id": "eternal-wards",
+      "name": "Eternal Wards",
+      "tier": "t2",
+      "cost": 80,
+      "category": "defensive",
+      "stats": [
+        "+5 HP Regen/s"
+      ],
+      "active": {
+        "name": "Eternal Wards",
+        "cooldown": "60s",
+        "description": "Spawn a healing ward at the target location for 30 seconds. The ward recovers lost hit points to all friendly units within range 600."
+      },
+      "passives": [],
+      "requires": [
+        {
+          "id": "healing-ward",
+          "count": 2
+        },
+        {
+          "id": "regenerative-spines",
+          "count": 1
+        }
+      ],
+      "totalCost": 220
+    },
+    {
+      "id": "mystic-staff-of-gods",
+      "name": "Mystic Staff of Gods",
+      "tier": "t3",
+      "cost": 70,
+      "category": "both",
+      "stats": [
+        "+250 Hit Points",
+        "+10 HP Regen/s",
+        "+350 Mana Points",
+        "+10 Mana Regen/s"
+      ],
+      "active": {
+        "name": "Farsight",
+        "cooldown": "Passable (resets cd)",
+        "description": "Point target. Reveals a circular area on the map within radius (3000 + 30% windsom), granting vision for 12.5 seconds. Also reveals invisible units."
+      },
+      "passives": [
+        {
+          "name": "True Sight",
+          "description": "While Farsight is ready, the holder has true sight, seeing invisible units within range 1100."
+        }
+      ],
+      "requires": [
+        {
+          "id": "heart-of-the-sea",
+          "count": 1
+        },
+        {
+          "id": "pearl-of-grand-vision",
+          "count": 1
+        }
+      ],
+      "totalCost": 595
+    },
+    {
+      "id": "tidal-scepter",
+      "name": "Tidal Scepter",
+      "tier": "t3",
+      "cost": 250,
+      "category": "offensive",
+      "stats": [
+        "+500 Mana Points",
+        "+10 Mana Regen/s"
+      ],
+      "active": {
+        "name": "Energy Blast",
+        "cooldown": "90s",
+        "description": "Sends lightning to a non-allied unit within range 750, dealing 200 magic damage to the target and nearby enemies within range 250. Titan hunters take 15% max health bonus damage. Builder units take 50% reduced damage."
+      },
+      "passives": [
+        {
+          "name": "Windsom Restoration",
+          "description": "Killing an enemy restores 100% windsom mana. If the enemy is marked with apparition, your maximum mana is increased by 10."
+        },
+        {
+          "name": "Nukemaster",
+          "description": "Titan's nuke deals 20% bonus damage."
+        }
+      ],
+      "requires": [
+        {
+          "id": "blasting-wand",
+          "count": 1
+        },
+        {
+          "id": "farseers-staff",
+          "count": 1
+        }
+      ],
+      "totalCost": 805
+    },
+    {
+      "id": "mace-of-mortality",
+      "name": "Mace of Mortality",
+      "tier": "t3",
+      "cost": 290,
+      "category": "both",
+      "stats": [
+        "+40 Attack Damage",
+        "+400 Hit Points"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Warlord's Fury",
+          "description": "Casting a summoning spell grants 15% bonus attack damage for 15 seconds and reduces enemy armor for 3 seconds."
+        },
+        {
+          "name": "Scout's Focus",
+          "description": "Casting a scouting ability refunds 50% of its mana cost and 50% of its cooldown."
+        },
+        {
+          "name": "Battle Surge",
+          "description": "Casting a scouting or healing ability heals you for 250% vitality + 10% of your missing health, and grants 35% movement speed for 3.5 seconds."
+        }
+      ],
+      "requires": [
+        {
+          "id": "caster-scroll",
+          "count": 1
+        },
+        {
+          "id": "warbanner",
+          "count": 1
+        },
+        {
+          "id": "tides-heart",
+          "count": 1
+        }
+      ],
+      "totalCost": 1000
+    },
+    {
+      "id": "essence-of-pure-magic",
+      "name": "Essence of Pure Magic",
+      "tier": "t3",
+      "cost": 195,
+      "category": "both",
+      "stats": [
+        "+500 Mana Points",
+        "+400 Hit Points"
+      ],
+      "active": {
+        "name": "Mana Surge",
+        "cooldown": "60s",
+        "description": "Regenerate (1500 + 500% windsom) mana and health over 3 seconds. For the duration, the user is invulnerable."
+      },
+      "passives": [
+        {
+          "name": "Unstable Magic",
+          "description": "Allied units within range 800 regenerate 8 bonus mana and hit points per second."
+        }
+      ],
+      "requires": [
+        {
+          "id": "enchantress-fluid",
+          "count": 1
+        },
+        {
+          "id": "heart-of-the-sea",
+          "count": 1
+        }
+      ],
+      "totalCost": 850
+    },
+    {
+      "id": "armor-of-tides",
+      "name": "Armor of Tides",
+      "tier": "t3",
+      "cost": 200,
+      "category": "defensive",
+      "stats": [
+        "+4 Armor",
+        "+300 Hit Points",
+        "+8 HP Regen/s"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Tidal Fortitude",
+          "description": "Damage taken is reduced by 2%. The holder also gains 4 bonus armor."
+        },
+        {
+          "name": "Crisis Regen",
+          "description": "When below 50% health, regeneration granted by this item is doubled."
+        }
+      ],
+      "requires": [
+        {
+          "id": "reef-armor",
+          "count": 1
+        },
+        {
+          "id": "super-regenerative-spines",
+          "count": 1
+        }
+      ],
+      "totalCost": 840
+    },
+    {
+      "id": "robe-of-spellcraft",
+      "name": "Robe of Spellcraft",
+      "tier": "t3",
+      "cost": 105,
+      "category": "both",
+      "stats": [
+        "+6 Armor",
+        "+300 Hit Points",
+        "+500 Mana Points"
+      ],
+      "active": {
+        "name": "Realmshift",
+        "cooldown": "80s",
+        "description": "Turn ethereal for up to 10 seconds, broken once you cast a spell. While ethereal, incoming healing is increased by 10% + 25% windsom."
+      },
+      "passives": [
+        {
+          "name": "Spell Armor",
+          "description": "Spellcasts heal you for 10% max mana and increase your armor by 2 for 5 seconds. Stacks up to 3 times, renewing on each spell cast."
+        }
+      ],
+      "requires": [
+        {
+          "id": "ethereal-mirror",
+          "count": 1
+        },
+        {
+          "id": "reef-armor",
+          "count": 1
+        }
+      ],
+      "totalCost": 890
+    },
+    {
+      "id": "dawnkeeper",
+      "name": "Dawnkeeper",
+      "tier": "t3",
+      "cost": 220,
+      "category": "defensive",
+      "stats": [
+        "+5 Armor",
+        "+500 Hit Points"
+      ],
+      "active": {
+        "name": "Call of Valor",
+        "cooldown": "45s",
+        "description": "Select a target allied unit within range 1000. For the next 10 seconds the two units share 25% of the damage they take as pure damage, and both gain 5 bonus armor."
+      },
+      "passives": [
+        {
+          "name": "Scout's Resolve",
+          "description": "Casting a scouting ability refunds 50% of its mana cost and 25% of its cooldown."
+        },
+        {
+          "name": "Aegis Surge",
+          "description": "Casting a scouting or healing ability heals you for 200% vitality hit points and grants 10% movement speed for 2.5 seconds."
+        }
+      ],
+      "requires": [
+        {
+          "id": "casque-of-valor",
+          "count": 1
+        },
+        {
+          "id": "caster-scroll",
+          "count": 1
+        }
+      ],
+      "totalCost": 865
+    },
+    {
+      "id": "highseer-slippers",
+      "name": "Highseer Slippers",
+      "tier": "t3",
+      "cost": 240,
+      "category": "offensive",
+      "stats": [
+        "+25 Attack Damage",
+        "+25% Attack Speed"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Spellblade",
+          "description": "Unique spell casts grant 8% stacking attack speed for 8 seconds (up to 6 stacks). When fully stacked, the item becomes overcharged. While overcharged, dealing magic damage releases the charge, healing you for 35% windsom percent of your max mana."
+        },
+        {
+          "name": "Cleansing Scout",
+          "description": "Casting a scouting ability refunds 50% of mana cost and cooldown, and repeatedly cleanses you of all negative effects for the next 8 seconds."
+        }
+      ],
+      "requires": [
+        {
+          "id": "runic-axe",
+          "count": 1
+        },
+        {
+          "id": "berserkers-gem",
+          "count": 1
+        }
+      ],
+      "totalCost": 750
+    },
+    {
+      "id": "enchanted-druid-leaf",
+      "name": "Enchanted Druid Leaf",
+      "tier": "t3",
+      "cost": 100,
+      "category": "defensive",
+      "stats": [],
+      "active": {
+        "name": "Enchanted Wards",
+        "cooldown": "75s (passable, resets cd)",
+        "description": "Place a healing ward without consuming this item. The ward lasts 30 seconds, healing all friendly units within range 600."
+      },
+      "passives": [],
+      "requires": [
+        {
+          "id": "eternal-wards",
+          "count": 1
+        }
+      ],
+      "totalCost": 320
+    },
+    {
+      "id": "enchanted-magic-armor",
+      "name": "Enchanted Magic Armor",
+      "tier": "t3",
+      "cost": 100,
+      "category": "defensive",
+      "stats": [
+        "30% Magic Damage Reduction",
+        "+300 Hit Points"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Healing Amplification",
+          "description": "Upon casting a healing spell, you get healed for an additional 30%."
+        }
+      ],
+      "requires": [
+        {
+          "id": "magic-armor",
+          "count": 1
+        },
+        {
+          "id": "caster-scroll",
+          "count": 1
+        }
+      ],
+      "totalCost": 715,
+      "comment": "Changing from mana to hit points to follow the rules."
+    },
+    {
+      "id": "foretellers-sickle",
+      "name": "Foreteller's Sickle",
+      "tier": "t3",
+      "cost": 325,
+      "category": "offensive",
+      "stats": [
+        "+20 Attack Damage",
+        "+250 Mana Points",
+        "+5 Mana Regen/s"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Runic Wrath",
+          "description": "Attacks deal bonus magic damage equal to 30% windsom + 2% max mana to structures. Spell casts grant an additional 3% windsom and 1% max mana ratio for 5 seconds."
+        }
+      ],
+      "requires": [
+        {
+          "id": "farseers-staff",
+          "count": 1
+        },
+        {
+          "id": "runic-axe",
+          "count": 1
+        }
+      ],
+      "totalCost": 850
+    },
+    {
+      "id": "helmet-of-the-damned",
+      "name": "Helmet of the Damned",
+      "tier": "t3",
+      "cost": 75,
+      "category": "offensive",
+      "stats": [
+        "+30 Attack Damage"
+      ],
+      "active": {
+        "name": "Voodoo Wards",
+        "cooldown": "30s",
+        "description": "Create a fragile voodoo ward at the target point within range 1000, lasting 200 seconds."
+      },
+      "passives": [
+        {
+          "name": "Aura of War",
+          "description": "Increases attack damage of nearby allied units within range 950 by 15%. After killing an enemy, gain an additional 5% attack damage bonus for 5 seconds."
+        },
+        {
+          "name": "Voodoo",
+          "description": "Each voodoo ward grants 10 extra attack damage and causes basic attacks to heal you for 20 + 40% vitality."
+        },
+        {
+          "name": "Vampirism",
+          "description": "Basic attacks heal you for 20 + 40% Primary Stat."
+        }
+      ],
+      "requires": [
+        {
+          "id": "voodoo-doll",
+          "count": 1
+        },
+        {
+          "id": "warbanner",
+          "count": 1
+        },
+        {
+          "id": "vampiric-mask",
+          "count": 1
+        }
+      ],
+      "totalCost": 805,
+      "comment": "Smoothing out the build path - is it possible to heal based on Primary Stat instead of Vitality?"
+    },
+    {
+      "id": "mistlords-cape",
+      "name": "Mistlord's Cape",
+      "tier": "t3",
+      "cost": 100,
+      "category": "both",
+      "stats": [
+        "+3 Armor",
+        "+15% Attack Speed",
+        "+8 HP Regen/s",
+        "+60 Movement Speed"
+      ],
+      "active": {
+        "name": "Shadow Walk",
+        "cooldown": null,
+        "description": "Turns the holder invisible and grants 20% bonus movement speed for (20 + hero level×2) seconds over 0.5 seconds. For the duration the holder can move through units."
+      },
+      "passives": [
+        {
+          "name": "Nightsight",
+          "description": "The holder's vision is not reduced during night time."
+        },
+        {
+          "name": "Crisis Regen",
+          "description": "When below 50%, regeneration granted by this item is doubled."
+        }
+      ],
+      "requires": [
+        {
+          "id": "stormrider-cloak",
+          "count": 1
+        },
+        {
+          "id": "super-regenerative-spines",
+          "count": 1
+        }
+      ],
+      "totalCost": 750,
+      "use": null,
+      "comment": "Remove the unseen regeneration passive. The same effect can be basically reached by trying to keep an healing ward up, which at least it has some counter-play.\nyokola95: I think the unseen regeneration passive should be pivoted to another defensive item that build from flask / enchantress fluid"
+    },
+    {
+      "id": "molten-blade",
+      "name": "Molten Blade",
+      "tier": "t3",
+      "cost": 55,
+      "category": "offensive",
+      "stats": [
+        "+20 Attack Damage",
+        "+25% Attack Speed"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Emberhearth",
+          "description": "Attacks on structures reveal the immediate surroundings for (15 + 25% vitality) seconds."
+        },
+        {
+          "name": "Fiery Touch",
+          "description": "Attacks burn enemy structures for 10 seconds, dealing 5% of the maximum hit point of the structure per second + 40 damage per second."
+        },
+        {
+          "name": "Spectral Fire",
+          "description": "Killing an enemy causes a fiery explosion dealing 49 damage to nearby enemies and structures. Harvesters yield 2 gold upon dying."
+        }
+      ],
+      "requires": [
+        {
+          "id": "gauntlets-of-embers",
+          "count": 1
+        },
+        {
+          "id": "spectral-blade",
+          "count": 1
+        },
+        {
+          "id": "berserkers-gem",
+          "count": 1
+        }
+      ],
+      "totalCost": 800,
+      "comment": "Should this even be an attack speed item? Make it way cheaper and remove attack speed to have a clearer identity (less Spear-like)?",
+      "use": null
+    },
+    {
+      "id": "poseidons-trident",
+      "name": "Poseidon's Trident",
+      "tier": "t3",
+      "cost": 275,
+      "category": "offensive",
+      "stats": [
+        "+40 Attack Damage",
+        "+25% Attack Speed"
+      ],
+      "active": {
+        "name": "Unleashed Rage",
+        "cooldown": "60s",
+        "description": "Gain 25% bonus attack damage for (4 + 1 × hero level) seconds."
+      },
+      "passives": [
+        {
+          "name": "Titan Crusher",
+          "description": "Basic attacks on structures deal 10 + (5 × hero level) bonus pure damage on hit, up to a maximum of 50 bonus damage."
+        }
+      ],
+      "requires": [
+        {
+          "id": "titanic-tridents",
+          "count": 1
+        },
+        {
+          "id": "berserkers-gem",
+          "count": 1
+        }
+      ],
+      "totalCost": 880,
+      "comment": "Move speed should not be on this item, weird build path + regaining its identity as a high burst option."
+    },
+    {
+      "id": "spear-of-fervor",
+      "name": "Spear of Fervor",
+      "tier": "t3",
+      "cost": 150,
+      "category": "offensive",
+      "stats": [
+        "+50% Attack Speed"
+      ],
+      "active": null,
+      "passives": [
+        {
+          "name": "Fervor",
+          "description": "Basic attacks grant bonus attack speed for 2.5 seconds, stacking up to 6 times for up to 30% bonus attack speed."
+        },
+        {
+          "name": "Vampirism",
+          "description": "Basic attacks heal you for 20 + 35% Primary Stat."
+        }
+      ],
+      "requires": [
+        {
+          "id": "berserkers-gem",
+          "count": 2
+        },
+        {
+          "id": "vampiric-mask",
+          "count": 1
+        }
+      ],
+      "totalCost": 850,
+      "comment": "Pure on hit item. Trying to create more distinct identities between the pure damage TIER-3 items."
+    },
+    {
+      "id": "ankh-of-superiority",
+      "name": "Ankh of Superiority",
+      "tier": "t3",
+      "cost": 180,
+      "category": "both",
+      "stats": [
+        "+20 Attack Damage",
+        "+5 Vitality",
+        "+5 Celerity",
+        "+5 Windsom"
+      ],
+      "active": {
+        "name": "Consume Ankh",
+        "cooldown": null,
+        "description": "Consume the ankh, gaining the bonuses granted by this item."
+      },
+      "passives": [
+        {
+          "name": "Reincarnation",
+          "description": "Upon death, respawn with 2500 hit points, activating Superiority."
+        }
+      ],
+      "requires": [],
+      "totalCost": 180
+    },
+    {
+      "id": "berserkers-gem",
+      "name": "Berserker's Gem",
+      "tier": "t2",
+      "cost": 80,
+      "category": "offensive",
+      "stats": [
+        "+25% Attack Speed"
+      ],
+      "use": null,
+      "active": null,
+      "passives": [],
+      "requires": [
+        {
+          "id": "gem-of-haste",
+          "count": 2
+        }
+      ],
+      "comment": "Classic attack speed stat stick Tier 2 item that is usable for several builds.",
+      "totalCost": 250
+    },
+    {
+      "id": "vampiric-mask",
+      "name": "Vampiric Mask",
+      "tier": "t2",
+      "cost": 60,
+      "category": "offensive",
+      "stats": [],
+      "use": null,
+      "active": null,
+      "passives": [
+        {
+          "name": "Vampirism",
+          "description": "Basic attacks heal you for 30."
+        }
+      ],
+      "requires": [
+        {
+          "id": "regenerative-spines",
+          "count": 2
+        }
+      ],
+      "comment": "We are lacking a pure \"Lifesteal\" TIER-2 item.",
+      "totalCost": 200
+    },
+    {
+      "id": "wind-stick",
+      "name": "Cyclone Staff",
+      "tier": "t2",
+      "cost": 50,
+      "category": "utility",
+      "stats": [],
+      "use": null,
+      "active": {
+        "name": "Cyclone",
+        "cooldown": "15",
+        "description": "Cyclone a non-allied unit within range 500 for 5 seconds. For the duration, unit cannot be interacted with."
+      },
+      "passives": [],
+      "requires": [
+        {
+          "id": "wand-of-wind",
+          "count": 2
+        }
+      ],
+      "totalCost": 150,
+      "comment": "Like eternal ward, the possibility to have a cyclone effect without losing a consumable. It also allows to do double wand by using this item and a wand of the wind after. The item needs to be relatively cheap because it has no stats."
+    },
+    {
+      "id": "boots-of-the-wind",
+      "name": "Boots of the Wind",
+      "tier": "t2",
+      "cost": 75,
+      "category": "utility",
+      "stats": [
+        "+60 Movement Speed"
+      ],
+      "use": null,
+      "active": {
+        "name": "Gust of Wind",
+        "cooldown": "13",
+        "description": "Increase movement speed by 25% for 3 seconds."
+      },
+      "passives": [],
+      "requires": [
+        {
+          "id": "webbed-feet",
+          "count": 1
+        },
+        {
+          "id": "wand-of-wind",
+          "count": 1
+        }
+      ],
+      "totalCost": 225,
+      "comment": null
+    },
+    {
+      "id": "ancient-staff-of-the-wind",
+      "name": "Ancient Staff of the Wind",
+      "tier": "t3",
+      "cost": 75,
+      "category": "utility",
+      "stats": [
+        "80 Movement Speed"
+      ],
+      "use": null,
+      "active": {
+        "name": "Wind",
+        "cooldown": "13",
+        "description": "It can select either a friendly unit or a enemy unit. If it selects an enemy unit, it casts cyclone, disabling the enemy unit for 5 seconds. If it selects a friendly unit, it provides 25% movement speed for 3 seconds, and also removes collision to enemy units for the duration (you still collide with enemy buildings)."
+      },
+      "passives": [],
+      "requires": [
+        {
+          "id": "wind-stick",
+          "count": 1
+        },
+        {
+          "id": "boots-of-the-wind",
+          "count": 1
+        }
+      ],
+      "totalCost": 450,
+      "comment": "This item is an alternative to stormrider cloak as an upgrade to webbed feet. The active component is strong against worker-block if cast on self, and the active component can be used to setup a nuke on enemy rewaller (which is still countered by detoing one of your workers from worker block :) ). While the active part is strong, the item is balanced on the fact that it provides no stats as a tier 3 item."
+    },
+    {
+      "id": "endelune",
+      "name": "Endelune",
+      "tier": "t3",
+      "cost": 120,
+      "category": "offensive",
+      "stats": [
+        "+10 Attack Damage"
+      ],
+      "active": {
+        "name": "Transmute",
+        "cooldown": "5s",
+        "description": "Transmute scrap items within the target area and grant gold equal to 100% of their value."
+      },
+      "passives": [
+        {
+          "name": "Runic Mark",
+          "description": "Basic attacks apply a runic mark for 2.5 seconds. Attacking a marked target consumes the mark and deals 50 magic damage (300 magic damage to hunters)."
+        },
+        {
+          "name": "Spectral Gold",
+          "description": "Upon dying, harvesters yield 1 gold."
+        }
+      ],
+      "requires": [
+        {
+          "id": "runic-axe",
+          "count": 1
+        },
+        {
+          "id": "spectral-blade",
+          "count": 1
+        }
+      ],
+      "totalCost": 675
+    }
+  ]
+}
