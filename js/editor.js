@@ -14,7 +14,25 @@ let unsaved       = false;
 
 function loadWorkingItems() {
   workingItems = versions.getActiveItems();
+  recomputeTotalCosts();
   unsaved = false;
+}
+
+function editorComputeTotalCost(itemId, visited = new Set()) {
+  if (visited.has(itemId)) return 0;
+  visited.add(itemId);
+  const item = workingItems.find(i => i.id === itemId);
+  if (!item) return 0;
+  const childCost = (item.requires || []).reduce((sum, req) => {
+    return sum + (req.count || 1) * editorComputeTotalCost(req.id, new Set(visited));
+  }, 0);
+  return item.cost + childCost;
+}
+
+function recomputeTotalCosts() {
+  workingItems.forEach(item => {
+    item.totalCost = editorComputeTotalCost(item.id);
+  });
 }
 
 // ── Sidebar ───────────────────────────────────────────────
@@ -669,10 +687,12 @@ function saveItem(id) {
   const idx = workingItems.findIndex(i => i.id === id);
   if (idx === -1) return;
   workingItems[idx] = { ...workingItems[idx], ...updates };
+  recomputeTotalCosts();
   versions.saveItems(versions.getActiveId(), workingItems);
   unsaved = false;
   flash('Saved ✓', 'var(--c-utility)');
   renderSidebar();
+  renderForm();
 }
 
 function revertItem(id) {
