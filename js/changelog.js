@@ -98,7 +98,7 @@ function renderAddedItem(item, itemName) {
       <div class="cl-card cl-card-new">
         ${renderItemBody(item, itemName)}
       </div>
-      ${item.comment ? `<div class="cl-comment"><span class="cl-comment-label">Note:</span> ${esc(item.comment)}</div>` : ''}
+      ${item.comment ? `<div class="cl-comment"><span class="cl-comment-label">Comment:</span> ${esc(item.comment)}</div>` : ''}
     </div>`;
 }
 
@@ -125,6 +125,9 @@ function renderRemovedItem(item, itemName) {
 function renderChangedItem(fromItem, toItem, changes, itemName) {
   // Build sets for quick lookup
   const changedFields = new Set(changes.map(c => c.field));
+
+  // Filter out Comment field (shown separately below the card)
+  changes = changes.filter(c => c.field !== 'Comment');
 
   // Group changes by category
   const statAdded    = changes.filter(c => c.field === 'Stat added');
@@ -308,7 +311,7 @@ function renderChangedItem(fromItem, toItem, changes, itemName) {
 
   const commentItem = toItem.comment ? toItem : (fromItem.comment ? fromItem : null);
   const commentHtml = commentItem?.comment
-    ? `<div class="cl-comment"><span class="cl-comment-label">Note:</span> ${esc(commentItem.comment)}</div>` : '';
+    ? `<div class="cl-comment"><span class="cl-comment-label">Comment:</span> ${esc(commentItem.comment)}</div>` : '';
 
   return `
     <div class="cl-entry cl-entry-changed">
@@ -383,7 +386,7 @@ function exportText(results, fromLabel, toLabel) {
         else                    text += `  ~ ${c.field}: "${c.from}" → "${c.to}"\n`;
       });
     }
-    if (item?.comment) text += `  NOTE: ${item.comment}\n`;
+    if (item?.comment) text += `  COMMENT: ${item.comment}\n`;
     text += '\n';
   });
   const blob = new Blob([text], { type: 'text/plain' });

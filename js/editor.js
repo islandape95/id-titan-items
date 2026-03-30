@@ -168,10 +168,10 @@ function renderForm() {
       </div>
       ${isReadOnly?'':'<button class="add-btn" id="addPassiveBtn">+ Passive</button>'}
 
-      <!-- Comment / Note -->
-      <div class="form-section-title">Comment / Note</div>
+      <!-- Comment -->
+      <div class="form-section-title">Comment</div>
       <div class="form-group">
-        <textarea id="f-comment" rows="3" placeholder="Add a note about this item or why it was changed…" ${disabledAttr}>${esc(item.comment||'')}</textarea>
+        <textarea id="f-comment" rows="3" placeholder="Add a comment about this item or why it was changed…" ${disabledAttr}>${esc(item.comment||'')}</textarea>
       </div>
 
       <!-- Requires -->
@@ -220,9 +220,19 @@ function passiveRow(p, idx, readOnly) {
 }
 
 function requireRow(r, idx, readOnly) {
-  const options = workingItems.map(i =>
-    `<option value="${i.id}" ${i.id===r.id?'selected':''}>${i.name} (${i.tier})</option>`
-  ).join('');
+  const tierOrd = { consumable: 0, t1: 1, t2: 2, t3: 3 };
+  const sorted = [...workingItems].sort((a, b) => (tierOrd[a.tier] || 0) - (tierOrd[b.tier] || 0) || a.name.localeCompare(b.name));
+  let options = '';
+  let lastTier = null;
+  sorted.forEach(i => {
+    if (i.tier !== lastTier) {
+      if (lastTier !== null) options += '</optgroup>';
+      options += `<optgroup label="${TIER_LABELS[i.tier] || i.tier}">`;
+      lastTier = i.tier;
+    }
+    options += `<option value="${i.id}" ${i.id===r.id?'selected':''}>${i.name}</option>`;
+  });
+  if (lastTier !== null) options += '</optgroup>';
   return `
     <div class="list-item-row" data-idx="${idx}">
       <select class="req-id-select" style="flex:1;padding:5px 7px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);font-size:11px;outline:none;font-family:inherit" ${readOnly?'disabled':''}>
@@ -361,14 +371,27 @@ function revertItem(id) {
 
 function deleteItem(id) {
   const item = workingItems.find(i => i.id === id);
-  if (!confirm(`Delete "${item?.name}"? This removes it from this version.`)) return;
+  if (!confirm(`Delete "${item?.name}"? This removes it from this version and from all items that require it.`)) return;
+
+  // Remove from all other items' requirements
+  let cascadeCount = 0;
+  workingItems.forEach(i => {
+    const before = (i.requires || []).length;
+    i.requires = (i.requires || []).filter(r => r.id !== id);
+    if (i.requires.length < before) cascadeCount++;
+  });
+
   workingItems = workingItems.filter(i => i.id !== id);
   versions.saveItems(versions.getActiveId(), workingItems);
   selectedId = null;
   unsaved = false;
   renderSidebar();
+
+  const cascadeMsg = cascadeCount > 0
+    ? `<p>Also removed from ${cascadeCount} item${cascadeCount !== 1 ? 's' : ''} that required it.</p>`
+    : '';
   document.getElementById('editorMain').innerHTML =
-    `<div class="empty-state"><h3>Item deleted</h3><p>Select another item.</p></div>`;
+    `<div class="empty-state"><h3>Item deleted</h3>${cascadeMsg}<p>Select another item.</p></div>`;
 }
 
 function flash(msg, color) {

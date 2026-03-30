@@ -1,6 +1,6 @@
 // ============================================================
 //  SUGGESTIONS DATA  –  auto-imported from Titan Items Suggestions.xlsx
-//  Creates a pre-loaded "Suggestions Decent" version
+//  Creates a pre-loaded "decent version" version
 //  on first load if it doesn't already exist.
 // ============================================================
 
@@ -236,11 +236,11 @@
 
   // ── Create the version ─────────────────────────────────────
 
-  const v = versions.create('Suggestions Decent', versions.BASE_ID);
+  const v = versions.create('decent version', versions.BASE_ID);
   v.items = items;
   // Persist by re-saving through the versions API
   versions.saveItems(v.id, items);
   localStorage.setItem(SUGGESTIONS_KEY, '1');
 
-  console.log('[Suggestions] Created "Suggestions Decent" version with', items.length, 'items');
+  console.log('[Suggestions] Created "decent version" version with', items.length, 'items');
 })();

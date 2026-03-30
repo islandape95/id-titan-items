@@ -428,6 +428,28 @@ body {
   box-shadow: 0 0 4px rgba(251,191,36,0.7);
 }
 
+/* Removed item indicator (red, ghosted) */
+.item-card.item-removed {
+  border-color: rgba(248,113,113,0.5);
+  background: rgba(248,113,113,0.06);
+  opacity: 0.55;
+}
+.item-card.item-removed .item-name {
+  text-decoration: line-through;
+  text-decoration-color: rgba(248,113,113,0.6);
+  color: var(--c-offensive);
+}
+.item-card.item-removed::before {
+  background: var(--c-offensive);
+}
+.item-removed-label {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--c-offensive);
+  margin-top: 4px;
+}
+
 /* New item indicator (green dot + border) */
 .item-card.item-added {
   border-color: rgba(52,211,153,0.5);
@@ -616,6 +638,21 @@ body {
   border-radius: 5px;
   font-size: 10px;
   color: #fbbf24;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+/* Removed item indicator in tooltip */
+.tt-removed-banner {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  background: rgba(248,113,113,0.1);
+  border: 1px solid rgba(248,113,113,0.25);
+  border-radius: 5px;
+  font-size: 10px;
+  color: var(--c-offensive);
   margin-bottom: 8px;
   font-weight: 500;
 }
@@ -818,7 +855,20 @@ body {
   outline: none;
   font-family: inherit;
 }
-.list-item-row input:focus { border-color: var(--accent); }
+.list-item-row input:focus,
+.list-item-row textarea:focus { border-color: var(--accent); }
+.list-item-row textarea {
+  padding: 5px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface2);
+  color: var(--text);
+  font-size: 12px;
+  outline: none;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 44px;
+}
 
 .remove-btn, .add-btn {
   padding: 5px 9px;

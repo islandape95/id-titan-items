@@ -28,6 +28,17 @@ function refreshCache() {
   _cachedItems = versions.getActiveItems();
   _cachedChangedIds = versions.getChangedIds(versions.getActiveId());
   _cachedChangeTypes = versions.getChangeTypes(versions.getActiveId());
+
+  // Include removed items as ghosts (from base) so they show in tree
+  if (_cachedChangeTypes.removed.size > 0) {
+    const baseItems = versions.getBaseItems();
+    baseItems.forEach(bi => {
+      if (_cachedChangeTypes.removed.has(bi.id)) {
+        bi._removed = true;
+        _cachedItems.push(bi);
+      }
+    });
+  }
 }
 
 function cachedGetItem(id) {
@@ -196,7 +207,7 @@ function getVisibleItems() {
   }
 
   if (showChangesOnly && !versions.isBase(versions.getActiveId())) {
-    items = items.filter(i => _cachedChangedIds.has(i.id));
+    items = items.filter(i => _cachedChangedIds.has(i.id) || i._removed);
   }
 
   return items;
@@ -210,8 +221,24 @@ function buildItemCard(item) {
   card.dataset.id = item.id;
   card.dataset.category = item.category;
 
-  if (_cachedChangeTypes.added.has(item.id)) card.classList.add('item-added');
+  const isRemoved = !!item._removed;
+
+  if (isRemoved) card.classList.add('item-removed');
+  else if (_cachedChangeTypes.added.has(item.id)) card.classList.add('item-added');
   else if (_cachedChangeTypes.modified.has(item.id)) card.classList.add('item-changed');
+
+  if (isRemoved) {
+    card.innerHTML = `
+      <div class="item-card-top">
+        <span class="item-name">${item.name}</span>
+      </div>
+      <div class="item-removed-label">REMOVED</div>
+    `;
+    card.addEventListener('mouseenter', e  => { showTooltip(item, e); });
+    card.addEventListener('mouseleave', () => { hideTooltip(); });
+    card.addEventListener('mousemove',  e  => positionTooltip(e));
+    return card;
+  }
 
   const stats = (item.stats || []).slice(0, 3);
   const statsHtml = stats.length
@@ -223,7 +250,7 @@ function buildItemCard(item) {
     ${item.use ? '<span class="item-tag use">Use</span>' : ''}
     ${item.active ? `<span class="item-tag active">${item.active.name}</span>` : ''}
     ${(item.passives || []).slice(0, 2).map(p => `<span class="item-tag passive">${p.name}</span>`).join('')}
-    ${item.comment ? '<span class="item-tag comment">Note</span>' : ''}
+    ${item.comment ? '<span class="item-tag comment">Comment</span>' : ''}
   </div>` : '';
 
   const hasReqs = item.requires && item.requires.length > 0;
@@ -374,7 +401,9 @@ function showTooltip(item, e) {
   const isChanged = _cachedChangedIds.has(item.id);
 
   let html = '';
-  if (_cachedChangeTypes.added.has(item.id))
+  if (item._removed)
+    html += `<div class="tt-removed-banner">✕ Removed in this version</div>`;
+  else if (_cachedChangeTypes.added.has(item.id))
     html += `<div class="tt-added-banner">★ New item in this version</div>`;
   else if (isChanged)
     html += `<div class="tt-changed-banner">◑ Modified in this version</div>`;
@@ -420,7 +449,7 @@ function showTooltip(item, e) {
   }
 
   if (item.comment) {
-    html += `<div class="tt-divider"></div><div class="tt-section"><div class="tt-section-title">Note</div>
+    html += `<div class="tt-divider"></div><div class="tt-section"><div class="tt-section-title">Comment</div>
       <div class="tt-comment">${item.comment}</div></div>`;
   }
 
