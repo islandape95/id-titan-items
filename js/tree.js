@@ -383,6 +383,18 @@ function reorderForSelection(selectedId) {
     });
   });
 
+  // Auto-scroll to show the selected card after reorder
+  const selectedCard = document.querySelector(`.item-card[data-id="${selectedId}"]`);
+  if (selectedCard) {
+    const wrapper = document.getElementById('canvasWrapper');
+    setTimeout(() => {
+      const cardLeft = parseFloat(selectedCard.style.left);
+      const wrapperW = wrapper.clientWidth;
+      const scrollTarget = Math.max(0, cardLeft - wrapperW / 2 + CARD_W / 2);
+      wrapper.scrollTo({ left: scrollTarget, behavior: 'smooth' });
+    }, 50);
+  }
+
   _animateConnectors(related);
 }
 
@@ -495,11 +507,11 @@ function showTooltip(item, e) {
 
   let html = '';
   if (item._removed)
-    html += `<div class="tt-removed-banner">✕ Removed in this version</div>`;
+    html += `<div class="tt-removed-banner">&times; Removed in this version</div>`;
   else if (_cachedChangeTypes.added.has(item.id))
-    html += `<div class="tt-added-banner">★ New item in this version</div>`;
+    html += `<div class="tt-added-banner">&starf; New item in this version</div>`;
   else if (isChanged)
-    html += `<div class="tt-changed-banner">◑ Modified in this version</div>`;
+    html += `<div class="tt-changed-banner">&bull; Modified in this version</div>`;
 
   // Inline diff for modified items
   if (_cachedChangeTypes.modified.has(item.id)) {
@@ -515,7 +527,7 @@ function showTooltip(item, e) {
           html += `<span class="tt-diff-field">${c.field}</span>`;
           if (c.from && c.to) {
             html += `<span class="tt-diff-old">${c.from}</span>`;
-            html += `<span class="tt-diff-arrow">→</span>`;
+            html += `<span class="tt-diff-arrow">&rarr;</span>`;
             html += `<span class="tt-diff-new">${c.to}</span>`;
           } else if (c.to) {
             html += `<span class="tt-diff-new">${c.to}</span>`;
@@ -574,7 +586,7 @@ function showTooltip(item, e) {
       <div class="tt-comment">${item.comment}</div></div>`;
   }
 
-  if (IS_TOUCH) html = `<button class="tt-close-btn" onclick="hideTooltip()">✕</button>` + html;
+  if (IS_TOUCH) html = `<button class="tt-close-btn" onclick="hideTooltip()">&times;</button>` + html;
 
   tt.innerHTML = html;
   if (!IS_TOUCH) positionTooltip(e);
@@ -668,7 +680,7 @@ function renderLoadout() {
         <span class="loadout-slot-name">${item.name}</span>
         <span class="loadout-slot-cost">${cost}g</span>
         <span class="loadout-slot-tier">${TIER_DISPLAY[item.tier] || item.tier}</span>
-        <button class="loadout-slot-remove" title="Remove">✕</button>
+        <button class="loadout-slot-remove" title="Remove">&times;</button>
       `;
 
       slot.querySelector('.loadout-slot-remove').addEventListener('click', e => { e.stopPropagation(); removeFromSlot(i); });

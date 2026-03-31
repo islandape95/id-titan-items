@@ -73,7 +73,7 @@ function renderSidebar() {
       const isAdded = changeTypes.added.has(item.id);
       const isModified = changeTypes.modified.has(item.id);
       const indicator = isAdded
-        ? '<span class="entry-added-dot" title="New item">★</span>'
+        ? '<span class="entry-added-dot" title="New item">&starf;</span>'
         : isModified
         ? '<span class="entry-changed-dot" title="Modified">●</span>'
         : '';
@@ -96,7 +96,7 @@ function renderSidebar() {
       entry.innerHTML = `
         <span class="dot"></span>
         <span class="entry-name">${bi.name}</span>
-        <span class="entry-removed-dot" title="Removed in this version">✕</span>
+        <span class="entry-removed-dot" title="Removed in this version">&times;</span>
         <button class="entry-restore-btn" title="Restore item">↩</button>
       `;
       entry.querySelector('.entry-restore-btn').addEventListener('click', (e) => {

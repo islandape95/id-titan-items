@@ -57,7 +57,7 @@ function renderDiff(results, fromLabel, toLabel, fromItems, toItems) {
   const summary = `
     <div class="cl-summary">
       <div class="cl-summary-label">
-        Comparing <b>${esc(fromLabel)}</b> → <b>${esc(toLabel)}</b>
+        Comparing <b>${esc(fromLabel)}</b> &rarr;<b>${esc(toLabel)}</b>
       </div>
       <div class="cl-summary-counts">
         <span class="cl-count-added"><b>${results.filter(r => r.type === 'added').length}</b> added</span>
@@ -144,7 +144,7 @@ function renderChangedItem(fromItem, toItem, changes, itemName) {
   if (fromItem.cost !== toItem.cost || fromItem.totalCost !== toItem.totalCost) {
     const fromLabel = fromHasReqs && fromItem.totalCost ? `${fromItem.totalCost}g (${fromItem.cost}g)` : `${fromItem.cost}g`;
     const toLabel   = toHasReqs && toItem.totalCost ? `${toItem.totalCost}g (${toItem.cost}g)` : `${toItem.cost}g`;
-    costHtml = `<span class="cl-cost"><span class="cl-old">${fromLabel}</span> → <span class="cl-new">${toLabel}</span></span>`;
+    costHtml = `<span class="cl-cost"><span class="cl-old">${fromLabel}</span> &rarr;<span class="cl-new">${toLabel}</span></span>`;
   } else {
     costHtml = toHasReqs && toItem.totalCost
       ? `<span class="cl-cost">${toItem.totalCost}g (${toItem.cost}g recipe)</span>`
@@ -204,20 +204,20 @@ function renderChangedItem(fromItem, toItem, changes, itemName) {
 
       let parts = '';
       if (nameChanged) {
-        parts += `<span class="cl-old">${esc(a.name)}</span> → <b class="cl-new">${esc(b.name)}</b>`;
+        parts += `<span class="cl-old">${esc(a.name)}</span> &rarr;<b class="cl-new">${esc(b.name)}</b>`;
       } else {
         parts += `<b>${esc(b.name)}</b>`;
       }
       if (b.cooldown || a.cooldown) {
         if (cdChanged) {
-          parts += ` <span class="cl-old">[${esc(a.cooldown || '—')}]</span> → <span class="cl-new">[${esc(b.cooldown || '—')}]</span>`;
+          parts += ` <span class="cl-old">[${esc(a.cooldown || '—')}]</span> &rarr;<span class="cl-new">[${esc(b.cooldown || '—')}]</span>`;
         } else {
           parts += ` [${esc(b.cooldown)}]`;
         }
       }
       parts += ' — ';
       if (descChanged) {
-        parts += `<span class="cl-old">${esc(a.description)}</span><br>→ <span class="cl-new">${esc(b.description)}</span>`;
+        parts += `<span class="cl-old">${esc(a.description)}</span><br>&rarr; <span class="cl-new">${esc(b.description)}</span>`;
       } else {
         parts += esc(b.description);
       }
@@ -243,7 +243,7 @@ function renderChangedItem(fromItem, toItem, changes, itemName) {
       // Modified
       passiveEntries.push(`<div class="cl-ability"><b>${esc(p.name)}</b> <span class="cl-modified-tag">modified</span><br>
         <span class="cl-old">${esc(fromPassMap.get(p.name))}</span><br>
-        → <span class="cl-new">${esc(p.description)}</span></div>`);
+        &rarr;<span class="cl-new">${esc(p.description)}</span></div>`);
     } else {
       // Unchanged
       passiveEntries.push(`<div class="cl-ability"><b>${esc(p.name)}</b> — ${esc(p.description)}</div>`);
@@ -302,7 +302,7 @@ function renderChangedItem(fromItem, toItem, changes, itemName) {
         <div class="cl-ability cl-ability-added">${esc(toItem.use)}</div></div>`;
     } else if (fromItem.use !== toItem.use) {
       useHtml = `<div class="cl-section"><div class="cl-section-title">Use <span class="cl-modified-tag">modified</span></div>
-        <div class="cl-ability"><span class="cl-old">${esc(fromItem.use)}</span><br>→ <span class="cl-new">${esc(toItem.use)}</span></div></div>`;
+        <div class="cl-ability"><span class="cl-old">${esc(fromItem.use)}</span><br>&rarr; <span class="cl-new">${esc(toItem.use)}</span></div></div>`;
     }
   }
 
@@ -408,9 +408,9 @@ function exportText(results, fromLabel, toLabel) {
   const itemName = id => nameMap.get(id) || id;
 
   let text = `ITEM TREE CHANGELOG\n`;
-  text += `From: ${fromLabel}  →  To: ${toLabel}\n`;
+  text += `From: ${fromLabel}  -->  To: ${toLabel}\n`;
   text += `Generated: ${new Date().toLocaleString()}\n`;
-  text += `${'─'.repeat(50)}\n\n`;
+  text += `${'-'.repeat(50)}\n\n`;
 
   results.forEach(r => {
     const item = r.item || r.fromItem;
@@ -426,11 +426,11 @@ function exportText(results, fromLabel, toLabel) {
     } else {
       text += `[CHANGED] ${item.name} — ${tier} | ${item.category} | ${cost}\n`;
       text += exportItemText(r.item, itemName, '  ');
-      text += `  ── Changes ──\n`;
+      text += `  -- Changes --\n`;
       r.changes.forEach(c => {
         if (c.from === null)    text += `    + ${c.field}: ${c.to}\n`;
         else if (c.to === null) text += `    - ${c.field}: ${c.from}\n`;
-        else                    text += `    ~ ${c.field}: "${c.from}" → "${c.to}"\n`;
+        else                    text += `    ~ ${c.field}: "${c.from}" --> "${c.to}"\n`;
       });
     }
     if (item?.comment) text += `  Note: ${item.comment}\n`;
