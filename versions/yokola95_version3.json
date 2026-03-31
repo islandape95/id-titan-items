@@ -1,7 +1,7 @@
 {
   "_format": "item-tree-version",
   "_version": 1,
-  "name": "yokola95 version 3",
+  "name": "yokola95 OVERHAUL!!!",
   "exportedAt": "2026-03-31T05:37:31.554Z",
   "items": [
     {
@@ -956,25 +956,30 @@
       "id": "mace-of-mortality",
       "name": "Mace of Mortality",
       "tier": "t3",
-      "cost": 290,
+      "cost": 90,
       "category": "both",
       "stats": [
-        "+40 Attack Damage",
-        "+400 Hit Points"
+        "+30 Attack Damage",
+        "+500 Hit Points",
+        "+4 Mana Regeneration/s"
       ],
-      "active": null,
+      "active": {
+        "name": "War Cry",
+        "cooldown": "60s",
+        "description": "For 8 seconds, gain bonus attack damage equal to 5% of your maximum hit points. Allies within range 500 gain 15% bonus damage. Colossus damage is doubled during War Cry."
+      },
       "passives": [
         {
-          "name": "Warlord's Fury",
-          "description": "Casting a summoning spell grants 15% bonus attack damage for 15 seconds and reduces enemy armor for 3 seconds."
+          "name": "Colossus",
+          "description": "Basic attacks deal bonus physical damage equal to 2.5% of your maximum hit points."
         },
         {
-          "name": "Scout's Focus",
-          "description": "Casting a scouting ability refunds 50% of its mana cost and 50% of its cooldown."
+          "name": "Tidal Vigor",
+          "description": "Casting Heal restores an additional 4% of your maximum hit points. Ability cooldowns reduced by 15%."
         },
         {
-          "name": "Battle Surge",
-          "description": "Casting a scouting or healing ability heals you for 250% vitality + 10% of your missing health, and grants 35% movement speed for 3.5 seconds."
+          "name": "Swift Casting",
+          "description": "Decrease the cooldown of the owner abilities by 20%."
         }
       ],
       "requires": [
@@ -991,7 +996,8 @@
           "count": 1
         }
       ],
-      "totalCost": 1000
+      "totalCost": 800,
+      "comment": "HP scaling bruiser. Every HP item you buy makes your attacks hit harder through Colossus. War Cry is a huge burst window. Heal spell also scales with max HP so stacking tank items is rewarded offensively."
     },
     {
       "id": "essence-of-pure-magic",
@@ -1106,7 +1112,7 @@
       "id": "dawnkeeper",
       "name": "Dawnkeeper",
       "tier": "t3",
-      "cost": 220,
+      "cost": 150,
       "category": "defensive",
       "stats": [
         "+5 Armor",
@@ -1115,17 +1121,9 @@
       "active": {
         "name": "Call of Valor",
         "cooldown": "45s",
-        "description": "Select a target allied unit within range 1000. For the next 10 seconds the two units share 25% of the damage they take as pure damage, and both gain 5 bonus armor."
+        "description": "Select a target allied unit within range 1000. For the next 10 seconds the two units share 25% of the damage they take as pure damage, and both gain 5 bonus armor. While bonded, both units regenerate 50 hit points per second."
       },
       "passives": [
-        {
-          "name": "Swift Casting",
-          "description": "Decrease the cooldown of the owner abilities by 20%."
-        },
-        {
-          "name": "Scout's Resolve",
-          "description": "Casting a scouting ability refunds 50% of its mana cost and 25% of its cooldown."
-        },
         {
           "name": "Aegis Surge",
           "description": "Casting a scouting or healing ability heals you for 200% vitality hit points and grants 10% movement speed for 2.5 seconds."
@@ -1137,11 +1135,12 @@
           "count": 1
         },
         {
-          "id": "caster-scroll",
+          "id": "enchantress-fluid",
           "count": 1
         }
       ],
-      "totalCost": 865
+      "totalCost": 800,
+      "comment": "Casque bond upgraded with regen from enchantress fluid. Pure team protection item, no mana/CDR."
     },
     {
       "id": "highseer-slippers",

@@ -13,15 +13,27 @@
 
 (function () {
   const IMPORTED_KEY = 'community_versions_imported';
+  const MANIFEST_KEY = 'community_manifest_hash';
 
   fetch('versions/manifest.json')
     .then(r => r.ok ? r.json() : [])
     .then(files => {
       if (!files.length) return;
 
+      // Check if manifest changed since last import
+      const manifestHash = JSON.stringify(files);
+      const lastHash = localStorage.getItem(MANIFEST_KEY);
       const already = JSON.parse(localStorage.getItem(IMPORTED_KEY) || '[]');
-      const toLoad = files.filter(f => !already.includes(f));
-      if (!toLoad.length) return;
+
+      // If manifest changed, re-evaluate everything
+      const toLoad = (manifestHash !== lastHash)
+        ? files.filter(f => !already.includes(f))
+        : files.filter(f => !already.includes(f));
+
+      if (!toLoad.length) {
+        localStorage.setItem(MANIFEST_KEY, manifestHash);
+        return;
+      }
 
       return Promise.all(
         toLoad.map(f =>
@@ -33,18 +45,26 @@
         results.forEach((data, i) => {
           if (!data) return;
           try {
+            // Check if a version with same name already exists — update it instead of duplicating
             const name = data.name || toLoad[i].replace('.json', '');
-            const parentId = data.parentId || versions.BASE_ID;
-            const v = versions.create(name, parentId);
-            if (data.items) versions.saveItems(v.id, data.items);
-            already.push(toLoad[i]);
+            const existing = versions.getAll().find(v => v.name === name);
+            if (existing && !existing.isBase) {
+              // Update existing version
+              if (data.items) versions.saveItems(existing.id, data.items);
+            } else {
+              // Create new version
+              const parentId = data.parentId || versions.BASE_ID;
+              const v = versions.create(name, parentId);
+              if (data.items) versions.saveItems(v.id, data.items);
+            }
+            if (!already.includes(toLoad[i])) already.push(toLoad[i]);
           } catch (e) {
             console.warn('[Community] Failed to import', toLoad[i], e);
           }
         });
         localStorage.setItem(IMPORTED_KEY, JSON.stringify(already));
+        localStorage.setItem(MANIFEST_KEY, manifestHash);
         console.log('[Community] Imported', toLoad.length, 'version(s)');
-        // Notify picker to re-render with new versions
         versions.reload();
         document.dispatchEvent(new CustomEvent('versionchange', { detail: { id: versions.getActiveId() } }));
       });
