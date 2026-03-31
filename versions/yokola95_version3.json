@@ -956,12 +956,11 @@
       "id": "mace-of-mortality",
       "name": "Mace of Mortality",
       "tier": "t3",
-      "cost": 90,
+      "cost": 145,
       "category": "both",
       "stats": [
-        "+30 Attack Damage",
-        "+500 Hit Points",
-        "+4 Mana Regeneration/s"
+        "+40 Attack Damage",
+        "+500 Hit Points"
       ],
       "active": {
         "name": "War Cry",
@@ -974,21 +973,21 @@
           "description": "Basic attacks deal bonus physical damage equal to 2.5% of your maximum hit points."
         },
         {
-          "name": "Tidal Vigor",
-          "description": "Casting Heal restores an additional 4% of your maximum hit points. Ability cooldowns reduced by 15%."
+          "name": "Vampirism",
+          "description": "Basic attacks heal you for 30 + 15% of damage dealt."
         },
         {
-          "name": "Swift Casting",
-          "description": "Decrease the cooldown of the owner abilities by 20%."
+          "name": "Titan Crusher",
+          "description": "Basic attacks on structures deal 10 + (5 x hero level) bonus damage on hit, up to a maximum of 50 bonus damage."
         }
       ],
       "requires": [
         {
-          "id": "caster-scroll",
+          "id": "vampiric-mask",
           "count": 1
         },
         {
-          "id": "warbanner",
+          "id": "titanic-tridents",
           "count": 1
         },
         {
@@ -997,7 +996,7 @@
         }
       ],
       "totalCost": 800,
-      "comment": "HP scaling bruiser. Every HP item you buy makes your attacks hit harder through Colossus. War Cry is a huge burst window. Heal spell also scales with max HP so stacking tank items is rewarded offensively."
+      "comment": "HP scaling bruiser. Titanic gives the raw damage and structure crushing, vampiric heals through Colossus bonus damage so stacking HP items makes you both tankier and hit harder and heal more."
     },
     {
       "id": "essence-of-pure-magic",
@@ -1623,6 +1622,40 @@
       ],
       "totalCost": 450,
       "comment": "This item is an alternative to stormrider cloak as an upgrade to webbed feet. The active component is strong against worker-block if cast on self, and the active component can be used to setup a nuke on enemy rewaller (which is still countered by detoing one of your workers from worker block :) ). While the active part is strong, the item is balanced on the fact that it provides no stats as a tier 3 item."
+    },
+    {
+      "id": "warlords-horn",
+      "name": "Warlord's Horn",
+      "tier": "t3",
+      "cost": 250,
+      "category": "offensive",
+      "stats": [
+        "+15 Attack Damage",
+        "+10% Attack Speed"
+      ],
+      "active": {
+        "name": "Battle Cry",
+        "cooldown": "45s",
+        "description": "For 12 seconds, allied units within range 800 gain +20% attack damage and +20% attack speed. The holder gains +10% movement speed for the duration."
+      },
+      "passives": [
+        {
+          "name": "Inspiring Presence",
+          "description": "Allied units within range 800 permanently gain +5% attack damage and +5% attack speed."
+        }
+      ],
+      "requires": [
+        {
+          "id": "warbanner",
+          "count": 1
+        },
+        {
+          "id": "berserkers-gem",
+          "count": 1
+        }
+      ],
+      "totalCost": 800,
+      "comment": "Item to give aura and buff for damage. Individually weaker than spear or poseidon trident, but the team-wide buff makes it worth it when you have units around you."
     }
   ]
 }
