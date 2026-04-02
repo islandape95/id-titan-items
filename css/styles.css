@@ -2352,6 +2352,35 @@ body {
 }
 .sim-const-row b { color: var(--text); }
 
+/* Compare mode */
+.sim-compare-btns {
+  display: flex;
+  gap: 6px;
+  margin-top: 8px;
+}
+.sim-compare-btn {
+  flex: 1;
+  padding: 6px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font-size: 10px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.12s;
+}
+.sim-compare-btn:hover { background: var(--accent); color: #0d1117; }
+.sim-compare-btn.snapped { background: var(--accent); color: #0d1117; }
+.sim-compare-clear { border-color: var(--c-offensive); color: var(--c-offensive); }
+.sim-compare-clear:hover { background: var(--c-offensive); }
+
+.sim-diff { font-size: 9px; margin-left: 4px; font-weight: 700; }
+.sim-diff-up { color: #34d399; }
+.sim-diff-down { color: #f87171; }
+.sim-diff-neutral { color: var(--text-muted); }
+
 .sim-disclaimer {
   font-size: 10px;
   color: var(--text-muted);

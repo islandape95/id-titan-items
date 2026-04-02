@@ -52,6 +52,7 @@ let equippedItems = [null, null, null, null, null, null];
 let itemOverrides = [{}, {}, {}, {}, {}, {}];
 let versionItems = [];
 let pickerSlotIdx = -1;
+let compareSnapshot = null; // stored computeAll() result for comparison
 
 // ── Helpers ──────────────────────────────────────────────
 
@@ -64,6 +65,26 @@ function parseNum(str) { const m = str.match(/([\d.]+)/); return m ? parseFloat(
 function extractNum(desc, rx) { const m = desc.match(rx); return m ? parseFloat(m[1]) : 0; }
 function el(id) { return document.getElementById(id); }
 function setHtml(id, val) { const e = el(id); if (e) e.innerHTML = val; }
+
+// Show a stat value with comparison diff. higherIsBetter: true for HP/DPS, false for TTD/DPS taken
+function setWithDiff(id, current, formatted, higherIsBetter, snapVal) {
+  const e = el(id);
+  if (!e) return;
+  if (!compareSnapshot || snapVal === undefined || snapVal === null || !isFinite(snapVal) || !isFinite(current)) {
+    e.innerHTML = formatted;
+    return;
+  }
+  const diff = current - snapVal;
+  if (Math.abs(diff) < 0.05) {
+    e.innerHTML = formatted;
+    return;
+  }
+  const isGood = higherIsBetter ? diff > 0 : diff < 0;
+  const sign = diff > 0 ? '+' : '';
+  const cls = isGood ? 'sim-diff-up' : 'sim-diff-down';
+  const diffStr = Math.abs(diff) > 100 ? fmt(diff, 0) : fmt(diff, 1);
+  e.innerHTML = `${formatted} <span class="sim-diff ${cls}">(${sign}${diffStr})</span>`;
+}
 
 // ── Titan base stats ─────────────────────────────────────
 
@@ -452,24 +473,25 @@ function renderStats() {
   let s;
   try { s = computeAll(); } catch(e) { console.error('Sim error:', e); return; }
 
-  setHtml('statHP', fmt(s.totalHP, 0));
-  setHtml('statMana', fmt(s.totalMana, 0));
-  setHtml('statArmor', fmt(s.totalArmor, 1));
-  setHtml('statArmorReduction', fmt(s.armorRed * 100, 1) + '%');
+  const cs = compareSnapshot; // shorthand
+  setWithDiff('statHP', s.totalHP, fmt(s.totalHP, 0), true, cs?.totalHP);
+  setWithDiff('statMana', s.totalMana, fmt(s.totalMana, 0), true, cs?.totalMana);
+  setWithDiff('statArmor', s.totalArmor, fmt(s.totalArmor, 1), true, cs?.totalArmor);
+  setWithDiff('statArmorReduction', s.armorRed * 100, fmt(s.armorRed * 100, 1) + '%', true, cs ? cs.armorRed * 100 : undefined);
   setHtml('statMDR', fmt(s.mdr, 0) + '%');
-  setHtml('statHPRegen', fmt(s.totalHPRegen, 1));
-  setHtml('statManaRegen', fmt(s.totalManaRegen, 1));
+  setWithDiff('statHPRegen', s.totalHPRegen, fmt(s.totalHPRegen, 1), true, cs?.totalHPRegen);
+  setWithDiff('statManaRegen', s.totalManaRegen, fmt(s.totalManaRegen, 1), true, cs?.totalManaRegen);
 
   const adExtra = s.colossusDmg > 0 ? ` <span class="sim-sub">(${fmt(s.totalAD,0)}+${fmt(s.colossusDmg,0)})</span>` : '';
-  setHtml('statAD', fmt(s.effectiveAD, 1) + adExtra);
+  setWithDiff('statAD', s.effectiveAD, fmt(s.effectiveAD, 1) + adExtra, true, cs?.effectiveAD);
   setHtml('statASBase', fmt(s.cdBase, 3) + 's');
   setHtml('statASMax', s.apsMax !== s.apsBase ? fmt(s.cdMax, 3) + 's' : '&mdash;');
-  setHtml('statAPSBase', fmt(s.apsBase, 2));
+  setWithDiff('statAPSBase', s.apsBase, fmt(s.apsBase, 2), true, cs?.apsBase);
   setHtml('statAPSMax', s.apsMax !== s.apsBase ? fmt(s.apsMax, 2) : '&mdash;');
-  setHtml('statPhysDPS', fmt(s.physDPS, 1));
-  setHtml('statMagicDPS', fmt(s.magicDPS, 1));
-  setHtml('statTotalDPS', fmt(s.totalDPS, 1));
-  setHtml('statTotalDPSMax', s.totalDPSMax !== s.totalDPS ? fmt(s.totalDPSMax, 1) : '&mdash;');
+  setWithDiff('statPhysDPS', s.physDPS, fmt(s.physDPS, 1), true, cs?.physDPS);
+  setWithDiff('statMagicDPS', s.magicDPS, fmt(s.magicDPS, 1), true, cs?.magicDPS);
+  setWithDiff('statTotalDPS', s.totalDPS, fmt(s.totalDPS, 1), true, cs?.totalDPS);
+  setWithDiff('statTotalDPSMax', s.totalDPSMax, s.totalDPSMax !== s.totalDPS ? fmt(s.totalDPSMax, 1) : '&mdash;', true, cs?.totalDPSMax);
 
   // DPS over time (selected subtab)
   const selDur = parseInt(document.querySelector('.sim-subtab.active')?.dataset.dur) || 10;
@@ -477,23 +499,24 @@ function renderStats() {
   setHtml('statSimDPS', fmt(selSim.totalDPS, 1));
   setHtml('statSimDmg', fmt(selSim.total, 0));
 
-  setHtml('statLifestealHit', s.lifestealPerHit > 0 ? fmt(s.lifestealPerHit, 1) : '&mdash;');
-  setHtml('statLifestealSec', s.lifestealPerHit > 0 ? fmt(s.lifestealPerSec, 1) : '&mdash;');
-  setHtml('statTotalRecovery', fmt(s.totalHPRegen + s.lifestealPerSec, 1));
+  setWithDiff('statLifestealHit', s.lifestealPerHit, s.lifestealPerHit > 0 ? fmt(s.lifestealPerHit, 1) : '&mdash;', true, cs?.lifestealPerHit);
+  setWithDiff('statLifestealSec', s.lifestealPerSec, s.lifestealPerHit > 0 ? fmt(s.lifestealPerSec, 1) : '&mdash;', true, cs?.lifestealPerSec);
+  const totalRecov = s.totalHPRegen + s.lifestealPerSec;
+  setWithDiff('statTotalRecovery', totalRecov, fmt(totalRecov, 1), true, cs ? cs.totalHPRegen + cs.lifestealPerSec : undefined);
   setHtml('statCrisis', s.crisisRegen ? 'Yes (2x below 50%)' : '&mdash;');
   setHtml('statCDR', s.cdr > 0 ? s.cdr + '%' : '&mdash;');
 
-  setHtml('statStructPhysHit', fmt(s.sPhysPerHit, 1));
+  setWithDiff('statStructPhysHit', s.sPhysPerHit, fmt(s.sPhysPerHit, 1), true, cs?.sPhysPerHit);
   setHtml('statStructMagicHit', s.sMagicPerHit > 0 ? fmt(s.sMagicPerHit, 1) : '&mdash;');
   setHtml('statStructBonusHit', fmt(s.sBonusPerHit, 1));
   setHtml('statStructBurnDPS', fmt(s.sBurnDPS, 1));
-  setHtml('statStructTotalDPS', fmt(s.sTotalDPS, 1));
+  setWithDiff('statStructTotalDPS', s.sTotalDPS, fmt(s.sTotalDPS, 1), true, cs?.sTotalDPS);
   setHtml('statStructHTK', s.sHTK);
-  setHtml('statStructTTK', s.sTTK === Infinity ? '&infin;' : fmt(s.sTTK, 1) + 's');
+  setWithDiff('statStructTTK', s.sTTK, s.sTTK === Infinity ? '&infin;' : fmt(s.sTTK, 1) + 's', false, cs?.sTTK);
 
-  setHtml('statTowerEffDPS', fmt(s.effTDPS, 1));
-  setHtml('statEffHP', fmt(s.effHP, 0));
-  setHtml('statTTD', s.ttd === Infinity ? '&infin;' : fmt(s.ttd, 1) + 's');
+  setWithDiff('statTowerEffDPS', s.effTDPS, fmt(s.effTDPS, 1), false, cs?.effTDPS);
+  setWithDiff('statEffHP', s.effHP, fmt(s.effHP, 0), true, cs?.effHP);
+  setWithDiff('statTTD', s.ttd, s.ttd === Infinity ? '&infin;' : fmt(s.ttd, 1) + 's', true, cs?.ttd);
   const netEl = el('statNetHP');
   if (netEl) { netEl.innerHTML = fmt(s.netHP, 1); netEl.className = s.netHP >= 0 ? 'val-green' : 'val-red'; }
 
@@ -904,6 +927,22 @@ function renderPickerList() {
       tab.classList.add('active');
       renderPickerList();
     });
+  });
+
+  // Compare buttons
+  el('compareSnap').addEventListener('click', () => {
+    try { compareSnapshot = computeAll(); } catch(e) { return; }
+    el('compareSnap').textContent = 'Snapshot A (saved)';
+    el('compareSnap').classList.add('snapped');
+    el('compareClear').hidden = false;
+    renderStats();
+  });
+  el('compareClear').addEventListener('click', () => {
+    compareSnapshot = null;
+    el('compareSnap').textContent = 'Snapshot A';
+    el('compareSnap').classList.remove('snapped');
+    el('compareClear').hidden = true;
+    renderStats();
   });
 
   // DPS subtabs
