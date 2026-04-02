@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Item Tree — Simulator</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<div class="app">
+
+  <header class="topbar">
+    <span class="topbar-title">⬡ Item Tree</span>
+    <div class="topbar-spacer"></div>
+    <nav class="topbar-nav">
+      <a class="nav-btn" href="index.html">Visualizer</a>
+      <a class="nav-btn" href="editor.html">Editor</a>
+      <a class="nav-btn" href="changelog.html">Changelog</a>
+      <a class="nav-btn active" href="simulator.html">Simulator</a>
+      <a class="nav-btn" href="about.html">About</a>
+    </nav>
+  </header>
+
+  <div class="sim-layout">
+
+    <!-- LEFT -->
+    <aside class="sim-left">
+      <div class="sim-panel">
+        <div class="sim-panel-title">Titan</div>
+        <select id="titanSelect" class="sim-select"></select>
+        <div class="sim-slider-row">
+          <span class="sim-label-inline">Lv</span>
+          <input type="range" id="levelSlider" min="2" max="12" value="2" class="sim-range">
+          <span id="levelDisplay" class="sim-level-num">2</span>
+        </div>
+        <div class="sim-titan-attrs" id="titanAttrs"></div>
+      </div>
+
+      <div class="sim-panel">
+        <div class="sim-panel-title">
+          Version
+          <select id="simVersionSelect" class="sim-version-sel"></select>
+        </div>
+      </div>
+
+      <div class="sim-panel">
+        <div class="sim-panel-title">Loadout <span class="sim-gold" id="simTotalCost">0g</span></div>
+        <div class="sim-slots" id="simSlots"></div>
+      </div>
+    </aside>
+
+    <!-- RIGHT -->
+    <main class="sim-right">
+      <div class="sim-dashboard">
+
+        <div class="sim-row sim-row-3">
+          <!-- Titan Stats -->
+          <div class="sim-card">
+            <div class="sim-card-title">&#9829; Titan Stats</div>
+            <div class="sim-stat-row" id="tipHP"><span>Hit Points</span><span id="statHP" class="val-green">—</span></div>
+            <div class="sim-stat-row" id="tipMana"><span>Mana</span><span id="statMana" class="val-blue">—</span></div>
+            <div class="sim-stat-row" id="tipArmor"><span>Armor</span><span id="statArmor" class="val-yellow">—</span></div>
+            <div class="sim-stat-row" id="tipArmorRed"><span>Phys Reduction</span><span id="statArmorReduction">—</span></div>
+            <div class="sim-stat-row" id="tipMDR"><span>Magic Reduction</span><span id="statMDR">—</span></div>
+            <div class="sim-stat-row" id="tipHPRegen"><span>HP Regen/s</span><span id="statHPRegen" class="val-green">—</span></div>
+            <div class="sim-stat-row" id="tipManaRegen"><span>Mana Regen/s</span><span id="statManaRegen" class="val-blue">—</span></div>
+          </div>
+
+          <!-- Offense -->
+          <div class="sim-card">
+            <div class="sim-card-title">&#9876; Offense</div>
+            <div class="sim-stat-row" id="tipAD"><span>Attack Damage</span><span id="statAD" class="val-red">—</span></div>
+            <div class="sim-stat-row"><span>Atk Cooldown</span><span id="statASBase">—</span></div>
+            <div class="sim-stat-row"><span>Atk CD (ramped)</span><span id="statASMax">—</span></div>
+            <div class="sim-stat-row"><span>Attacks/sec</span><span id="statAPSBase">—</span></div>
+            <div class="sim-stat-row"><span>Attacks/sec (ramped)</span><span id="statAPSMax">—</span></div>
+            <div class="sim-stat-row"><span>Physical DPS</span><span id="statPhysDPS">—</span></div>
+            <div class="sim-stat-row"><span>Magic DPS</span><span id="statMagicDPS">—</span></div>
+            <div class="sim-stat-row sim-highlight"><span>Total DPS</span><span id="statTotalDPS">—</span></div>
+          </div>
+
+          <!-- Sustain -->
+          <div class="sim-card">
+            <div class="sim-card-title">&#10010; Sustain</div>
+            <div class="sim-stat-row"><span>Lifesteal/hit</span><span id="statLifestealHit">—</span></div>
+            <div class="sim-stat-row"><span>Lifesteal/sec</span><span id="statLifestealSec">—</span></div>
+            <div class="sim-stat-row sim-highlight"><span>Total HP Recovery/s</span><span id="statTotalRecovery" class="val-green">—</span></div>
+            <div class="sim-stat-row"><span>Crisis Regen</span><span id="statCrisis">—</span></div>
+            <div class="sim-stat-row"><span>CDR</span><span id="statCDR">—</span></div>
+          </div>
+        </div>
+
+        <!-- Attack + Defense -->
+        <div class="sim-row" style="grid-template-columns: 1fr 1fr">
+          <div class="sim-card">
+            <div class="sim-card-title">&#9876; Attack</div>
+            <div class="sim-inline-config">
+              <label>Wall Armor <input type="number" id="structArmor" value="15" min="0" max="99" class="sim-input-sm"></label>
+              <label>Wall HP <input type="number" id="structHP" value="500" min="1" max="9999" class="sim-input-sm"></label>
+            </div>
+            <div class="sim-stat-row"><span>Phys/hit</span><span id="statStructPhysHit">—</span></div>
+            <div class="sim-stat-row"><span>Magic/hit</span><span id="statStructMagicHit">—</span></div>
+            <div class="sim-stat-row"><span>Bonus/hit (pure)</span><span id="statStructBonusHit">—</span></div>
+            <div class="sim-stat-row"><span>Burn DPS</span><span id="statStructBurnDPS">—</span></div>
+            <div class="sim-stat-row sim-highlight"><span>Total DPS</span><span id="statStructTotalDPS">—</span></div>
+            <div class="sim-stat-row"><span>Hits to Kill</span><span id="statStructHTK">—</span></div>
+            <div class="sim-stat-row"><span>Time to Kill</span><span id="statStructTTK">—</span></div>
+
+            <div class="sim-subtabs">
+              <button class="sim-subtab active" data-dur="10">10s</button>
+              <button class="sim-subtab" data-dur="30">30s</button>
+              <button class="sim-subtab" data-dur="60">60s</button>
+            </div>
+            <div class="sim-stat-row"><span>Avg DPS</span><span id="statSimDPS" class="val-red">—</span></div>
+            <div class="sim-stat-row"><span>Total Damage</span><span id="statSimDmg">—</span></div>
+          </div>
+
+          <div class="sim-card">
+            <div class="sim-card-title">&#9888; Defense</div>
+
+            <div class="sim-tower-config">
+              <div class="sim-tower-row">
+                <select id="towerBuilder" class="sim-select-sm"></select>
+                <select id="towerTier" class="sim-select-sm">
+                  <option value="base">Base</option>
+                  <option value="enhanced">Enhanced</option>
+                  <option value="super" selected>Super</option>
+                  <option value="mega">Mega</option>
+                </select>
+                <label>&times;<input type="number" id="towerCount" value="36" min="1" max="72" class="sim-input-sm" style="width:42px"></label>
+              </div>
+              <div class="sim-tower-info" id="towerInfo"></div>
+            </div>
+
+            <div class="sim-inline-config" style="margin-top:6px">
+              <label>Total DPS <input type="number" id="towerDPS" value="0" min="0" max="99999" class="sim-input-sm" style="width:60px"></label>
+              <label><select id="towerDmgType" class="sim-select-sm"><option value="ranged" selected>Ranged (50%)</option><option value="magic">Magic (100%)</option></select></label>
+            </div>
+
+            <div class="sim-stat-row"><span>Effective DPS Taken</span><span id="statTowerEffDPS" class="val-red">—</span></div>
+            <div class="sim-stat-row"><span>Effective HP</span><span id="statEffHP" class="val-green">—</span></div>
+            <div class="sim-stat-row"><span>Time to Die</span><span id="statTTD">—</span></div>
+            <div class="sim-stat-row"><span>Net HP/s</span><span id="statNetHP">—</span></div>
+
+            <div class="sim-preset-divider" style="margin:8px 0 6px"></div>
+            <div class="sim-presets">
+              <button class="sim-preset-btn" data-dps="1850" data-type="ranged">36 Supers (~1850)</button>
+              <button class="sim-preset-btn" data-dps="3110" data-type="ranged">36 Megas (~3110)</button>
+              <button class="sim-preset-btn" data-dps="4960" data-type="ranged">36S+36M (~4960)</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Constants Reference -->
+        <div class="sim-row sim-row-1">
+          <details class="sim-card">
+            <summary class="sim-card-title" style="cursor:pointer">&#9881; Constants &amp; Formulas (click to expand)</summary>
+            <div class="sim-const-grid">
+              <div class="sim-const-section">
+                <div class="sim-const-head">Armor Formula</div>
+                <div class="sim-const-row">reduction = 0.06 &times; armor / (1 + 0.06 &times; armor)</div>
+                <div class="sim-const-row">damage_mult = 1 - reduction</div>
+              </div>
+              <div class="sim-const-section">
+                <div class="sim-const-head">Attack Speed</div>
+                <div class="sim-const-row">bonus_AS = 0.008 &times; CEL + item%</div>
+                <div class="sim-const-row">cooldown = BAT / (1 + bonus_AS)</div>
+              </div>
+              <div class="sim-const-section">
+                <div class="sim-const-head">Titan vs Structure</div>
+                <div class="sim-const-row">Titanic vs Fortified: <b>55%</b></div>
+              </div>
+              <div class="sim-const-section">
+                <div class="sim-const-head">Incoming Damage vs Titan</div>
+                <div class="sim-const-row">Ranged: <b>50%</b> (reduced by armor)</div>
+                <div class="sim-const-row">Magic: <b>100%</b> (reduced by MDR)</div>
+              </div>
+              <div class="sim-const-section">
+                <div class="sim-const-head">Stat Scaling</div>
+                <div class="sim-const-row">1 VIT = 50 HP + 0.1 HP/s regen</div>
+                <div class="sim-const-row">1 WIS = 20 Mana + 0.1 Mana/s regen</div>
+                <div class="sim-const-row">1 CEL = 0.8% Attack Speed</div>
+              </div>
+              <div class="sim-const-section">
+                <div class="sim-const-head">Titan Base</div>
+                <div class="sim-const-row">Damage: 130 at Lv2, +10/level</div>
+                <div class="sim-const-row">Armor: 6 at Lv2, +1/+2 alternating</div>
+              </div>
+            </div>
+          </details>
+        </div>
+
+        <!-- Passives -->
+        <div class="sim-row sim-row-1">
+          <div class="sim-card">
+            <div class="sim-card-title">&#10024; Active Item Effects</div>
+            <div id="statPassivesList" class="sim-passives-list">
+              <div class="sim-passive-empty">Equip items to see effects</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- Item Picker -->
+<div class="sim-picker-overlay" id="simPickerOverlay" hidden>
+  <div class="sim-picker">
+    <div class="sim-picker-header">
+      <input type="text" id="simPickerSearch" placeholder="Search items..." class="sim-picker-search">
+      <button id="simPickerClose" class="sim-picker-close">&times;</button>
+    </div>
+    <div class="sim-picker-tabs">
+      <button class="sim-picker-tab active" data-cat="all">All</button>
+      <button class="sim-picker-tab" data-cat="offensive">Off</button>
+      <button class="sim-picker-tab" data-cat="defensive">Def</button>
+      <button class="sim-picker-tab" data-cat="both">Hybrid</button>
+      <button class="sim-picker-tab" data-cat="utility">Util</button>
+    </div>
+    <div class="sim-picker-list" id="simPickerList"></div>
+  </div>
+</div>
+
+<script src="js/items-data.js"></script>
+<script src="js/versions.js"></script>
+<script src="js/community-versions.js"></script>
+<script src="js/simulator.js"></script>
+</body>
+</html>
