@@ -503,10 +503,10 @@ function renderStats() {
   setWithDiff('statManaRegen', s.totalManaRegen, fmt(s.totalManaRegen, 1), true, b?.totalManaRegen, b ? fmt(b.totalManaRegen, 1) : undefined);
 
   setWithDiff('statAD', s.effectiveAD, fmt(s.effectiveAD, 1), true, b?.effectiveAD, b ? fmt(b.effectiveAD, 1) : undefined);
-  setHtml('statASBase', fmt(s.cdBase, 3) + 's');
-  setHtml('statASMax', s.apsMax !== s.apsBase ? fmt(s.cdMax, 3) + 's' : '&mdash;');
+  setWithDiff('statASBase', s.cdBase, fmt(s.cdBase, 3) + 's', false, b?.cdBase, b ? fmt(b.cdBase, 3) + 's' : undefined);
+  setWithDiff('statASMax', s.cdMax, s.apsMax !== s.apsBase ? fmt(s.cdMax, 3) + 's' : '&mdash;', false, b?.cdMax, b && b.apsMax !== b.apsBase ? fmt(b.cdMax, 3) + 's' : '&mdash;');
   setWithDiff('statAPSBase', s.apsBase, fmt(s.apsBase, 2), true, b?.apsBase, b ? fmt(b.apsBase, 2) : undefined);
-  setHtml('statAPSMax', s.apsMax !== s.apsBase ? fmt(s.apsMax, 2) : '&mdash;');
+  setWithDiff('statAPSMax', s.apsMax, s.apsMax !== s.apsBase ? fmt(s.apsMax, 2) : '&mdash;', true, b?.apsMax, b && b.apsMax !== b.apsBase ? fmt(b.apsMax, 2) : '&mdash;');
   setWithDiff('statPhysDPS', s.physDPS, fmt(s.physDPS, 1), true, b?.physDPS, b ? fmt(b.physDPS, 1) : undefined);
   setWithDiff('statMagicDPS', s.magicDPS, fmt(s.magicDPS, 1), true, b?.magicDPS, b ? fmt(b.magicDPS, 1) : undefined);
   setWithDiff('statTotalDPS', s.totalDPS, fmt(s.totalDPS, 1), true, b?.totalDPS, b ? fmt(b.totalDPS, 1) : undefined);
@@ -515,21 +515,22 @@ function renderStats() {
   // DPS over time (selected subtab)
   const selDur = parseInt(document.querySelector('.sim-subtab.active')?.dataset.dur) || 10;
   const selSim = selDur === 60 ? s.sim60 : selDur === 30 ? s.sim30 : s.sim10;
-  setHtml('statSimDPS', fmt(selSim.totalDPS, 1));
-  setHtml('statSimDmg', fmt(selSim.total, 0));
+  const selSimB = b ? (selDur === 60 ? b.sim60 : selDur === 30 ? b.sim30 : b.sim10) : null;
+  setWithDiff('statSimDPS', selSim.totalDPS, fmt(selSim.totalDPS, 1), true, selSimB?.totalDPS, selSimB ? fmt(selSimB.totalDPS, 1) : undefined);
+  setWithDiff('statSimDmg', selSim.total, fmt(selSim.total, 0), true, selSimB?.total, selSimB ? fmt(selSimB.total, 0) : undefined);
 
   setWithDiff('statLifestealHit', s.lifestealPerHit, s.lifestealPerHit>0?fmt(s.lifestealPerHit,1):'&mdash;', true, b?.lifestealPerHit, b&&b.lifestealPerHit>0?fmt(b.lifestealPerHit,1):'&mdash;');
   setWithDiff('statLifestealSec', s.lifestealPerSec, s.lifestealPerHit>0?fmt(s.lifestealPerSec,1):'&mdash;', true, b?.lifestealPerSec, b&&b.lifestealPerHit>0?fmt(b.lifestealPerSec,1):'&mdash;');
   const totalRecov = s.totalHPRegen + s.lifestealPerSec;
   const totalRecovB = b ? b.totalHPRegen + b.lifestealPerSec : undefined;
   setWithDiff('statTotalRecovery', totalRecov, fmt(totalRecov, 1), true, totalRecovB, totalRecovB !== undefined ? fmt(totalRecovB, 1) : undefined);
-  setHtml('statCrisis', s.crisisRegen ? 'Yes (2x below 50%)' : '&mdash;');
-  setHtml('statCDR', s.cdr > 0 ? s.cdr + '%' : '&mdash;');
+  setHtml('statCrisis', s.crisisRegen ? 'Yes' : '&mdash;');
+  setWithDiff('statCDR', s.cdr, s.cdr > 0 ? s.cdr + '%' : '&mdash;', true, b?.cdr, b && b.cdr > 0 ? b.cdr + '%' : '&mdash;');
 
   setWithDiff('statStructPhysHit', s.sPhysPerHit, fmt(s.sPhysPerHit, 1), true, b?.sPhysPerHit, b?fmt(b.sPhysPerHit,1):undefined);
-  setHtml('statStructMagicHit', s.sMagicPerHit > 0 ? fmt(s.sMagicPerHit, 1) : '&mdash;');
-  setHtml('statStructBonusHit', fmt(s.sBonusPerHit, 1));
-  setHtml('statStructBurnDPS', fmt(s.sBurnDPS, 1));
+  setWithDiff('statStructMagicHit', s.sMagicPerHit, s.sMagicPerHit > 0 ? fmt(s.sMagicPerHit, 1) : '&mdash;', true, b?.sMagicPerHit, b && b.sMagicPerHit > 0 ? fmt(b.sMagicPerHit, 1) : '&mdash;');
+  setWithDiff('statStructBonusHit', s.sBonusPerHit, fmt(s.sBonusPerHit, 1), true, b?.sBonusPerHit, b ? fmt(b.sBonusPerHit, 1) : undefined);
+  setWithDiff('statStructBurnDPS', s.sBurnDPS, fmt(s.sBurnDPS, 1), true, b?.sBurnDPS, b ? fmt(b.sBurnDPS, 1) : undefined);
   setWithDiff('statStructTotalDPS', s.sTotalDPS, fmt(s.sTotalDPS, 1), true, b?.sTotalDPS, b?fmt(b.sTotalDPS,1):undefined);
   setWithDiff('statStructHTK', s.sHTK, s.sHTK, false, b?.sHTK, b?.sHTK);
   setWithDiff('statStructTTK', s.sTTK, s.sTTK===Infinity?'&infin;':fmt(s.sTTK,1)+'s', false, b?.sTTK, b?b.sTTK===Infinity?'&infin;':fmt(b.sTTK,1)+'s':undefined);
@@ -538,7 +539,16 @@ function renderStats() {
   setWithDiff('statEffHP', s.effHP, fmt(s.effHP, 0), true, b?.effHP, b?fmt(b.effHP,0):undefined);
   setWithDiff('statTTD', s.ttd, s.ttd===Infinity?'&infin;':fmt(s.ttd,1)+'s', true, b?.ttd, b?b.ttd===Infinity?'&infin;':fmt(b.ttd,1)+'s':undefined);
   const netEl = el('statNetHP');
-  if (netEl) { netEl.innerHTML = fmt(s.netHP, 1); netEl.className = s.netHP >= 0 ? 'val-green' : 'val-red'; }
+  if (netEl) {
+    if (compareMode && b) {
+      const clsA = s.netHP >= 0 ? 'sim-diff-up' : 'sim-diff-down';
+      const clsB = b.netHP >= 0 ? 'sim-diff-up' : 'sim-diff-down';
+      netEl.innerHTML = `<span class="${clsA}">${fmt(s.netHP,1)}</span> <span class="sim-diff sim-diff-neutral">vs</span> <span class="${clsB}">${fmt(b.netHP,1)}</span>`;
+    } else {
+      netEl.innerHTML = fmt(s.netHP, 1);
+      netEl.className = s.netHP >= 0 ? 'val-green' : 'val-red';
+    }
+  }
 
   // Tooltips
   const base = getBaseStats();
