@@ -288,18 +288,35 @@ function parsePassives(items) {
 
 // ── Simulation over time ─────────────────────────────────
 
-function simulateDPS(duration, totalAD, colossusDmg, BAT, bonusAS, runicMarkDmg, shadowRuneDmg, fervorMaxAS, fervorStacks) {
+function simulateDPS(duration, totalAD, colossusDmg, BAT, bonusAS, runicMarkDmg, shadowRuneDmg, fervorMaxAS, fervorStacks, spellbladeAS) {
   let totalPhys = 0, totalMagic = 0, time = 0, attacks = 0;
   let fervorCur = 0, runicUp = false, shadowUp = false;
+  // Spellblade: assume spells are cast periodically (roughly every 10s with CDR)
+  // and each spell grants spellbladeAS/(maxStacks) per cast, stacking
+  const sbAS = spellbladeAS || 0;
 
   while (time < duration) {
-    const curAS = bonusAS + (fervorCur * (fervorMaxAS / Math.max(fervorStacks, 1))) / 100;
-    time += BAT / (1 + curAS);
+    // Fervor ramp: each attack grants one stack
+    const fervorBonusAS = fervorStacks > 0 ? (fervorCur / fervorStacks) * fervorMaxAS / 100 : 0;
+    const curAS = bonusAS + fervorBonusAS + sbAS;
+    const cd = BAT / (1 + curAS);
+    time += cd;
     if (time > duration) break;
     attacks++;
+
     totalPhys += totalAD + colossusDmg;
-    if (runicMarkDmg > 0) { if (runicUp) { totalMagic += runicMarkDmg; runicUp = false; } else { runicUp = true; } }
-    if (shadowRuneDmg > 0) { if (shadowUp) { totalMagic += shadowRuneDmg; shadowUp = false; } else { shadowUp = true; } }
+
+    // Runic Mark: hit 1 applies mark, hit 2 consumes for damage, etc.
+    if (runicMarkDmg > 0) {
+      if (runicUp) { totalMagic += runicMarkDmg; runicUp = false; }
+      else { runicUp = true; }
+    }
+    if (shadowRuneDmg > 0) {
+      if (shadowUp) { totalMagic += shadowRuneDmg; shadowUp = false; }
+      else { shadowUp = true; }
+    }
+
+    // Fervor: gain one stack per attack, up to max
     if (fervorMaxAS > 0 && fervorCur < fervorStacks) fervorCur++;
   }
 
@@ -337,8 +354,9 @@ function computeAll() {
 
   const bonusAS = 0.008 * totalAgi + iStats.asPct / 100;
   const fervorAS = pas.fervorMaxAS / 100;
+  const spellbladeAS = pas.spellbladeMaxAS / 100;
   const cdBase = titan.BAT / (1 + bonusAS);
-  const cdMax = titan.BAT / (1 + bonusAS + fervorAS);
+  const cdMax = titan.BAT / (1 + bonusAS + fervorAS + spellbladeAS);
   const apsBase = 1 / cdBase;
   const apsMax = 1 / cdMax;
 
@@ -348,9 +366,9 @@ function computeAll() {
   const magicDPS = pas.runicMarkDmg * runicProcs + pas.shadowRuneDmg * shadowProcs;
   const totalDPS = physDPS + magicDPS;
 
-  const sim10 = simulateDPS(10, totalAD, colossusDmg, titan.BAT, bonusAS, pas.runicMarkDmg, pas.shadowRuneDmg, pas.fervorMaxAS, pas.fervorStacks);
-  const sim30 = simulateDPS(30, totalAD, colossusDmg, titan.BAT, bonusAS, pas.runicMarkDmg, pas.shadowRuneDmg, pas.fervorMaxAS, pas.fervorStacks);
-  const sim60 = simulateDPS(60, totalAD, colossusDmg, titan.BAT, bonusAS, pas.runicMarkDmg, pas.shadowRuneDmg, pas.fervorMaxAS, pas.fervorStacks);
+  const sim10 = simulateDPS(10, totalAD, colossusDmg, titan.BAT, bonusAS, pas.runicMarkDmg, pas.shadowRuneDmg, pas.fervorMaxAS, pas.fervorStacks, spellbladeAS);
+  const sim30 = simulateDPS(30, totalAD, colossusDmg, titan.BAT, bonusAS, pas.runicMarkDmg, pas.shadowRuneDmg, pas.fervorMaxAS, pas.fervorStacks, spellbladeAS);
+  const sim60 = simulateDPS(60, totalAD, colossusDmg, titan.BAT, bonusAS, pas.runicMarkDmg, pas.shadowRuneDmg, pas.fervorMaxAS, pas.fervorStacks, spellbladeAS);
 
   const lifestealPerHit = pas.lifestealFlat + (pas.lifestealPct / 100) * totalStr;
   const lifestealPerSec = lifestealPerHit * apsBase;
@@ -390,9 +408,20 @@ function computeAll() {
     // Ranged: 50% to hero, reduced by armor, reduced by Tidal Fortitude
     effTDPS = tDPS * tFactor * armorMult * (1 - pas.tidalFortPct / 100);
   }
-  const effHP = tDPS > 0 ? totalHP / (effTDPS / tDPS) : totalHP;
-  const ttd = effTDPS > 0 ? totalHP / effTDPS : Infinity;
+  // Effective HP = how much raw tower DPS you can absorb before dying
+  const effHP = effTDPS > 0 ? totalHP / (effTDPS / tDPS) : Infinity;
+  // Net HP/s = sustain minus damage taken
   const netHP = totalHPRegen + lifestealPerSec - effTDPS;
+  // Time to die: if netHP >= 0, you outheal and never die
+  // Otherwise, you lose (effTDPS - sustain) HP per second from totalHP pool
+  let ttd;
+  if (effTDPS <= 0) {
+    ttd = Infinity;
+  } else if (netHP >= 0) {
+    ttd = Infinity; // outhealing
+  } else {
+    ttd = totalHP / (-netHP); // you lose |netHP| HP per second
+  }
 
   return {
     totalStr, totalAgi, totalInt,
@@ -500,7 +529,9 @@ function renderStats() {
     ? `${tDPSv} x ${tF} (magic) x (1 - ${fmt(s.mdr,0)}% MDR)${s.tidalFortPct > 0 ? ` x (1 - ${s.tidalFortPct}% Tidal Fort)` : ''}\n= ${fmt(s.effTDPS,1)}`
     : `${tDPSv} x ${tF} (ranged) x ${fmt(s.armorMult,3)} (armor ${fmt(s.totalArmor,1)})${s.tidalFortPct > 0 ? ` x (1 - ${s.tidalFortPct}% Tidal Fort)` : ''}\n= ${fmt(s.effTDPS,1)}`);
   tip('statEffHP', `${fmt(s.totalHP,0)} / (${fmt(s.effTDPS,1)} / ${tDPSv})\n= ${fmt(s.effHP,0)}`);
-  tip('statTTD', `${fmt(s.totalHP,0)} / ${fmt(s.effTDPS,1)}\n= ${s.ttd === Infinity ? 'inf' : fmt(s.ttd,1) + 's'}`);
+  tip('statTTD', s.netHP >= 0
+    ? `Outhealing! Regen(${fmt(s.totalHPRegen,1)}) + Lifesteal(${fmt(s.lifestealPerSec,1)}) >= Tower(${fmt(s.effTDPS,1)})`
+    : `${fmt(s.totalHP,0)} HP / ${fmt(-s.netHP,1)} net DPS (${fmt(s.effTDPS,1)} tower - ${fmt(s.totalHPRegen+s.lifestealPerSec,1)} sustain)\n= ${fmt(s.ttd,1)}s`);
   tip('statNetHP', `Regen(${fmt(s.totalHPRegen,1)}) + Lifesteal(${fmt(s.lifestealPerSec,1)}) - Tower(${fmt(s.effTDPS,1)})\n= ${fmt(s.netHP,1)}/s`);
 
   // Titan attrs display
