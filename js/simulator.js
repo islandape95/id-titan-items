@@ -360,11 +360,19 @@ function computeAll() {
   const apsBase = 1 / cdBase;
   const apsMax = 1 / cdMax;
 
+  // Instant DPS (no stacks)
   const physDPS = effectiveAD * apsBase;
   const runicProcs = pas.runicMarkDmg > 0 ? apsBase / 2 : 0;
   const shadowProcs = pas.shadowRuneDmg > 0 ? apsBase / 2 : 0;
   const magicDPS = pas.runicMarkDmg * runicProcs + pas.shadowRuneDmg * shadowProcs;
   const totalDPS = physDPS + magicDPS;
+
+  // Ramped DPS (max Fervor + Spellblade stacks)
+  const physDPSMax = effectiveAD * apsMax;
+  const runicProcsMax = pas.runicMarkDmg > 0 ? apsMax / 2 : 0;
+  const shadowProcsMax = pas.shadowRuneDmg > 0 ? apsMax / 2 : 0;
+  const magicDPSMax = pas.runicMarkDmg * runicProcsMax + pas.shadowRuneDmg * shadowProcsMax;
+  const totalDPSMax = physDPSMax + magicDPSMax;
 
   const sim10 = simulateDPS(10, totalAD, colossusDmg, titan.BAT, bonusAS, pas.runicMarkDmg, pas.shadowRuneDmg, pas.fervorMaxAS, pas.fervorStacks, spellbladeAS);
   const sim30 = simulateDPS(30, totalAD, colossusDmg, titan.BAT, bonusAS, pas.runicMarkDmg, pas.shadowRuneDmg, pas.fervorMaxAS, pas.fervorStacks, spellbladeAS);
@@ -428,7 +436,7 @@ function computeAll() {
     totalHP, totalMana, totalArmor, armorRed, armorMult, mdr: iStats.mdr,
     totalHPRegen, totalManaRegen,
     effectiveAD, totalAD, colossusDmg, auraADBonus, baseDamage: base.baseDamage, cdBase, cdMax, apsBase, apsMax,
-    physDPS, magicDPS, totalDPS,
+    physDPS, magicDPS, totalDPS, totalDPSMax,
     sim10, sim30, sim60,
     lifestealPerHit, lifestealPerSec, crisisRegen: pas.crisisRegen, cdr,
     tidalFortPct: pas.tidalFortPct,
@@ -461,6 +469,7 @@ function renderStats() {
   setHtml('statPhysDPS', fmt(s.physDPS, 1));
   setHtml('statMagicDPS', fmt(s.magicDPS, 1));
   setHtml('statTotalDPS', fmt(s.totalDPS, 1));
+  setHtml('statTotalDPSMax', s.totalDPSMax !== s.totalDPS ? fmt(s.totalDPSMax, 1) : '&mdash;');
 
   // DPS over time (selected subtab)
   const selDur = parseInt(document.querySelector('.sim-subtab.active')?.dataset.dur) || 10;
