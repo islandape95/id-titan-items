@@ -452,8 +452,11 @@ function computeAll(items, overrides, titanKey, level) {
     // Ranged: 50% to hero, reduced by armor, reduced by Tidal Fortitude
     effTDPS = tDPS * tFactor * armorMult * (1 - pas.tidalFortPct / 100);
   }
-  // Effective HP = how much raw tower DPS you can absorb before dying
-  const effHP = effTDPS > 0 ? totalHP / (effTDPS / tDPS) : Infinity;
+  // Effective HP = total HP / damage multiplier (independent of input DPS)
+  const dmgMult = tType === 'magic'
+    ? tFactor * (1 - iStats.mdr / 100) * (1 - pas.tidalFortPct / 100)
+    : tFactor * armorMult * (1 - pas.tidalFortPct / 100);
+  const effHP = dmgMult > 0 ? totalHP / dmgMult : Infinity;
   // Net HP/s = sustain minus damage taken
   const netHP = totalHPRegen + lifestealPerSec - effTDPS;
   // Time to die: if netHP >= 0, you outheal and never die
@@ -477,7 +480,7 @@ function computeAll(items, overrides, titanKey, level) {
     lifestealPerHit, lifestealPerSec, crisisRegen: pas.crisisRegen, cdr,
     tidalFortPct: pas.tidalFortPct,
     sPhysPerHit, sMagicPerHit, sBonusPerHit, sBurnDPS, sTotalDPS, sHTK, sTTK,
-    effTDPS, effHP, ttd, netHP,
+    effTDPS, dmgMult, effHP, ttd, netHP,
     passives: pas, iStats
   };
 }
@@ -590,7 +593,7 @@ function renderStats() {
   tip('statTowerEffDPS', tTp === 'magic'
     ? `${tDPSv} x ${tF} (magic) x (1 - ${fmt(s.mdr,0)}% MDR)${s.tidalFortPct > 0 ? ` x (1 - ${s.tidalFortPct}% Tidal Fort)` : ''}\n= ${fmt(s.effTDPS,1)}`
     : `${tDPSv} x ${tF} (ranged) x ${fmt(s.armorMult,3)} (armor ${fmt(s.totalArmor,1)})${s.tidalFortPct > 0 ? ` x (1 - ${s.tidalFortPct}% Tidal Fort)` : ''}\n= ${fmt(s.effTDPS,1)}`);
-  tip('statEffHP', `${fmt(s.totalHP,0)} / (${fmt(s.effTDPS,1)} / ${tDPSv})\n= ${fmt(s.effHP,0)}`);
+  tip('statEffHP', `HP(${fmt(s.totalHP,0)}) / dmg_mult(${fmt(s.dmgMult,4)})\n= ${fmt(s.effHP,0)}\nHow much raw damage needed to kill you`);
   tip('statTTD', s.netHP >= 0
     ? `Outhealing! Regen(${fmt(s.totalHPRegen,1)}) + Lifesteal(${fmt(s.lifestealPerSec,1)}) >= Tower(${fmt(s.effTDPS,1)})`
     : `${fmt(s.totalHP,0)} HP / ${fmt(-s.netHP,1)} net DPS (${fmt(s.effTDPS,1)} tower - ${fmt(s.totalHPRegen+s.lifestealPerSec,1)} sustain)\n= ${fmt(s.ttd,1)}s`);
