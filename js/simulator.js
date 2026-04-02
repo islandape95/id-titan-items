@@ -52,7 +52,10 @@ let equippedItems = [null, null, null, null, null, null];
 let itemOverrides = [{}, {}, {}, {}, {}, {}];
 let versionItems = [];
 let pickerSlotIdx = -1;
-let compareSnapshot = null; // stored computeAll() result for comparison
+let pickerTarget = 'A'; // 'A' or 'B'
+let compareMode = false;
+let equippedItemsB = [null, null, null, null, null, null];
+let itemOverridesB = [{}, {}, {}, {}, {}, {}];
 
 // ── Helpers ──────────────────────────────────────────────
 
@@ -66,24 +69,21 @@ function extractNum(desc, rx) { const m = desc.match(rx); return m ? parseFloat(
 function el(id) { return document.getElementById(id); }
 function setHtml(id, val) { const e = el(id); if (e) e.innerHTML = val; }
 
-// Show a stat value with comparison diff. higherIsBetter: true for HP/DPS, false for TTD/DPS taken
-function setWithDiff(id, current, formatted, higherIsBetter, snapVal) {
+// Show A vs B comparison
+function setWithDiff(id, valA, fmtA, higherIsBetter, valB, fmtB) {
   const e = el(id);
   if (!e) return;
-  if (!compareSnapshot || snapVal === undefined || snapVal === null || !isFinite(snapVal) || !isFinite(current)) {
-    e.innerHTML = formatted;
+  if (!compareMode || valB === undefined || valB === null) {
+    e.innerHTML = fmtA;
     return;
   }
-  const diff = current - snapVal;
+  const diff = valA - valB;
   if (Math.abs(diff) < 0.05) {
-    e.innerHTML = formatted;
+    e.innerHTML = `${fmtA} <span class="sim-diff sim-diff-neutral">vs ${fmtB}</span>`;
     return;
   }
-  const isGood = higherIsBetter ? diff > 0 : diff < 0;
-  const sign = diff > 0 ? '+' : '';
-  const cls = isGood ? 'sim-diff-up' : 'sim-diff-down';
-  const diffStr = Math.abs(diff) > 100 ? fmt(diff, 0) : fmt(diff, 1);
-  e.innerHTML = `${formatted} <span class="sim-diff ${cls}">(${sign}${diffStr})</span>`;
+  const isGoodA = higherIsBetter ? diff > 0 : diff < 0;
+  e.innerHTML = `<span class="${isGoodA ? 'sim-diff-up' : 'sim-diff-down'}">${fmtA}</span> <span class="sim-diff sim-diff-neutral">vs</span> <span class="${isGoodA ? 'sim-diff-down' : 'sim-diff-up'}">${fmtB}</span>`;
 }
 
 // ── Titan base stats ─────────────────────────────────────
@@ -348,11 +348,15 @@ function simulateDPS(duration, totalAD, colossusDmg, BAT, bonusAS, runicMarkDmg,
 
 // ── Main computation ─────────────────────────────────────
 
-function computeAll() {
+function computeAll(items, overrides) {
+  items = items || equippedItems;
+  const savedOverrides = itemOverrides;
+  if (overrides) itemOverrides = overrides;
   const titan = TITANS[currentTitan];
   const base = getBaseStats();
-  const iStats = parseItemStats(equippedItems);
-  const pas = parsePassives(equippedItems);
+  const iStats = parseItemStats(items);
+  const pas = parsePassives(items);
+  if (overrides) itemOverrides = savedOverrides;
 
   const totalStr = base.str + iStats.vit;
   const totalAgi = base.agi + iStats.cel;
@@ -472,26 +476,26 @@ function computeAll() {
 function renderStats() {
   let s;
   try { s = computeAll(); } catch(e) { console.error('Sim error:', e); return; }
+  let b = null;
+  if (compareMode) { try { b = computeAll(equippedItemsB, itemOverridesB); } catch(e) {} }
 
-  const cs = compareSnapshot; // shorthand
-  setWithDiff('statHP', s.totalHP, fmt(s.totalHP, 0), true, cs?.totalHP);
-  setWithDiff('statMana', s.totalMana, fmt(s.totalMana, 0), true, cs?.totalMana);
-  setWithDiff('statArmor', s.totalArmor, fmt(s.totalArmor, 1), true, cs?.totalArmor);
-  setWithDiff('statArmorReduction', s.armorRed * 100, fmt(s.armorRed * 100, 1) + '%', true, cs ? cs.armorRed * 100 : undefined);
-  setHtml('statMDR', fmt(s.mdr, 0) + '%');
-  setWithDiff('statHPRegen', s.totalHPRegen, fmt(s.totalHPRegen, 1), true, cs?.totalHPRegen);
-  setWithDiff('statManaRegen', s.totalManaRegen, fmt(s.totalManaRegen, 1), true, cs?.totalManaRegen);
+  setWithDiff('statHP', s.totalHP, fmt(s.totalHP, 0), true, b?.totalHP, b ? fmt(b.totalHP, 0) : undefined);
+  setWithDiff('statMana', s.totalMana, fmt(s.totalMana, 0), true, b?.totalMana, b ? fmt(b.totalMana, 0) : undefined);
+  setWithDiff('statArmor', s.totalArmor, fmt(s.totalArmor, 1), true, b?.totalArmor, b ? fmt(b.totalArmor, 1) : undefined);
+  setWithDiff('statArmorReduction', s.armorRed*100, fmt(s.armorRed*100,1)+'%', true, b?b.armorRed*100:undefined, b?fmt(b.armorRed*100,1)+'%':undefined);
+  setWithDiff('statMDR', s.mdr, fmt(s.mdr,0)+'%', true, b?.mdr, b?fmt(b.mdr,0)+'%':undefined);
+  setWithDiff('statHPRegen', s.totalHPRegen, fmt(s.totalHPRegen, 1), true, b?.totalHPRegen, b ? fmt(b.totalHPRegen, 1) : undefined);
+  setWithDiff('statManaRegen', s.totalManaRegen, fmt(s.totalManaRegen, 1), true, b?.totalManaRegen, b ? fmt(b.totalManaRegen, 1) : undefined);
 
-  const adExtra = s.colossusDmg > 0 ? ` <span class="sim-sub">(${fmt(s.totalAD,0)}+${fmt(s.colossusDmg,0)})</span>` : '';
-  setWithDiff('statAD', s.effectiveAD, fmt(s.effectiveAD, 1) + adExtra, true, cs?.effectiveAD);
+  setWithDiff('statAD', s.effectiveAD, fmt(s.effectiveAD, 1), true, b?.effectiveAD, b ? fmt(b.effectiveAD, 1) : undefined);
   setHtml('statASBase', fmt(s.cdBase, 3) + 's');
   setHtml('statASMax', s.apsMax !== s.apsBase ? fmt(s.cdMax, 3) + 's' : '&mdash;');
-  setWithDiff('statAPSBase', s.apsBase, fmt(s.apsBase, 2), true, cs?.apsBase);
+  setWithDiff('statAPSBase', s.apsBase, fmt(s.apsBase, 2), true, b?.apsBase, b ? fmt(b.apsBase, 2) : undefined);
   setHtml('statAPSMax', s.apsMax !== s.apsBase ? fmt(s.apsMax, 2) : '&mdash;');
-  setWithDiff('statPhysDPS', s.physDPS, fmt(s.physDPS, 1), true, cs?.physDPS);
-  setWithDiff('statMagicDPS', s.magicDPS, fmt(s.magicDPS, 1), true, cs?.magicDPS);
-  setWithDiff('statTotalDPS', s.totalDPS, fmt(s.totalDPS, 1), true, cs?.totalDPS);
-  setWithDiff('statTotalDPSMax', s.totalDPSMax, s.totalDPSMax !== s.totalDPS ? fmt(s.totalDPSMax, 1) : '&mdash;', true, cs?.totalDPSMax);
+  setWithDiff('statPhysDPS', s.physDPS, fmt(s.physDPS, 1), true, b?.physDPS, b ? fmt(b.physDPS, 1) : undefined);
+  setWithDiff('statMagicDPS', s.magicDPS, fmt(s.magicDPS, 1), true, b?.magicDPS, b ? fmt(b.magicDPS, 1) : undefined);
+  setWithDiff('statTotalDPS', s.totalDPS, fmt(s.totalDPS, 1), true, b?.totalDPS, b ? fmt(b.totalDPS, 1) : undefined);
+  setWithDiff('statTotalDPSMax', s.totalDPSMax, s.totalDPSMax!==s.totalDPS?fmt(s.totalDPSMax,1):'&mdash;', true, b?.totalDPSMax, b&&b.totalDPSMax!==b.totalDPS?fmt(b.totalDPSMax,1):'&mdash;');
 
   // DPS over time (selected subtab)
   const selDur = parseInt(document.querySelector('.sim-subtab.active')?.dataset.dur) || 10;
@@ -499,24 +503,25 @@ function renderStats() {
   setHtml('statSimDPS', fmt(selSim.totalDPS, 1));
   setHtml('statSimDmg', fmt(selSim.total, 0));
 
-  setWithDiff('statLifestealHit', s.lifestealPerHit, s.lifestealPerHit > 0 ? fmt(s.lifestealPerHit, 1) : '&mdash;', true, cs?.lifestealPerHit);
-  setWithDiff('statLifestealSec', s.lifestealPerSec, s.lifestealPerHit > 0 ? fmt(s.lifestealPerSec, 1) : '&mdash;', true, cs?.lifestealPerSec);
+  setWithDiff('statLifestealHit', s.lifestealPerHit, s.lifestealPerHit>0?fmt(s.lifestealPerHit,1):'&mdash;', true, b?.lifestealPerHit, b&&b.lifestealPerHit>0?fmt(b.lifestealPerHit,1):'&mdash;');
+  setWithDiff('statLifestealSec', s.lifestealPerSec, s.lifestealPerHit>0?fmt(s.lifestealPerSec,1):'&mdash;', true, b?.lifestealPerSec, b&&b.lifestealPerHit>0?fmt(b.lifestealPerSec,1):'&mdash;');
   const totalRecov = s.totalHPRegen + s.lifestealPerSec;
-  setWithDiff('statTotalRecovery', totalRecov, fmt(totalRecov, 1), true, cs ? cs.totalHPRegen + cs.lifestealPerSec : undefined);
+  const totalRecovB = b ? b.totalHPRegen + b.lifestealPerSec : undefined;
+  setWithDiff('statTotalRecovery', totalRecov, fmt(totalRecov, 1), true, totalRecovB, totalRecovB !== undefined ? fmt(totalRecovB, 1) : undefined);
   setHtml('statCrisis', s.crisisRegen ? 'Yes (2x below 50%)' : '&mdash;');
   setHtml('statCDR', s.cdr > 0 ? s.cdr + '%' : '&mdash;');
 
-  setWithDiff('statStructPhysHit', s.sPhysPerHit, fmt(s.sPhysPerHit, 1), true, cs?.sPhysPerHit);
+  setWithDiff('statStructPhysHit', s.sPhysPerHit, fmt(s.sPhysPerHit, 1), true, b?.sPhysPerHit, b?fmt(b.sPhysPerHit,1):undefined);
   setHtml('statStructMagicHit', s.sMagicPerHit > 0 ? fmt(s.sMagicPerHit, 1) : '&mdash;');
   setHtml('statStructBonusHit', fmt(s.sBonusPerHit, 1));
   setHtml('statStructBurnDPS', fmt(s.sBurnDPS, 1));
-  setWithDiff('statStructTotalDPS', s.sTotalDPS, fmt(s.sTotalDPS, 1), true, cs?.sTotalDPS);
-  setHtml('statStructHTK', s.sHTK);
-  setWithDiff('statStructTTK', s.sTTK, s.sTTK === Infinity ? '&infin;' : fmt(s.sTTK, 1) + 's', false, cs?.sTTK);
+  setWithDiff('statStructTotalDPS', s.sTotalDPS, fmt(s.sTotalDPS, 1), true, b?.sTotalDPS, b?fmt(b.sTotalDPS,1):undefined);
+  setWithDiff('statStructHTK', s.sHTK, s.sHTK, false, b?.sHTK, b?.sHTK);
+  setWithDiff('statStructTTK', s.sTTK, s.sTTK===Infinity?'&infin;':fmt(s.sTTK,1)+'s', false, b?.sTTK, b?b.sTTK===Infinity?'&infin;':fmt(b.sTTK,1)+'s':undefined);
 
-  setWithDiff('statTowerEffDPS', s.effTDPS, fmt(s.effTDPS, 1), false, cs?.effTDPS);
-  setWithDiff('statEffHP', s.effHP, fmt(s.effHP, 0), true, cs?.effHP);
-  setWithDiff('statTTD', s.ttd, s.ttd === Infinity ? '&infin;' : fmt(s.ttd, 1) + 's', true, cs?.ttd);
+  setWithDiff('statTowerEffDPS', s.effTDPS, fmt(s.effTDPS, 1), false, b?.effTDPS, b?fmt(b.effTDPS,1):undefined);
+  setWithDiff('statEffHP', s.effHP, fmt(s.effHP, 0), true, b?.effHP, b?fmt(b.effHP,0):undefined);
+  setWithDiff('statTTD', s.ttd, s.ttd===Infinity?'&infin;':fmt(s.ttd,1)+'s', true, b?.ttd, b?b.ttd===Infinity?'&infin;':fmt(b.ttd,1)+'s':undefined);
   const netEl = el('statNetHP');
   if (netEl) { netEl.innerHTML = fmt(s.netHP, 1); netEl.className = s.netHP >= 0 ? 'val-green' : 'val-red'; }
 
@@ -590,6 +595,10 @@ function renderStats() {
   // Total cost
   const cost = equippedItems.reduce((sum, it) => sum + (it ? (it.totalCost || it.cost || 0) : 0), 0);
   setHtml('simTotalCost', cost + 'g');
+  if (compareMode) {
+    const costB = equippedItemsB.reduce((sum, it) => sum + (it ? (it.totalCost || it.cost || 0) : 0), 0);
+    setHtml('simTotalCostB', costB + 'g');
+  }
 }
 
 // ── Key value extraction for editable passives ───────────
@@ -679,15 +688,20 @@ function getKeyValue(name, desc) {
 
 // ── Item slots ───────────────────────────────────────────
 
-function renderSlots() {
-  const container = el('simSlots');
+function renderSlots(target) {
+  target = target || 'A';
+  const isB = target === 'B';
+  const items = isB ? equippedItemsB : equippedItems;
+  const overrides = isB ? itemOverridesB : itemOverrides;
+  const container = el(isB ? 'simSlotsB' : 'simSlots');
+  if (!container) return;
   container.innerHTML = '';
   const catC = { offensive: 'var(--c-offensive)', defensive: 'var(--c-defensive)', both: 'var(--c-both)', utility: 'var(--c-utility)' };
 
   for (let i = 0; i < 6; i++) {
     const slot = document.createElement('div');
     slot.className = 'sim-slot';
-    const item = equippedItems[i];
+    const item = items[i];
 
     if (item) {
       slot.classList.add('sim-slot-filled');
@@ -742,26 +756,24 @@ function renderSlots() {
           const si = parseInt(inp.dataset.slot);
           const ei = parseInt(inp.dataset.eidx);
           const orig = parseFloat(inp.dataset.orig);
-          if (!itemOverrides[si].passiveVals) itemOverrides[si].passiveVals = {};
+          if (!overrides[si].passiveVals) overrides[si].passiveVals = {};
 
           if (parseFloat(inp.value) === orig || inp.value === '') {
-            delete itemOverrides[si].passiveVals[ei];
-            delete itemOverrides[si].passives?.[ei];
+            delete overrides[si].passiveVals[ei];
+            delete overrides[si].passives?.[ei];
             inp.classList.remove('sim-overridden');
           } else {
-            itemOverrides[si].passiveVals[ei] = parseFloat(inp.value);
+            overrides[si].passiveVals[ei] = parseFloat(inp.value);
             inp.classList.add('sim-overridden');
-            // Rebuild description with the key number replaced
-            const item = equippedItems[si];
+            const item = items[si];
             const allEf = [...(item?.passives || [])];
             if (item?.active) allEf.push({ name: item.active.name, description: item.active.description });
             const origDesc = allEf[ei]?.description || '';
             const kv = getKeyValue(allEf[ei]?.name, origDesc);
             if (kv.val !== null) {
-              // Replace the specific number the parser looks for
               const newDesc = origDesc.replace(String(kv.val), String(parseFloat(inp.value)));
-              if (!itemOverrides[si].passives) itemOverrides[si].passives = {};
-              itemOverrides[si].passives[ei] = newDesc;
+              if (!overrides[si].passives) overrides[si].passives = {};
+              overrides[si].passives[ei] = newDesc;
             }
           }
           renderStats();
@@ -771,9 +783,9 @@ function renderSlots() {
 
       slot.querySelector('.sim-slot-remove').addEventListener('click', e => {
         e.stopPropagation();
-        equippedItems[i] = null;
-        itemOverrides[i] = {};
-        renderSlots();
+        items[i] = null;
+        overrides[i] = {};
+        renderSlots(target);
         renderStats();
       });
 
@@ -781,12 +793,12 @@ function renderSlots() {
         inp.addEventListener('input', () => {
           const si = parseInt(inp.dataset.stat);
           const orig = parseFloat(inp.dataset.orig);
-          if (!itemOverrides[i].stats) itemOverrides[i].stats = {};
+          if (!overrides[i].stats) overrides[i].stats = {};
           if (parseFloat(inp.value) === orig || inp.value === '') {
-            delete itemOverrides[i].stats[si];
+            delete overrides[i].stats[si];
             inp.classList.remove('sim-overridden');
           } else {
-            itemOverrides[i].stats[si] = parseFloat(inp.value);
+            overrides[i].stats[si] = parseFloat(inp.value);
             inp.classList.add('sim-overridden');
           }
           renderStats();
@@ -796,11 +808,12 @@ function renderSlots() {
 
       slot.addEventListener('click', e => {
         if (e.target.closest('.sim-slot-remove, .sim-stat-input')) return;
+        pickerTarget = target;
         openPicker(i);
       });
     } else {
       slot.innerHTML = '<div class="sim-slot-empty">+ Add Item</div>';
-      slot.addEventListener('click', () => openPicker(i));
+      slot.addEventListener('click', () => { pickerTarget = target; openPicker(i); });
     }
     container.appendChild(slot);
   }
@@ -853,10 +866,12 @@ function renderPickerList() {
     row.addEventListener('click', () => {
       const item = versionItems.find(i => i.id === row.dataset.id);
       if (item && pickerSlotIdx >= 0) {
-        equippedItems[pickerSlotIdx] = JSON.parse(JSON.stringify(item));
-        itemOverrides[pickerSlotIdx] = {};
+        const tgt = pickerTarget === 'B' ? equippedItemsB : equippedItems;
+        const ovr = pickerTarget === 'B' ? itemOverridesB : itemOverrides;
+        tgt[pickerSlotIdx] = JSON.parse(JSON.stringify(item));
+        ovr[pickerSlotIdx] = {};
         closePicker();
-        renderSlots();
+        renderSlots(pickerTarget);
         renderStats();
       }
     });
@@ -929,19 +944,12 @@ function renderPickerList() {
     });
   });
 
-  // Compare buttons
-  el('compareSnap').addEventListener('click', () => {
-    try { compareSnapshot = computeAll(); } catch(e) { return; }
-    el('compareSnap').textContent = 'Snapshot A (saved)';
-    el('compareSnap').classList.add('snapped');
-    el('compareClear').hidden = false;
-    renderStats();
-  });
-  el('compareClear').addEventListener('click', () => {
-    compareSnapshot = null;
-    el('compareSnap').textContent = 'Snapshot A';
-    el('compareSnap').classList.remove('snapped');
-    el('compareClear').hidden = true;
+  // Compare mode toggle
+  el('compareModeBtn').addEventListener('click', () => {
+    compareMode = !compareMode;
+    el('compareModeBtn').classList.toggle('active', compareMode);
+    el('simRightLoadout').hidden = !compareMode;
+    if (compareMode) renderSlots('B');
     renderStats();
   });
 
@@ -965,6 +973,6 @@ function renderPickerList() {
     });
   });
 
-  renderSlots();
+  renderSlots('A');
   renderStats();
 })();

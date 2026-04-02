@@ -2353,28 +2353,32 @@ body {
 .sim-const-row b { color: var(--text); }
 
 /* Compare mode */
-.sim-compare-btns {
+.sim-topbar {
   display: flex;
-  gap: 6px;
-  margin-top: 8px;
+  justify-content: flex-end;
+  padding: 6px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
 }
-.sim-compare-btn {
-  flex: 1;
-  padding: 6px 8px;
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--accent);
+.sim-mode-btn {
+  padding: 5px 14px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
   background: transparent;
-  color: var(--accent);
-  font-size: 10px;
+  color: var(--text-muted);
+  font-size: 11px;
   font-weight: 600;
   font-family: inherit;
   cursor: pointer;
   transition: all 0.12s;
 }
-.sim-compare-btn:hover { background: var(--accent); color: #0d1117; }
-.sim-compare-btn.snapped { background: var(--accent); color: #0d1117; }
-.sim-compare-clear { border-color: var(--c-offensive); color: var(--c-offensive); }
-.sim-compare-clear:hover { background: var(--c-offensive); }
+.sim-mode-btn:hover { border-color: var(--accent); color: var(--text); }
+.sim-mode-btn.active { background: var(--accent); border-color: var(--accent); color: #0d1117; }
+
+.sim-right-loadout {
+  border-left: 1px solid var(--border);
+  border-right: none;
+}
 
 .sim-diff { font-size: 9px; margin-left: 4px; font-weight: 700; }
 .sim-diff-up { color: #34d399; }

@@ -21,9 +21,13 @@
     </nav>
   </header>
 
+  <div class="sim-topbar">
+    <button class="sim-mode-btn" id="compareModeBtn">Compare Loadouts</button>
+  </div>
+
   <div class="sim-layout">
 
-    <!-- LEFT -->
+    <!-- LEFT: Loadout A -->
     <aside class="sim-left">
       <div class="sim-panel">
         <div class="sim-panel-title">Titan</div>
@@ -44,12 +48,16 @@
       </div>
 
       <div class="sim-panel">
-        <div class="sim-panel-title">Loadout <span class="sim-gold" id="simTotalCost">0g</span></div>
+        <div class="sim-panel-title">Loadout A <span class="sim-gold" id="simTotalCost">0g</span></div>
         <div class="sim-slots" id="simSlots"></div>
-        <div class="sim-compare-btns">
-          <button class="sim-compare-btn" id="compareSnap">Snapshot A</button>
-          <button class="sim-compare-btn sim-compare-clear" id="compareClear" hidden>Clear Compare</button>
-        </div>
+      </div>
+    </aside>
+
+    <!-- RIGHT: Loadout B (hidden by default) -->
+    <aside class="sim-left sim-right-loadout" id="simRightLoadout" hidden>
+      <div class="sim-panel">
+        <div class="sim-panel-title">Loadout B <span class="sim-gold" id="simTotalCostB">0g</span></div>
+        <div class="sim-slots" id="simSlotsB"></div>
       </div>
     </aside>
 
