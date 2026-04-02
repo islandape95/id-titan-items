@@ -575,21 +575,36 @@ function renderStats() {
   setHtml('titanAttrs', `<span class="attr-vit">VIT ${fmt(s.totalStr,1)}</span> <span class="attr-cel">CEL ${fmt(s.totalAgi,1)}</span> <span class="attr-wis">WIS ${fmt(s.totalInt,1)}</span> <span class="attr-bcd">BAT ${t.BAT}</span>`);
 
   // Passives summary with full descriptions
-  const pList = el('statPassivesList');
-  if (s.passives.effects.length === 0) {
-    pList.innerHTML = '<div class="sim-passive-empty">Equip items to see effects</div>';
+  function renderEffectsList(targetEl, effects) {
+    if (!targetEl) return;
+    if (effects.length === 0) {
+      targetEl.innerHTML = '<div class="sim-passive-empty">Equip items to see effects</div>';
+    } else {
+      targetEl.innerHTML = effects.map(e =>
+        `<div class="sim-effect-row">
+          <div class="sim-effect-head">
+            <span class="sim-effect-tag sim-effect-tag-${e.tag.toLowerCase()}">${e.tag}</span>
+            <span class="sim-effect-name">${esc(e.name)}</span>
+            <span class="sim-effect-val">${esc(e.val)}</span>
+            <span class="sim-effect-item">${esc(e.item)}</span>
+          </div>
+          <div class="sim-effect-desc">${esc(e.desc)}</div>
+        </div>`
+      ).join('');
+    }
+  }
+  renderEffectsList(el('statPassivesList'), s.passives.effects);
+
+  // Compare mode: show B passives
+  const passivesCardB = el('passivesCardB');
+  const passivesRow = el('passivesRow');
+  if (compareMode && b) {
+    passivesCardB.hidden = false;
+    passivesRow.style.gridTemplateColumns = '1fr 1fr';
+    renderEffectsList(el('statPassivesListB'), b.passives.effects);
   } else {
-    pList.innerHTML = s.passives.effects.map(e =>
-      `<div class="sim-effect-row">
-        <div class="sim-effect-head">
-          <span class="sim-effect-tag sim-effect-tag-${e.tag.toLowerCase()}">${e.tag}</span>
-          <span class="sim-effect-name">${esc(e.name)}</span>
-          <span class="sim-effect-val">${esc(e.val)}</span>
-          <span class="sim-effect-item">${esc(e.item)}</span>
-        </div>
-        <div class="sim-effect-desc">${esc(e.desc)}</div>
-      </div>`
-    ).join('');
+    passivesCardB.hidden = true;
+    passivesRow.style.gridTemplateColumns = '1fr';
   }
 
   // Total cost

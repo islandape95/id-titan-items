@@ -204,10 +204,16 @@
         </div>
 
         <!-- Passives -->
-        <div class="sim-row sim-row-1">
+        <div class="sim-row" id="passivesRow" style="grid-template-columns: 1fr">
           <div class="sim-card">
-            <div class="sim-card-title">&#10024; Active Item Effects</div>
+            <div class="sim-card-title">&#10024; Active Item Effects (A)</div>
             <div id="statPassivesList" class="sim-passives-list">
+              <div class="sim-passive-empty">Equip items to see effects</div>
+            </div>
+          </div>
+          <div class="sim-card" id="passivesCardB" hidden>
+            <div class="sim-card-title">&#10024; Active Item Effects (B)</div>
+            <div id="statPassivesListB" class="sim-passives-list">
               <div class="sim-passive-empty">Equip items to see effects</div>
             </div>
           </div>
