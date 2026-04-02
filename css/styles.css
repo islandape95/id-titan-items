@@ -1894,10 +1894,46 @@ body {
 
   /* Simulator mobile */
   .sim-layout { flex-direction: column; }
-  .sim-left { width: 100%; border-right: none; border-bottom: 1px solid var(--border); max-height: none; }
-  .sim-right { border-left: none; }
+  .sim-left { width: 100%; border-right: none; border-bottom: 1px solid var(--border); max-height: none; overflow: visible; }
+  .sim-right { border-left: none; padding: 10px; }
+  .sim-right-loadout { border-left: none; border-top: 1px solid var(--border); }
   .sim-row { grid-template-columns: 1fr !important; }
-  .sim-picker { width: 95vw; max-width: 95vw; }
+  .sim-row-3 { grid-template-columns: 1fr !important; }
+  .sim-slots { grid-template-columns: repeat(2, 1fr); }
+  .sim-picker { width: 95vw; max-width: 95vw; max-height: 85vh; }
+  .sim-picker-list { max-height: 60vh; }
+  .sim-topbar { padding: 6px 10px; }
+  .sim-mode-btn { font-size: 10px; padding: 5px 10px; }
+  .sim-card { padding: 8px 10px; }
+  .sim-stat-row { font-size: 10px; }
+  .sim-stat-row span:last-child { font-size: 10px; }
+  .sim-highlight { font-size: 11px; }
+  .sim-card-title { font-size: 9px; }
+  .sim-inline-config { gap: 4px; font-size: 9px; }
+  .sim-inline-config label { font-size: 9px; }
+  .sim-input-sm { width: 55px; font-size: 10px; }
+  .sim-select-sm { font-size: 10px; }
+  .sim-preset-btn { font-size: 10px; padding: 5px 8px; }
+  .sim-const-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .sim-effect-row { padding: 4px 0; }
+  .sim-effect-desc { font-size: 9px; }
+  .sim-diff { font-size: 8px; }
+  .sim-slot { padding: 6px; }
+  .sim-slot-name { font-size: 11px; }
+  .sim-slot-cost { font-size: 10px; }
+  .sim-stat-input { width: 42px; font-size: 10px; }
+  .sim-stat-label { font-size: 8px; }
+  .sim-passive-num { width: 36px; font-size: 8px; }
+  .sim-slot-passive, .sim-slot-active { font-size: 8px; }
+  .sim-slot-remove { opacity: 1; }
+  .sim-panel { padding: 10px; }
+  .sim-panel-title { font-size: 9px; }
+  .sim-select { font-size: 11px; }
+  .sim-level-num { font-size: 14px; }
+  .sim-titan-attrs { font-size: 10px; }
+  .sim-tower-row select { font-size: 9px; }
+  .sim-tower-info { font-size: 8px; }
+  .sim-disclaimer { font-size: 9px; padding: 8px 10px; }
 }
 
 /* ── Simulator ─────────────────────────────────────────── */
