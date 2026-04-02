@@ -56,6 +56,18 @@
     <!-- RIGHT: Loadout B (hidden by default) -->
     <aside class="sim-left sim-right-loadout" id="simRightLoadout" hidden>
       <div class="sim-panel">
+        <div class="sim-panel-title">Titan B <button class="sim-unlink-btn" id="unlinkTitanBtn" title="Use different titan/level for B">Shared</button></div>
+        <div id="titanBPanel" hidden>
+          <select id="titanSelectB" class="sim-select"></select>
+          <div class="sim-slider-row">
+            <span class="sim-label-inline">Lv</span>
+            <input type="range" id="levelSliderB" min="2" max="12" value="2" class="sim-range">
+            <span id="levelDisplayB" class="sim-level-num">2</span>
+          </div>
+          <div class="sim-titan-attrs" id="titanAttrsB"></div>
+        </div>
+      </div>
+      <div class="sim-panel">
         <div class="sim-panel-title">Loadout B <span class="sim-gold" id="simTotalCostB">0g</span></div>
         <div class="sim-slots" id="simSlotsB"></div>
       </div>

@@ -54,6 +54,9 @@ let versionItems = [];
 let pickerSlotIdx = -1;
 let pickerTarget = 'A'; // 'A' or 'B'
 let compareMode = false;
+let titanLinked = true; // B uses same titan/level as A
+let currentTitanB = 'lucidious';
+let currentLevelB = 2;
 let equippedItemsB = [null, null, null, null, null, null];
 let itemOverridesB = [{}, {}, {}, {}, {}, {}];
 
@@ -348,14 +351,22 @@ function simulateDPS(duration, totalAD, colossusDmg, BAT, bonusAS, runicMarkDmg,
 
 // ── Main computation ─────────────────────────────────────
 
-function computeAll(items, overrides) {
+function computeAll(items, overrides, titanKey, level) {
   items = items || equippedItems;
+  titanKey = titanKey || currentTitan;
+  level = level || currentLevel;
   const savedOverrides = itemOverrides;
+  const savedTitan = currentTitan;
+  const savedLevel = currentLevel;
   if (overrides) itemOverrides = overrides;
-  const titan = TITANS[currentTitan];
+  currentTitan = titanKey;
+  currentLevel = level;
+  const titan = TITANS[titanKey];
   const base = getBaseStats();
   const iStats = parseItemStats(items);
   const pas = parsePassives(items);
+  currentTitan = savedTitan;
+  currentLevel = savedLevel;
   if (overrides) itemOverrides = savedOverrides;
 
   const totalStr = base.str + iStats.vit;
@@ -477,7 +488,11 @@ function renderStats() {
   let s;
   try { s = computeAll(); } catch(e) { console.error('Sim error:', e); return; }
   let b = null;
-  if (compareMode) { try { b = computeAll(equippedItemsB, itemOverridesB); } catch(e) {} }
+  if (compareMode) {
+    const tB = titanLinked ? currentTitan : currentTitanB;
+    const lB = titanLinked ? currentLevel : currentLevelB;
+    try { b = computeAll(equippedItemsB, itemOverridesB, tB, lB); } catch(e) {}
+  }
 
   setWithDiff('statHP', s.totalHP, fmt(s.totalHP, 0), true, b?.totalHP, b ? fmt(b.totalHP, 0) : undefined);
   setWithDiff('statMana', s.totalMana, fmt(s.totalMana, 0), true, b?.totalMana, b ? fmt(b.totalMana, 0) : undefined);
@@ -573,6 +588,11 @@ function renderStats() {
 
   // Titan attrs display
   setHtml('titanAttrs', `<span class="attr-vit">VIT ${fmt(s.totalStr,1)}</span> <span class="attr-cel">CEL ${fmt(s.totalAgi,1)}</span> <span class="attr-wis">WIS ${fmt(s.totalInt,1)}</span> <span class="attr-bcd">BAT ${t.BAT}</span>`);
+
+  if (compareMode && !titanLinked && b) {
+    const tB = TITANS[currentTitanB];
+    setHtml('titanAttrsB', `<span class="attr-vit">VIT ${fmt(b.totalStr,1)}</span> <span class="attr-cel">CEL ${fmt(b.totalAgi,1)}</span> <span class="attr-wis">WIS ${fmt(b.totalInt,1)}</span> <span class="attr-bcd">BAT ${tB.BAT}</span>`);
+  }
 
   // Passives summary with full descriptions
   function renderEffectsList(targetEl, effects) {
@@ -965,6 +985,28 @@ function renderPickerList() {
     el('compareModeBtn').classList.toggle('active', compareMode);
     el('simRightLoadout').hidden = !compareMode;
     if (compareMode) renderSlots('B');
+    renderStats();
+  });
+
+  // Titan B selector
+  const tSelB = el('titanSelectB');
+  tSelB.innerHTML = Object.entries(TITANS).map(([k, v]) => `<option value="${k}">${v.name}</option>`).join('');
+  tSelB.value = currentTitanB;
+  tSelB.addEventListener('change', () => { currentTitanB = tSelB.value; renderStats(); });
+
+  const sliderB = el('levelSliderB');
+  const lvDispB = el('levelDisplayB');
+  sliderB.value = currentLevelB;
+  lvDispB.textContent = currentLevelB;
+  sliderB.addEventListener('input', () => { currentLevelB = parseInt(sliderB.value); lvDispB.textContent = currentLevelB; renderStats(); });
+
+  // Unlink titan button
+  el('unlinkTitanBtn').addEventListener('click', () => {
+    titanLinked = !titanLinked;
+    el('unlinkTitanBtn').textContent = titanLinked ? 'Shared' : 'Independent';
+    el('unlinkTitanBtn').classList.toggle('unlinked', !titanLinked);
+    el('titanBPanel').hidden = titanLinked;
+    if (!titanLinked) { currentTitanB = currentTitan; currentLevelB = currentLevel; tSelB.value = currentTitanB; sliderB.value = currentLevelB; lvDispB.textContent = currentLevelB; }
     renderStats();
   });
 
