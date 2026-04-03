@@ -1476,9 +1476,10 @@ function findV5VersionId() {
   const vSel = el('simVersionSelect');
   function populateVersionSelect(keepCurrent) {
     const allVersions = versions.getAll();
-    vSel.innerHTML = allVersions.map(v => `<option value="${v.id}">${esc(v.name)}</option>`).join('');
-    // Keep current selection if it still exists, otherwise default to base
-    if (keepCurrent && allVersions.find(v => v.id === currentVersionId)) {
+    // Only show Base and decent v5 in simulator
+    const allowed = allVersions.filter(v => v.isBase || (v.name && /decent.v5/i.test(v.name)));
+    vSel.innerHTML = allowed.map(v => `<option value="${v.id}">${esc(v.name)}</option>`).join('');
+    if (keepCurrent && allowed.find(v => v.id === currentVersionId)) {
       vSel.value = currentVersionId;
     } else if (!keepCurrent) {
       currentVersionId = 'base';
