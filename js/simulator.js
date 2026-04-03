@@ -362,7 +362,7 @@ function parsePassives(items, overrides, level) {
         p.runicWrathBasePct = extractNum(desc, /(\d+)%\s+max mana/i) || 3;
         const spellM = desc.match(/additional\s+(\d+)%/i);
         p.runicWrathSpellPct = spellM ? parseInt(spellM[1]) : 5;
-        p.effects.push({ tag, name, val: `${p.runicWrathBasePct}% mana (${p.runicWrathBasePct + p.runicWrathSpellPct}% with spell)`, item: item.name, desc, slot: si, idx: pi });
+        p.effects.push({ tag, name, val: `${p.runicWrathBasePct}% mana (+${p.runicWrathSpellPct}% mana pool with spell)`, item: item.name, desc, slot: si, idx: pi });
       }
       // Spellblade (v5 Highseer — cleanse, not stacking AS)
       else if (/spellblade/i.test(name)) {
@@ -494,13 +494,17 @@ function computeDPS(buffState, baseResult) {
   if (pas.runicMarkDmg > 0) magicEqParts.push(`RunicMark(${pas.runicMarkDmg}/2hit)`);
   if (pas.shadowRuneDmg > 0) magicEqParts.push(`ShadowRune(${pas.shadowRuneDmg}/2hit)`);
 
-  // Runic Wrath: 3% mana base, 8% mana with spell buff, cap 100 vs units
+  // Runic Wrath: X% of mana as magic dmg. Spell buff increases mana pool by Y% for 5s.
   if (pas.hasForeteller && pas.runicWrathBasePct > 0) {
-    let rwPct = pas.runicWrathBasePct;
-    if (bs.spellBuff) rwPct += pas.runicWrathSpellPct;
-    const rwRaw = (rwPct / 100) * s.totalMana;
+    const rwPct = pas.runicWrathBasePct;
+    const effectiveMana = bs.spellBuff ? s.totalMana * (1 + pas.runicWrathSpellPct / 100) : s.totalMana;
+    const rwRaw = (rwPct / 100) * effectiveMana;
     runicWrathDmg = Math.min(rwRaw, 100);
-    magicEqParts.push(`RunicWrath(${rwPct}%*${fmt(s.totalMana,0)}=${fmt(rwRaw,1)}, cap=${fmt(runicWrathDmg,0)})`);
+    if (bs.spellBuff) {
+      magicEqParts.push(`RunicWrath(${rwPct}% x ${fmt(s.totalMana,0)} x 1.${pas.runicWrathSpellPct < 10 ? '0' : ''}${pas.runicWrathSpellPct} buff = ${fmt(rwRaw,1)}, cap 100 vs units)`);
+    } else {
+      magicEqParts.push(`RunicWrath(${rwPct}% x ${fmt(s.totalMana,0)} = ${fmt(rwRaw,1)}, cap 100 vs units)`);
+    }
   }
 
   const runicProcs = pas.runicMarkDmg > 0 ? aps / 2 : 0;
@@ -521,9 +525,9 @@ function computeDPS(buffState, baseResult) {
   const wShadowPerHit = pas.shadowRuneDmg > 0 ? pas.shadowRuneDmg / 2 : 0;
   let wRunicWrath = 0;
   if (pas.hasForeteller && pas.runicWrathBasePct > 0) {
-    let rwPct = pas.runicWrathBasePct;
-    if (bs.spellBuff) rwPct += pas.runicWrathSpellPct;
-    wRunicWrath = (rwPct / 100) * s.totalMana; // uncapped on structures
+    const rwPct = pas.runicWrathBasePct;
+    const effectiveMana = bs.spellBuff ? s.totalMana * (1 + pas.runicWrathSpellPct / 100) : s.totalMana;
+    wRunicWrath = (rwPct / 100) * effectiveMana; // uncapped on structures
   }
   const wMagicPerHit = wRunicPerHit + wShadowPerHit + wRunicWrath;
 
@@ -1005,7 +1009,10 @@ function renderStats() {
   if (s.passives.hasForeteller && s.passives.runicWrathBasePct > 0) {
     const rwDmg = (s.passives.runicWrathBasePct / 100) * s.totalMana;
     magicParts.push(`Runic Wrath: ${s.passives.runicWrathBasePct}% of ${fmt(s.totalMana,0)} mana = ${fmt(rwDmg,1)} (cap 100 vs units, uncapped vs structures)`);
-    if (s.passives.runicWrathSpellPct > 0) magicParts.push(`  With spell buff: ${s.passives.runicWrathBasePct + s.passives.runicWrathSpellPct}% = ${fmt((s.passives.runicWrathBasePct + s.passives.runicWrathSpellPct)/100*s.totalMana,1)}`);
+    if (s.passives.runicWrathSpellPct > 0) {
+      const buffedMana = s.totalMana * (1 + s.passives.runicWrathSpellPct / 100);
+      magicParts.push(`  With spell buff: mana pool +${s.passives.runicWrathSpellPct}% = ${fmt(buffedMana,0)}, dmg = ${s.passives.runicWrathBasePct}% x ${fmt(buffedMana,0)} = ${fmt(s.passives.runicWrathBasePct/100*buffedMana,1)}`);
+    }
   }
   tip('statMagicDPS', magicParts.length
     ? `--- Magic DPS ---\n${magicParts.join('\n')}\nMagic DPS = ${fmt(s.magicDPS,1)}`
@@ -1239,8 +1246,9 @@ function getKeyValue(name, desc) {
     return { val: m ? parseInt(m[1]) : null, label: 'nuke CDR %' };
   }
   if (/runic wrath/i.test(name)) {
-    const m = desc.match(/(\d+)%\s+max mana/i);
-    return { val: m ? parseInt(m[1]) : null, label: 'mana %' };
+    const m = desc.match(/equal to (\d+)%/i);
+    const m2 = desc.match(/additional (\d+)%/i);
+    return { val: m ? parseInt(m[1]) : null, label: 'dmg %', val2: m2 ? parseInt(m2[1]) : null, label2: 'pool buff %' };
   }
   if (/spellblade/i.test(name)) return { val: null, label: '' };
   if (/battle tempo/i.test(name)) {
@@ -1313,8 +1321,16 @@ function renderSlots(target) {
         if (kv.val !== null) {
           numInput = `<input type="number" class="sim-passive-num ${isOv ? 'sim-overridden' : ''}" value="${displayVal}" data-slot="${i}" data-eidx="${ei}" data-orig="${kv.val}" data-label="${esc(kv.label)}" title="${esc(kv.label)}" step="any">`;
         }
+        // Second editable value (e.g., Runic Wrath spell buff %)
+        let numInput2 = '';
+        if (kv.val2 !== null && kv.val2 !== undefined) {
+          const ovVal2 = overrides[i]?.passiveVals2?.[ei];
+          const displayVal2 = ovVal2 !== undefined ? ovVal2 : kv.val2;
+          const isOv2 = ovVal2 !== undefined && parseFloat(ovVal2) !== kv.val2;
+          numInput2 = `<input type="number" class="sim-passive-num ${isOv2 ? 'sim-overridden' : ''}" value="${displayVal2}" data-slot="${i}" data-eidx="${ei}" data-orig2="${kv.val2}" data-label2="${esc(kv.label2)}" title="${esc(kv.label2)}" data-is-val2="1" step="any">`;
+        }
         const cls = isActive ? 'sim-slot-active' : 'sim-slot-passive';
-        return `<div class="${cls}">${numInput}${esc(ef.name)}</div>`;
+        return `<div class="${cls}">${numInput}${numInput2}${esc(ef.name)}</div>`;
       }).join('');
 
       slot.innerHTML = `
@@ -1330,24 +1346,52 @@ function renderSlots(target) {
         inp.addEventListener('input', () => {
           const si = parseInt(inp.dataset.slot);
           const ei = parseInt(inp.dataset.eidx);
-          const orig = parseFloat(inp.dataset.orig);
-          if (!overrides[si].passiveVals) overrides[si].passiveVals = {};
-          if (parseFloat(inp.value) === orig || inp.value === '') {
-            delete overrides[si].passiveVals[ei];
-            delete overrides[si].passives?.[ei];
-            inp.classList.remove('sim-overridden');
-          } else {
-            overrides[si].passiveVals[ei] = parseFloat(inp.value);
-            inp.classList.add('sim-overridden');
+          const isVal2 = inp.dataset.isVal2 === '1';
+
+          if (isVal2) {
+            // Second editable value (e.g., spell buff %)
+            const orig2 = parseFloat(inp.dataset.orig2);
+            if (!overrides[si].passiveVals2) overrides[si].passiveVals2 = {};
+            if (parseFloat(inp.value) === orig2 || inp.value === '') {
+              delete overrides[si].passiveVals2[ei];
+              inp.classList.remove('sim-overridden');
+            } else {
+              overrides[si].passiveVals2[ei] = parseFloat(inp.value);
+              inp.classList.add('sim-overridden');
+            }
+            // Rebuild description with second number replaced
             const item = items[si];
             const allEf = [...(item?.passives || [])];
             if (item?.active) allEf.push({ name: item.active.name, description: item.active.description });
             const origDesc = allEf[ei]?.description || '';
             const kv = getKeyValue(allEf[ei]?.name, origDesc);
-            if (kv.val !== null) {
-              const newDesc = origDesc.replace(String(kv.val), String(parseFloat(inp.value)));
+            if (kv.val2 !== null) {
+              // Replace "additional X%" with new value
+              const newDesc = origDesc.replace(`additional ${kv.val2}%`, `additional ${parseFloat(inp.value)}%`);
               if (!overrides[si].passives) overrides[si].passives = {};
               overrides[si].passives[ei] = newDesc;
+            }
+          } else {
+            // First editable value
+            const orig = parseFloat(inp.dataset.orig);
+            if (!overrides[si].passiveVals) overrides[si].passiveVals = {};
+            if (parseFloat(inp.value) === orig || inp.value === '') {
+              delete overrides[si].passiveVals[ei];
+              delete overrides[si].passives?.[ei];
+              inp.classList.remove('sim-overridden');
+            } else {
+              overrides[si].passiveVals[ei] = parseFloat(inp.value);
+              inp.classList.add('sim-overridden');
+              const item = items[si];
+              const allEf = [...(item?.passives || [])];
+              if (item?.active) allEf.push({ name: item.active.name, description: item.active.description });
+              const origDesc = allEf[ei]?.description || '';
+              const kv = getKeyValue(allEf[ei]?.name, origDesc);
+              if (kv.val !== null) {
+                const newDesc = origDesc.replace(String(kv.val), String(parseFloat(inp.value)));
+                if (!overrides[si].passives) overrides[si].passives = {};
+                overrides[si].passives[ei] = newDesc;
+              }
             }
           }
           renderStats();
