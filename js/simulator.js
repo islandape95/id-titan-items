@@ -527,20 +527,26 @@ function computeDPS(buffState, baseResult) {
   }
   const wMagicPerHit = wRunicPerHit + wShadowPerHit + wRunicWrath;
 
-  const wCrusher = pas.titanCrusherDmg || pas.structCrusherDmg || 0;
-  const wTitanBonus = pas.titanBonusDmg || 0;
-  const wBonusPerHit = wCrusher + wTitanBonus + pas.infernalBonusDmg;
+  const wCrusherRaw = (pas.titanCrusherDmg || pas.structCrusherDmg || 0) + (pas.titanBonusDmg || 0) + pas.infernalBonusDmg;
+  // Base version: crusher is physical (not pure), so it goes through armor+fortified reduction
+  // Other versions: crusher is pure damage (bypasses armor)
+  const isBaseVersion = currentVersionId === 'base';
+  const wBonusPerHit = isBaseVersion ? 0 : wCrusherRaw;
+  const wCrusherAsPhys = isBaseVersion ? wCrusherRaw * sFactor * wArmMult : 0;
+  const wPhysTotal = wPhysPerHit + wCrusherAsPhys;
   const wBurnDPS = (pas.burnPct / 100) * wHP + pas.burnFlatDPS;
-  const wHitDPS = (wPhysPerHit + wMagicPerHit + wBonusPerHit) * aps;
+  const wHitDPS = (wPhysTotal + wMagicPerHit + wBonusPerHit) * aps;
   const wallDPS = wHitDPS + wBurnDPS;
 
+  const crusherNote = isBaseVersion && wCrusherRaw > 0 ? ` (crusher ${fmt(wCrusherRaw,0)} as phys)` : '';
   const equation = `AD = ${eqParts.join(' + ')} = ${fmt(effectiveAD,1)}` +
     `\nAPS = ${fmt(aps,2)}${fStacks > 0 ? ` (Fervor ${fStacks}/${pas.fervorStacks})` : ''}` +
     `\nPhys DPS = ${fmt(effectiveAD,1)} x ${fmt(aps,2)} = ${fmt(physDPS,1)}` +
     (magicEqParts.length ? `\nMagic: ${magicEqParts.join(' + ')}` : '') +
     `\nMagic DPS = ${fmt(magicDPS,1)}` +
     `\nTotal DPS = ${fmt(totalDPS,1)}` +
-    `\nWall: (${fmt(wPhysPerHit,1)} phys + ${fmt(wMagicPerHit,1)} magic + ${fmt(wBonusPerHit,1)} pure) x ${fmt(aps,2)} + ${fmt(wBurnDPS,1)} burn = ${fmt(wallDPS,1)}`;
+    `\nWall: (${fmt(wPhysTotal,1)} phys${crusherNote} + ${fmt(wMagicPerHit,1)} magic${isBaseVersion ? '' : ` + ${fmt(wBonusPerHit,1)} pure`}) x ${fmt(aps,2)} + ${fmt(wBurnDPS,1)} burn = ${fmt(wallDPS,1)}`
+    + (isBaseVersion && wCrusherRaw > 0 ? `\n* Base ver: tridents NOT pure, treated as physical` : '');
 
   return { physDPS, magicDPS, totalDPS, wallDPS, equation, effectiveAD, aps, colossusDmg, runicWrathDmg };
 }
@@ -637,11 +643,12 @@ function computeAll(items, overrides, titanKey, level) {
   }
   const sMagicPerHit = sRunicPerHit + sShadowPerHit + sRunicWrath;
 
-  const sCrusher = pas.titanCrusherDmg || pas.structCrusherDmg || 0;
-  const sTitanBonus = pas.titanBonusDmg || 0;
-  const sBonusPerHit = sCrusher + sTitanBonus + pas.infernalBonusDmg;
+  const sCrusherRaw = (pas.titanCrusherDmg || pas.structCrusherDmg || 0) + (pas.titanBonusDmg || 0) + pas.infernalBonusDmg;
+  const isBase = currentVersionId === 'base';
+  const sBonusPerHit = isBase ? 0 : sCrusherRaw;
+  const sCrusherAsPhys = isBase ? sCrusherRaw * sFactor * sArmMult : 0;
   const sBurnDPS = (pas.burnPct / 100) * sHP + pas.burnFlatDPS;
-  const sHitDPS = (sPhysPerHit + sMagicPerHit + sBonusPerHit) * apsMax;
+  const sHitDPS = (sPhysPerHit + sCrusherAsPhys + sMagicPerHit + sBonusPerHit) * apsMax;
   const sTotalDPS = sHitDPS + sBurnDPS;
   const sTotalPerHit = sPhysPerHit + sMagicPerHit + sBonusPerHit;
   const sHTK = sTotalPerHit > 0 ? Math.ceil(sHP / (sTotalPerHit + sBurnDPS / Math.max(apsMax, 0.01))) : 999;
@@ -916,6 +923,10 @@ function renderStats() {
   }
 
   renderDPSTable(s, b);
+
+  // Base version disclaimer
+  const bd = el('baseDisclaimer');
+  if (bd) bd.hidden = currentVersionId !== 'base';
 }
 
 // ── Key value extraction for editable passives ───────────
