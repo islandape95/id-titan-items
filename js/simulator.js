@@ -856,26 +856,213 @@ function renderStats() {
     const row = e.closest('.sim-stat-row');
     if (row) row.title = txt;
   };
-  tip('tipHP', `Base: ${t.base_hp} + VIT(${fmt(s.totalStr,1)}) x 50 = ${fmt(s.totalStr*50,0)} + items(${iS.hp})\n= ${fmt(s.totalHP,0)}`);
-  tip('tipMana', `Base: ${t.base_mana} + WIS(${fmt(s.totalInt,1)}) x 20 = ${fmt(s.totalInt*20,0)} + items(${iS.mana})\n= ${fmt(s.totalMana,0)}`);
-  tip('tipArmor', `Lv${currentLevel}: ${base.armor} + items(${iS.armor}) + passives(${s.totalArmor - base.armor - iS.armor})\n= ${fmt(s.totalArmor,1)}`);
-  tip('tipArmorRed', `0.06 x ${fmt(s.totalArmor,1)} / (1 + 0.06 x ${fmt(s.totalArmor,1)})\n= ${fmt(s.armorRed*100,1)}%`);
-  tip('tipMDR', `Items + Passives: ${s.mdr}%`);
-  tip('tipHPRegen', `Base: ${fmt(t.base_hp_regen,1)} + VIT(${fmt(s.totalStr,1)}) x 0.1 + items(${fmt(iS.hpRegen,1)})\n= ${fmt(s.totalHPRegen,1)}/s`);
-  tip('tipManaRegen', `Base: ${fmt(t.base_mp_regen,1)} + WIS(${fmt(s.totalInt,1)}) x 0.1 + items(${fmt(iS.manaRegen,1)})\n= ${fmt(s.totalManaRegen,1)}/s`);
-  tip('tipAD', `Base(Lv${currentLevel}): ${base.baseDamage} + items(${iS.ad})${s.auraADBonus > 0 ? ` + Aura(${fmt(s.auraADBonus,0)} = ${s.passives.auraWarPct}% of ${base.baseDamage})` : ''}${s.colossusDmg > 0 ? ` + Colossus(${fmt(s.colossusDmg,0)})` : ''}\n= ${fmt(s.effectiveAD,1)}`);
+  // ── Detailed tooltips for every stat ──
 
+  const vitFromItems = iS.vit;
+  const wisFromItems = iS.wis;
+  const celFromItems = iS.cel;
+  const passiveArmor = s.totalArmor - base.armor - iS.armor;
+  const totalSustain = s.totalHPRegen + s.lifestealPerSec + s.smashHealPerSec;
+
+  tip('tipHP', [
+    `--- Hit Points ---`,
+    `Base HP (${t.name}): ${t.base_hp}`,
+    `VIT: ${fmt(s.totalStr,1)} (base ${fmt(base.str,1)}${vitFromItems ? ` + ${vitFromItems} from items` : ''})`,
+    `VIT contribution: ${fmt(s.totalStr,1)} x 50 = ${fmt(s.totalStr*50,0)}`,
+    `Item flat HP: +${iS.hp}`,
+    `Total: ${t.base_hp} + ${fmt(s.totalStr*50,0)} + ${iS.hp} = ${fmt(s.totalHP,0)}`
+  ].join('\n'));
+
+  tip('tipMana', [
+    `--- Mana ---`,
+    `Base Mana (${t.name}): ${t.base_mana}`,
+    `WIS: ${fmt(s.totalInt,1)} (base ${fmt(base.int,1)}${wisFromItems ? ` + ${wisFromItems} from items` : ''})`,
+    `WIS contribution: ${fmt(s.totalInt,1)} x 20 = ${fmt(s.totalInt*20,0)}`,
+    `Item flat Mana: +${iS.mana}`,
+    `Total: ${t.base_mana} + ${fmt(s.totalInt*20,0)} + ${iS.mana} = ${fmt(s.totalMana,0)}`
+  ].join('\n'));
+
+  tip('tipArmor', [
+    `--- Armor ---`,
+    `Base at Lv${currentLevel}: ${base.armor} (6 at Lv2, +1/+2 alternating)`,
+    `Item armor: +${iS.armor}`,
+    passiveArmor > 0 ? `Passive armor (Tidal Fortitude): +${passiveArmor}` : null,
+    `Total: ${base.armor} + ${iS.armor}${passiveArmor > 0 ? ` + ${passiveArmor}` : ''} = ${fmt(s.totalArmor,1)}`
+  ].filter(Boolean).join('\n'));
+
+  tip('tipArmorRed', [
+    `--- Physical Damage Reduction ---`,
+    `Formula: 0.06 x armor / (1 + 0.06 x armor)`,
+    `= 0.06 x ${fmt(s.totalArmor,1)} / (1 + 0.06 x ${fmt(s.totalArmor,1)})`,
+    `= ${fmt(0.06*s.totalArmor,2)} / ${fmt(1+0.06*s.totalArmor,2)}`,
+    `= ${fmt(s.armorRed*100,1)}% damage blocked`,
+    `(${fmt(s.armorMult*100,1)}% of physical damage gets through)`
+  ].join('\n'));
+
+  tip('tipMDR', [
+    `--- Magic Damage Reduction ---`,
+    `From item stats: ${iS.mdr}%`,
+    s.passives.magicResistPct > 0 ? `From Magic Resist passive: +${s.passives.magicResistPct}%` : null,
+    `Total: ${s.mdr}%`
+  ].filter(Boolean).join('\n'));
+
+  tip('tipHPRegen', [
+    `--- HP Regeneration ---`,
+    `Base (${t.name}): ${fmt(t.base_hp_regen,1)}/s`,
+    `VIT regen: ${fmt(s.totalStr,1)} x 0.1 = ${fmt(s.totalStr*0.1,1)}/s`,
+    `Item regen: +${fmt(iS.hpRegen,1)}/s`,
+    `Total: ${fmt(t.base_hp_regen,1)} + ${fmt(s.totalStr*0.1,1)} + ${fmt(iS.hpRegen,1)} = ${fmt(s.totalHPRegen,1)}/s`,
+    s.passives.crisisRegen ? `Crisis Regen: doubled below 50% HP` : null
+  ].filter(Boolean).join('\n'));
+
+  tip('tipManaRegen', [
+    `--- Mana Regeneration ---`,
+    `Base (${t.name}): ${fmt(t.base_mp_regen,1)}/s`,
+    `WIS regen: ${fmt(s.totalInt,1)} x 0.1 = ${fmt(s.totalInt*0.1,1)}/s`,
+    `Item regen: +${fmt(iS.manaRegen,1)}/s`,
+    `Total: ${fmt(t.base_mp_regen,1)} + ${fmt(s.totalInt*0.1,1)} + ${fmt(iS.manaRegen,1)} = ${fmt(s.totalManaRegen,1)}/s`
+  ].join('\n'));
+
+  const adParts = [`Base dmg at Lv${currentLevel}: ${base.baseDamage} (130 + ${currentLevel-2}x10)`];
+  if (iS.ad > 0) adParts.push(`Item AD: +${iS.ad}`);
+  if (s.auraADBonus > 0) adParts.push(`Aura of War: +${fmt(s.auraADBonus,0)} (${s.passives.auraWarPct}% of base ${base.baseDamage})`);
+  if (s.colossusDmg > 0) adParts.push(`Colossus: +${fmt(s.colossusDmg,0)} (${s.passives.colossusPct}% of ${fmt(s.totalHP,0)} HP)`);
+  adParts.push(`Total AD: ${fmt(s.effectiveAD,1)}`);
+  tip('tipAD', `--- Attack Damage ---\n` + adParts.join('\n'));
+
+  // Attack speed tooltip
+  const asBonusParts = [];
+  if (s.totalAgi > 0) asBonusParts.push(`CEL(${fmt(s.totalAgi,1)}) x 0.008 = ${fmt(s.totalAgi*0.008,3)}`);
+  if (iS.asPct > 0) asBonusParts.push(`Items: +${iS.asPct}% = +${fmt(iS.asPct/100,3)}`);
+  tip('statASBase', [
+    `--- Attack Cooldown ---`,
+    `BAT (${t.name}): ${t.BAT}s`,
+    `Bonus AS: ${asBonusParts.join(' + ')} = ${fmt(s.bonusAS,3)}`,
+    `Cooldown = BAT / (1 + bonusAS) = ${t.BAT} / ${fmt(1+s.bonusAS,3)} = ${fmt(s.cdBase,3)}s`,
+  ].join('\n'));
+
+  const fervorInfo = s.passives.fervorMaxAS > 0 ? `Fervor: +${s.passives.fervorMaxAS}% at max stacks` : '';
+  tip('statASMax', s.apsMax !== s.apsBase ? [
+    `--- Attack Cooldown (Ramped) ---`,
+    fervorInfo,
+    `Total bonus AS: ${fmt(s.bonusAS,3)} + ${fmt(s.passives.fervorMaxAS/100,3)} = ${fmt(s.bonusAS + s.passives.fervorMaxAS/100,3)}`,
+    `Cooldown = ${t.BAT} / ${fmt(1+s.bonusAS+s.passives.fervorMaxAS/100,3)} = ${fmt(s.cdMax,3)}s`,
+  ].filter(Boolean).join('\n') : 'No ramp-up passives equipped');
+
+  tip('statPhysDPS', [
+    `--- Physical DPS ---`,
+    `AD: ${fmt(s.effectiveAD,1)}`,
+    `APS: ${fmt(s.apsBase,2)}`,
+    `Phys DPS = ${fmt(s.effectiveAD,1)} x ${fmt(s.apsBase,2)} = ${fmt(s.physDPS,1)}`
+  ].join('\n'));
+
+  const magicParts = [];
+  if (s.passives.runicMarkDmg > 0) magicParts.push(`Runic Mark: ${s.passives.runicMarkDmg} every 2nd hit = ${fmt(s.passives.runicMarkDmg/2,1)}/hit avg`);
+  if (s.passives.runicExposureDmg > 0) magicParts.push(`Runic Exposure: ${s.passives.runicExposureDmg} every 2nd hit = ${fmt(s.passives.runicExposureDmg/2,1)}/hit avg`);
+  if (s.passives.shadowRuneDmg > 0) magicParts.push(`Shadow Rune: ${s.passives.shadowRuneDmg} every 2nd hit`);
+  if (s.passives.hasForeteller && s.passives.runicWrathBasePct > 0) {
+    const rwDmg = (s.passives.runicWrathBasePct / 100) * s.totalMana;
+    magicParts.push(`Runic Wrath: ${s.passives.runicWrathBasePct}% of ${fmt(s.totalMana,0)} mana = ${fmt(rwDmg,1)} (cap 100 vs units, uncapped vs structures)`);
+    if (s.passives.runicWrathSpellPct > 0) magicParts.push(`  With spell buff: ${s.passives.runicWrathBasePct + s.passives.runicWrathSpellPct}% = ${fmt((s.passives.runicWrathBasePct + s.passives.runicWrathSpellPct)/100*s.totalMana,1)}`);
+  }
+  tip('statMagicDPS', magicParts.length
+    ? `--- Magic DPS ---\n${magicParts.join('\n')}\nMagic DPS = ${fmt(s.magicDPS,1)}`
+    : 'No magic damage passives equipped');
+
+  tip('statTotalDPS', [
+    `--- Total DPS (no buffs) ---`,
+    `Physical: ${fmt(s.physDPS,1)}`,
+    `Magic: ${fmt(s.magicDPS,1)}`,
+    `Total: ${fmt(s.totalDPS,1)}`,
+    `(see DPS Breakdown table for buff scenarios)`
+  ].join('\n'));
+
+  tip('statTotalDPSMax', s.totalDPSMax !== s.totalDPS ? [
+    `--- Total DPS (max stacks) ---`,
+    fervorInfo,
+    `APS ramped: ${fmt(s.apsMax,2)} (from ${fmt(s.apsBase,2)})`,
+    `Total: ${fmt(s.totalDPSMax,1)}`
+  ].filter(Boolean).join('\n') : 'No ramp-up passives');
+
+  // Sustain tooltips
+  tip('statLifestealHit', s.lifestealPerHit > 0 ? [
+    `--- Lifesteal per Hit ---`,
+    `Flat: ${s.passives.lifestealFlat}`,
+    s.passives.lifestealPct > 0 ? `${s.passives.lifestealPct}% of VIT(${fmt(s.totalStr,1)}) = ${fmt(s.passives.lifestealPct/100*s.totalStr,1)}` : null,
+    `Total: ${fmt(s.lifestealPerHit,1)} per hit`
+  ].filter(Boolean).join('\n') : 'No lifesteal');
+
+  tip('statTotalRecovery', [
+    `--- Total HP Recovery ---`,
+    `HP Regen: ${fmt(s.totalHPRegen,1)}/s`,
+    s.lifestealPerSec > 0 ? `Lifesteal: ${fmt(s.lifestealPerSec,1)}/s (${fmt(s.lifestealPerHit,1)}/hit x ${fmt(s.apsBase,2)} APS)` : null,
+    s.smashHealPerSec > 0 ? `Smash: ${fmt(s.smashHealPerSec,1)}/s (${s.passives.smashPct}% of ${fmt(s.totalHP,0)} HP)` : null,
+    `Total: ${fmt(totalSustain,1)}/s`
+  ].filter(Boolean).join('\n'));
+
+  // Tower/Defense tooltips
   const tDPSv = parseFloat(el('towerDPS')?.value) || 100;
   const tTp = el('towerDmgType')?.value || 'ranged';
   const tF = DMG_VS_HERO[tTp] || 0.5;
-  tip('statTowerEffDPS', tTp === 'magic'
-    ? `${tDPSv} x ${tF} (magic) x (1 - ${fmt(s.mdr,0)}% MDR)${s.tidalFortPct > 0 ? ` x (1 - ${s.tidalFortPct}% Tidal Fort)` : ''}\n= ${fmt(s.effTDPS,1)}`
-    : `${tDPSv} x ${tF} (ranged) x ${fmt(s.armorMult,3)} (armor ${fmt(s.totalArmor,1)})${s.tidalFortPct > 0 ? ` x (1 - ${s.tidalFortPct}% Tidal Fort)` : ''}${s.tidalFortPhysPct > 0 ? ` x (1 - ${s.tidalFortPhysPct}% phys)` : ''}\n= ${fmt(s.effTDPS,1)}`);
-  tip('statEffHP', `HP(${fmt(s.totalHP,0)}) / dmg_mult(${fmt(s.dmgMult,4)})\n= ${fmt(s.effHP,0)}\nHow much raw damage needed to kill you`);
+
+  if (tTp === 'magic') {
+    tip('statTowerEffDPS', [
+      `--- Effective Tower DPS (Magic) ---`,
+      `Raw tower DPS: ${tDPSv}`,
+      `x ${tF} (magic type vs hero)`,
+      s.mdr > 0 ? `x (1 - ${s.mdr}% MDR) = x ${fmt(1-s.mdr/100,2)}` : null,
+      s.tidalFortPct > 0 ? `x (1 - ${s.tidalFortPct}% Tidal Fortitude)` : null,
+      `= ${fmt(s.effTDPS,1)} effective DPS`
+    ].filter(Boolean).join('\n'));
+  } else {
+    tip('statTowerEffDPS', [
+      `--- Effective Tower DPS (Ranged) ---`,
+      `Raw tower DPS: ${tDPSv}`,
+      `x ${tF} (ranged type vs hero, 50%)`,
+      `x ${fmt(s.armorMult,3)} (armor: ${fmt(s.totalArmor,1)} = ${fmt(s.armorRed*100,1)}% blocked)`,
+      s.tidalFortPct > 0 ? `x (1 - ${s.tidalFortPct}% Tidal Fortitude all dmg)` : null,
+      s.tidalFortPhysPct > 0 ? `x (1 - ${s.tidalFortPhysPct}% Tidal Fortitude phys)` : null,
+      `= ${fmt(s.effTDPS,1)} effective DPS`
+    ].filter(Boolean).join('\n'));
+  }
+
+  tip('statEffHP', [
+    `--- Effective HP ---`,
+    `Total HP: ${fmt(s.totalHP,0)}`,
+    `Damage multiplier: ${fmt(s.dmgMult,4)}`,
+    `(fraction of raw damage that actually hurts you)`,
+    `Effective HP = ${fmt(s.totalHP,0)} / ${fmt(s.dmgMult,4)} = ${fmt(s.effHP,0)}`,
+    `This is how much RAW tower DPS is needed to kill you`
+  ].join('\n'));
+
   tip('statTTD', s.netHP >= 0
-    ? `Outhealing! Regen(${fmt(s.totalHPRegen,1)}) + Lifesteal(${fmt(s.lifestealPerSec,1)}) + Smash(${fmt(s.smashHealPerSec,1)}) >= Tower(${fmt(s.effTDPS,1)})`
-    : `${fmt(s.totalHP,0)} HP / ${fmt(-s.netHP,1)} net DPS (${fmt(s.effTDPS,1)} tower - ${fmt(s.totalHPRegen+s.lifestealPerSec+s.smashHealPerSec,1)} sustain)\n= ${fmt(s.ttd,1)}s`);
-  tip('statNetHP', `Regen(${fmt(s.totalHPRegen,1)}) + Lifesteal(${fmt(s.lifestealPerSec,1)}) + Smash(${fmt(s.smashHealPerSec,1)}) - Tower(${fmt(s.effTDPS,1)})\n= ${fmt(s.netHP,1)}/s`);
+    ? [
+      `--- Time to Die: INFINITE ---`,
+      `You are outhealing the damage!`,
+      `HP Regen: ${fmt(s.totalHPRegen,1)}/s`,
+      s.lifestealPerSec > 0 ? `Lifesteal: ${fmt(s.lifestealPerSec,1)}/s` : null,
+      s.smashHealPerSec > 0 ? `Smash heal: ${fmt(s.smashHealPerSec,1)}/s` : null,
+      `Total sustain: ${fmt(totalSustain,1)}/s`,
+      `Tower effective DPS: ${fmt(s.effTDPS,1)}/s`,
+      `Sustain >= Damage, you never die`
+    ].filter(Boolean).join('\n')
+    : [
+      `--- Time to Die ---`,
+      `HP: ${fmt(s.totalHP,0)}`,
+      `Tower effective DPS: ${fmt(s.effTDPS,1)}/s`,
+      `Sustain: ${fmt(totalSustain,1)}/s (regen ${fmt(s.totalHPRegen,1)} + lifesteal ${fmt(s.lifestealPerSec,1)} + smash ${fmt(s.smashHealPerSec,1)})`,
+      `Net damage taken: ${fmt(s.effTDPS,1)} - ${fmt(totalSustain,1)} = ${fmt(-s.netHP,1)}/s`,
+      `TTD = ${fmt(s.totalHP,0)} / ${fmt(-s.netHP,1)} = ${fmt(s.ttd,1)}s`
+    ].join('\n'));
+
+  tip('statNetHP', [
+    `--- Net HP per Second ---`,
+    `HP Regen: +${fmt(s.totalHPRegen,1)}/s`,
+    s.lifestealPerSec > 0 ? `Lifesteal: +${fmt(s.lifestealPerSec,1)}/s` : null,
+    s.smashHealPerSec > 0 ? `Smash (${s.passives.smashPct}% maxHP): +${fmt(s.smashHealPerSec,1)}/s` : null,
+    `Tower damage: -${fmt(s.effTDPS,1)}/s`,
+    `Net: ${fmt(s.netHP,1)}/s ${s.netHP >= 0 ? '(outhealing!)' : '(dying)'}`
+  ].filter(Boolean).join('\n'));
 
   setHtml('titanAttrs', `<span class="attr-vit">VIT ${fmt(s.totalStr,1)}</span> <span class="attr-cel">CEL ${fmt(s.totalAgi,1)}</span> <span class="attr-wis">WIS ${fmt(s.totalInt,1)}</span> <span class="attr-bcd">BAT ${t.BAT}</span>`);
 
@@ -1243,32 +1430,25 @@ function findV5VersionId() {
   lvDisp.textContent = currentLevel;
   slider.addEventListener('input', () => { currentLevel = parseInt(slider.value); lvDisp.textContent = currentLevel; renderStats(); });
 
-  // Version selector — populate with all versions, default to decent_v5
+  // Version selector — default to base, user picks what they want
   const vSel = el('simVersionSelect');
-  function populateVersionSelect() {
+  function populateVersionSelect(keepCurrent) {
     const allVersions = versions.getAll();
     vSel.innerHTML = allVersions.map(v => `<option value="${v.id}">${esc(v.name)}</option>`).join('');
-    const v5Id = findV5VersionId();
-    if (v5Id) {
-      currentVersionId = v5Id;
-    } else {
+    // Keep current selection if it still exists, otherwise default to base
+    if (keepCurrent && allVersions.find(v => v.id === currentVersionId)) {
+      vSel.value = currentVersionId;
+    } else if (!keepCurrent) {
       currentVersionId = 'base';
+      vSel.value = 'base';
     }
-    vSel.value = currentVersionId;
     versionItems = loadVersionItems();
   }
 
   populateVersionSelect();
 
-  // Re-populate after delay for async community versions
-  setTimeout(() => {
-    const v5Id = findV5VersionId();
-    if (v5Id && currentVersionId !== v5Id) {
-      populateVersionSelect();
-      renderSlots('A');
-      renderStats();
-    }
-  }, 1500);
+  // Re-populate when community versions load (don't change selection)
+  setTimeout(() => { populateVersionSelect(true); }, 1500);
 
   vSel.addEventListener('change', () => {
     currentVersionId = vSel.value;
@@ -1283,10 +1463,7 @@ function findV5VersionId() {
   });
 
   document.addEventListener('versionchange', () => {
-    populateVersionSelect();
-    renderSlots('A');
-    if (compareMode) renderSlots('B');
-    renderStats();
+    populateVersionSelect(true);
   });
 
   // Tower builder selector
