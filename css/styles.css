@@ -2466,6 +2466,53 @@ body {
 .sim-card-compact { padding: 8px 10px; }
 .sim-card-compact .sim-card-title { margin-bottom: 6px; }
 
+/* DPS breakdown table */
+.sim-dps-table-wrap { overflow-x: auto; }
+.sim-dps-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 11px;
+}
+.sim-dps-table th {
+  text-align: right;
+  padding: 4px 8px;
+  font-size: 9px;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  border-bottom: 1px solid var(--border);
+}
+.sim-dps-table th:first-child { text-align: left; }
+.sim-dps-table td {
+  padding: 4px 8px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  color: var(--text);
+  border-bottom: 1px solid rgba(255,255,255,0.03);
+}
+.sim-dps-table td:first-child {
+  text-align: left;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+.sim-dps-table tr:hover { background: rgba(255,255,255,0.03); }
+.sim-dps-table tr[title] { cursor: help; }
+
+/* DPS compare side-by-side */
+.sim-dps-compare { display: flex; gap: 12px; }
+.sim-dps-panel { flex: 1; min-width: 0; }
+.sim-dps-panel-label {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.sim-dps-row-highlight td { color: var(--tier-consumable) !important; font-weight: 700; }
+
 /* Sub-tabs inside cards */
 .sim-subtabs {
   display: flex;
@@ -2645,4 +2692,60 @@ body {
   font-weight: 700;
   color: var(--tier-consumable);
   flex-shrink: 0;
+}
+
+/* DPS Breakdown Table */
+.sim-dps-table-wrap {
+  overflow-x: auto;
+  margin-top: 8px;
+}
+.sim-dps-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.sim-dps-table th {
+  text-align: right;
+  padding: 6px 10px;
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+}
+.sim-dps-table th:first-child { text-align: left; }
+.sim-dps-table td {
+  padding: 5px 10px;
+  text-align: right;
+  color: var(--text);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  font-variant-numeric: tabular-nums;
+}
+.sim-dps-scenario {
+  text-align: left !important;
+  font-weight: 500;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.sim-dps-total {
+  font-weight: 700;
+  color: var(--c-offensive);
+}
+.sim-dps-table tr { cursor: help; }
+.sim-dps-table tr:hover { background: rgba(255,255,255,0.03); }
+.sim-dps-row-highlight {
+  background: rgba(88,166,255,0.06) !important;
+}
+.sim-dps-row-highlight td {
+  font-weight: 700;
+}
+.sim-dps-row-highlight .sim-dps-scenario {
+  color: var(--accent);
+}
+.sim-buff-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 6px;
 }

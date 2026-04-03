@@ -115,30 +115,39 @@
           </div>
         </div>
 
-        <!-- Attack + Defense -->
-        <div class="sim-row" style="grid-template-columns: 1fr 1fr">
+        <!-- DPS Breakdown by Buff State -->
+        <div class="sim-row" id="dpsBreakdownRow" style="grid-template-columns: 1fr">
           <div class="sim-card">
-            <div class="sim-card-title">&#9876; Attack</div>
+            <div class="sim-card-title">&#9876; DPS Breakdown by Buff State</div>
             <div class="sim-inline-config">
               <label>Wall Armor <input type="number" id="structArmor" value="15" min="0" max="99" class="sim-input-sm"></label>
               <label>Wall HP <input type="number" id="structHP" value="500" min="1" max="9999" class="sim-input-sm"></label>
             </div>
-            <div class="sim-stat-row"><span>Phys/hit</span><span id="statStructPhysHit">—</span></div>
-            <div class="sim-stat-row"><span>Magic/hit</span><span id="statStructMagicHit">—</span></div>
-            <div class="sim-stat-row"><span>Bonus/hit (pure)</span><span id="statStructBonusHit">—</span></div>
-            <div class="sim-stat-row"><span>Burn DPS</span><span id="statStructBurnDPS">—</span></div>
-            <div class="sim-stat-row sim-highlight"><span>Total DPS</span><span id="statStructTotalDPS">—</span></div>
-            <div class="sim-stat-row"><span>Hits to Kill</span><span id="statStructHTK">—</span></div>
-            <div class="sim-stat-row"><span>Time to Kill</span><span id="statStructTTK">—</span></div>
-
-            <div class="sim-subtabs">
-              <button class="sim-subtab active" data-dur="10">10s</button>
-              <button class="sim-subtab" data-dur="30">30s</button>
-              <button class="sim-subtab" data-dur="60">60s</button>
+            <div class="sim-dps-compare" id="dpsCompareWrap">
+              <div class="sim-dps-panel">
+                <div class="sim-dps-panel-label" id="dpsPanelLabelA">Loadout A</div>
+                <div class="sim-dps-table-wrap">
+                  <table class="sim-dps-table" id="dpsTable">
+                    <thead><tr><th>Scenario</th><th>Phys</th><th>Magic</th><th>Total</th><th>Wall</th></tr></thead>
+                    <tbody id="dpsTableBody"></tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="sim-dps-panel" id="dpsPanelB" hidden>
+                <div class="sim-dps-panel-label">Loadout B</div>
+                <div class="sim-dps-table-wrap">
+                  <table class="sim-dps-table" id="dpsTableB">
+                    <thead><tr><th>Scenario</th><th>Phys</th><th>Magic</th><th>Total</th><th>Wall</th></tr></thead>
+                    <tbody id="dpsTableBodyB"></tbody>
+                  </table>
+                </div>
+              </div>
             </div>
-            <div class="sim-stat-row"><span>Avg DPS</span><span id="statSimDPS" class="val-red">—</span></div>
-            <div class="sim-stat-row"><span>Total Damage</span><span id="statSimDmg">—</span></div>
           </div>
+        </div>
+
+        <!-- Defense -->
+        <div class="sim-row" style="grid-template-columns: 1fr">
 
           <div class="sim-card">
             <div class="sim-card-title">&#9888; Defense</div>
@@ -259,6 +268,7 @@
 <script src="js/items-data.js"></script>
 <script src="js/versions.js"></script>
 <script src="js/community-versions.js"></script>
+<script src="js/decent-v5-data.js"></script>
 <script src="js/simulator.js"></script>
 </body>
 </html>
