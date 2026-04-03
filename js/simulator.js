@@ -538,15 +538,57 @@ function computeDPS(buffState, baseResult) {
   const wHitDPS = (wPhysTotal + wMagicPerHit + wBonusPerHit) * aps;
   const wallDPS = wHitDPS + wBurnDPS;
 
-  const crusherNote = isBaseVersion && wCrusherRaw > 0 ? ` (crusher ${fmt(wCrusherRaw,0)} as phys)` : '';
-  const equation = `AD = ${eqParts.join(' + ')} = ${fmt(effectiveAD,1)}` +
-    `\nAPS = ${fmt(aps,2)}${fStacks > 0 ? ` (Fervor ${fStacks}/${pas.fervorStacks})` : ''}` +
-    `\nPhys DPS = ${fmt(effectiveAD,1)} x ${fmt(aps,2)} = ${fmt(physDPS,1)}` +
-    (magicEqParts.length ? `\nMagic: ${magicEqParts.join(' + ')}` : '') +
-    `\nMagic DPS = ${fmt(magicDPS,1)}` +
-    `\nTotal DPS = ${fmt(totalDPS,1)}` +
-    `\nWall: (${fmt(wPhysTotal,1)} phys${crusherNote} + ${fmt(wMagicPerHit,1)} magic${isBaseVersion ? '' : ` + ${fmt(wBonusPerHit,1)} pure`}) x ${fmt(aps,2)} + ${fmt(wBurnDPS,1)} burn = ${fmt(wallDPS,1)}`
-    + (isBaseVersion && wCrusherRaw > 0 ? `\n* Base ver: tridents NOT pure, treated as physical` : '');
+  // Build human-readable equation
+  const wArmRed = 0.06 * wArm / (1 + 0.06 * wArm);
+  const lines = [];
+
+  // Section 1: Attack Damage
+  lines.push(`=== ATTACK DAMAGE ===`);
+  lines.push(eqParts.join(' + '));
+  lines.push(`= ${fmt(effectiveAD,1)} total AD`);
+
+  // Section 2: Attack Speed
+  lines.push(``);
+  lines.push(`=== ATTACK SPEED ===`);
+  lines.push(`APS: ${fmt(aps,2)} attacks/sec${fStacks > 0 ? ` (Fervor ${fStacks}/${pas.fervorStacks} stacks)` : ''}`);
+
+  // Section 3: DPS vs Units (physical + magic)
+  lines.push(``);
+  lines.push(`=== DPS vs UNITS ===`);
+  lines.push(`Physical: ${fmt(effectiveAD,1)} x ${fmt(aps,2)} APS = ${fmt(physDPS,1)}`);
+  if (magicEqParts.length) {
+    lines.push(`Magic per hit: ${magicEqParts.join(' + ')}`);
+    lines.push(`Magic DPS: ${fmt(magicDPS,1)}`);
+  }
+  lines.push(`Total DPS vs units: ${fmt(totalDPS,1)}`);
+
+  // Section 4: Wall DPS (the important part — show all reductions)
+  lines.push(``);
+  lines.push(`=== DPS vs WALLS (armor ${wArm}, ${wHP} HP) ===`);
+  lines.push(`Fortified: titan deals 55% to walls`);
+  lines.push(`Wall armor ${wArm}: ${fmt(wArmRed*100,1)}% blocked, ${fmt(wArmMult*100,1)}% gets through`);
+  lines.push(``);
+  lines.push(`Phys/hit: ${fmt(effectiveAD,1)} AD x 0.55 x ${fmt(wArmMult,3)} = ${fmt(wPhysPerHit,1)}`);
+  if (isBaseVersion && wCrusherRaw > 0) {
+    lines.push(`Crusher/hit: ${fmt(wCrusherRaw,0)} x 0.55 x ${fmt(wArmMult,3)} = ${fmt(wCrusherAsPhys,1)} (physical in base ver)`);
+    lines.push(`Total phys/hit: ${fmt(wPhysTotal,1)}`);
+  }
+  if (wMagicPerHit > 0) {
+    lines.push(`Magic/hit: ${fmt(wMagicPerHit,1)} (ignores armor)`);
+  }
+  if (!isBaseVersion && wBonusPerHit > 0) {
+    lines.push(`Pure bonus/hit: ${fmt(wBonusPerHit,1)} (crusher, ignores armor)`);
+  }
+  const totalPerHit = wPhysTotal + wMagicPerHit + wBonusPerHit;
+  lines.push(`Total per hit: ${fmt(totalPerHit,1)} x ${fmt(aps,2)} APS = ${fmt(totalPerHit*aps,1)} hit DPS`);
+  if (wBurnDPS > 0) {
+    if (pas.burnPct > 0) lines.push(`Burn: ${pas.burnPct}% of ${wHP} HP = ${fmt(pas.burnPct/100*wHP,1)}/s`);
+    if (pas.burnFlatDPS > 0) lines.push(`Flat burn: ${fmt(pas.burnFlatDPS,1)}/s`);
+    lines.push(`Total burn: ${fmt(wBurnDPS,1)}/s`);
+  }
+  lines.push(`Wall DPS: ${fmt(wallDPS,1)}`);
+
+  const equation = lines.join('\n');
 
   return { physDPS, magicDPS, totalDPS, wallDPS, equation, effectiveAD, aps, colossusDmg, runicWrathDmg };
 }
