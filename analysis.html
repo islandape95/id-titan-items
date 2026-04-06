@@ -121,7 +121,7 @@ function showLv(section, lv) {
 <tr ><td>Magic Armor</td><td class="gold">285</td><td>0.00</td><td>20995</td><td>0.00</td><td>19950</td><td>0.00</td><td>23370</td><td>0.00</td><td>0.0000</td></tr>
 </tbody></table></div>
 </div>
-<div class="sg"><p>Reef Armor best passive (0.007/g). But Casque with Bond active (0.011/g) actually beats it. Super Regen weak under burst. Magic Armor: 0 phys value (designed for magic defense).</p></div>
+<div class="sg"><p>Reef Armor best passive (~0.005-0.008/g). But Casque with Bond active (0.011/g) actually beats it. Super Regen weak under burst. Magic Armor: 0 phys value (designed for magic defense).</p></div>
 <div class="ch"><strong>Casque:</strong> +200 → +350 HP · <strong>Super Regen:</strong> +12 → +16/s · <strong>Enchantress heal:</strong> 300 → 500 HP (8.3/s avg)</div>
 <h3>After Changes</h3>
 <div id="t2d-new"><div class="lvtabs"><button class=" active" data-lv="3" onclick="showLv('t2d-new',3)">Level 3</button><button class="" data-lv="6" onclick="showLv('t2d-new',6)">Level 6</button><button class="" data-lv="8" onclick="showLv('t2d-new',8)">Level 8</button></div>
@@ -257,7 +257,7 @@ function showLv(section, lv) {
 <tr class="indent" ><td>↳ rage active</td><td class="gold">930</td><td>82.6</td><td>69.6</td><td>58.2</td><td>70.1</td><td>0.0754</td></tr>
 <tr ><td>Mace (avg warcry)</td><td class="gold">1000</td><td>79.7</td><td>65.5</td><td>58.4</td><td>67.9</td><td>0.0679</td></tr>
 <tr class="indent" ><td>↳ no warcry</td><td class="gold">1000</td><td>60.4</td><td>49.9</td><td>44.0</td><td>51.4</td><td>0.0514</td></tr>
-<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>175.9</td><td>143.6</td><td>130.4</td><td>150.0</td><td>0.1500</td></tr>
+<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>175.9</td><td>143.6</td><td>130.4</td><td>150.0</td><td class="best">0.1500</td></tr>
 <tr ><td>Spear of Fervor</td><td class="gold">750</td><td>32.0</td><td>27.0</td><td>22.6</td><td>27.2</td><td>0.0363</td></tr>
 <tr class="indent" ><td>↳ no fervor</td><td class="gold">750</td><td>25.0</td><td>21.1</td><td>17.6</td><td>21.2</td><td>0.0283</td></tr>
 <tr class="indent" ><td>↳ full fervor</td><td class="gold">750</td><td>32.0</td><td>27.0</td><td>22.6</td><td>27.2</td><td>0.0363</td></tr>
@@ -265,8 +265,8 @@ function showLv(section, lv) {
 <tr class="indent" ><td>↳ no ward</td><td class="gold">765</td><td>26.3</td><td>22.2</td><td>18.6</td><td>22.4</td><td>0.0292</td></tr>
 <tr class="indent" ><td>↳ ward on target</td><td class="gold">765</td><td>41.0</td><td>34.6</td><td>28.9</td><td>34.8</td><td>0.0455</td></tr>
 <tr ><td>Foreteller (base 3%)</td><td class="gold">860</td><td>70.3</td><td>64.9</td><td>48.9</td><td>61.4</td><td>0.0714</td></tr>
-<tr class="indent" ><td>↳ spell buff (8%)</td><td class="gold">860</td><td>166.7</td><td>155.5</td><td>115.6</td><td>145.9</td><td class="best">0.1697</td></tr>
-<tr ><td>Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>0.1500</td></tr>
+<tr class="indent" ><td>↳ spell buff (+5% mana pool)</td><td class="gold">860</td><td>73.2</td><td>67.6</td><td>50.9</td><td>63.9</td><td>0.0743</td></tr>
+<tr ><td>Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td class="best">0.1500</td></tr>
 <tr ><td>Highseer Slippers</td><td class="gold">750</td><td>32.1</td><td>27.1</td><td>22.6</td><td>27.3</td><td>0.0363</td></tr>
 </tbody></table></div>
 <div id="t3o-cur-lv6" class="lv-panel">
@@ -276,7 +276,7 @@ function showLv(section, lv) {
 <tr class="indent" ><td>↳ rage active</td><td class="gold">930</td><td>113.4</td><td>95.5</td><td>79.8</td><td>96.2</td><td>0.1035</td></tr>
 <tr ><td>Mace (avg warcry)</td><td class="gold">1000</td><td>99.0</td><td>80.9</td><td>74.2</td><td>84.7</td><td>0.0847</td></tr>
 <tr class="indent" ><td>↳ no warcry</td><td class="gold">1000</td><td>73.4</td><td>60.2</td><td>54.5</td><td>62.7</td><td>0.0627</td></tr>
-<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>227.2</td><td>184.2</td><td>172.8</td><td>194.7</td><td>0.1947</td></tr>
+<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>227.2</td><td>184.2</td><td>172.8</td><td>194.7</td><td class="best">0.1947</td></tr>
 <tr ><td>Spear of Fervor</td><td class="gold">750</td><td>38.9</td><td>32.8</td><td>27.4</td><td>33.0</td><td>0.0440</td></tr>
 <tr class="indent" ><td>↳ no fervor</td><td class="gold">750</td><td>30.4</td><td>25.6</td><td>21.4</td><td>25.8</td><td>0.0344</td></tr>
 <tr class="indent" ><td>↳ full fervor</td><td class="gold">750</td><td>38.9</td><td>32.8</td><td>27.4</td><td>33.0</td><td>0.0440</td></tr>
@@ -284,7 +284,7 @@ function showLv(section, lv) {
 <tr class="indent" ><td>↳ no ward</td><td class="gold">765</td><td>29.5</td><td>24.9</td><td>20.8</td><td>25.1</td><td>0.0328</td></tr>
 <tr class="indent" ><td>↳ ward on target</td><td class="gold">765</td><td>47.5</td><td>40.0</td><td>33.4</td><td>40.3</td><td>0.0527</td></tr>
 <tr ><td>Foreteller (base 3%)</td><td class="gold">860</td><td>93.0</td><td>91.7</td><td>64.8</td><td>83.2</td><td>0.0967</td></tr>
-<tr class="indent" ><td>↳ spell buff (8%)</td><td class="gold">860</td><td>222.7</td><td>223.3</td><td>155.0</td><td>200.3</td><td class="best">0.2329</td></tr>
+<tr class="indent" ><td>↳ spell buff (+5% mana pool)</td><td class="gold">860</td><td>96.9</td><td>95.7</td><td>67.5</td><td>86.7</td><td>0.1008</td></tr>
 <tr ><td>Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>0.1500</td></tr>
 <tr ><td>Highseer Slippers</td><td class="gold">750</td><td>33.6</td><td>28.3</td><td>23.7</td><td>28.5</td><td>0.0380</td></tr>
 </tbody></table></div>
@@ -295,7 +295,7 @@ function showLv(section, lv) {
 <tr class="indent" ><td>↳ rage active</td><td class="gold">930</td><td>135.1</td><td>113.8</td><td>95.1</td><td>114.7</td><td>0.1233</td></tr>
 <tr ><td>Mace (avg warcry)</td><td class="gold">1000</td><td>112.6</td><td>91.7</td><td>85.4</td><td>96.5</td><td>0.0965</td></tr>
 <tr class="indent" ><td>↳ no warcry</td><td class="gold">1000</td><td>82.4</td><td>67.5</td><td>61.9</td><td>70.6</td><td>0.0706</td></tr>
-<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>263.3</td><td>212.8</td><td>202.7</td><td>226.3</td><td>0.2263</td></tr>
+<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>263.3</td><td>212.8</td><td>202.7</td><td>226.3</td><td class="best">0.2263</td></tr>
 <tr ><td>Spear of Fervor</td><td class="gold">750</td><td>43.5</td><td>36.6</td><td>30.6</td><td>36.9</td><td>0.0492</td></tr>
 <tr class="indent" ><td>↳ no fervor</td><td class="gold">750</td><td>34.0</td><td>28.6</td><td>23.9</td><td>28.8</td><td>0.0384</td></tr>
 <tr class="indent" ><td>↳ full fervor</td><td class="gold">750</td><td>43.5</td><td>36.6</td><td>30.6</td><td>36.9</td><td>0.0492</td></tr>
@@ -303,7 +303,7 @@ function showLv(section, lv) {
 <tr class="indent" ><td>↳ no ward</td><td class="gold">765</td><td>31.7</td><td>26.7</td><td>22.3</td><td>26.9</td><td>0.0351</td></tr>
 <tr class="indent" ><td>↳ ward on target</td><td class="gold">765</td><td>51.9</td><td>43.7</td><td>36.5</td><td>44.0</td><td>0.0576</td></tr>
 <tr ><td>Foreteller (base 3%)</td><td class="gold">860</td><td>108.8</td><td>110.5</td><td>75.9</td><td>98.4</td><td>0.1145</td></tr>
-<tr class="indent" ><td>↳ spell buff (8%)</td><td class="gold">860</td><td>261.9</td><td>270.9</td><td>182.6</td><td>238.5</td><td class="best">0.2773</td></tr>
+<tr class="indent" ><td>↳ spell buff (+5% mana pool)</td><td class="gold">860</td><td>113.4</td><td>115.3</td><td>79.1</td><td>102.6</td><td>0.1193</td></tr>
 <tr ><td>Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>0.1500</td></tr>
 <tr ><td>Highseer Slippers</td><td class="gold">750</td><td>34.6</td><td>29.1</td><td>24.3</td><td>29.4</td><td>0.0391</td></tr>
 </tbody></table></div>
@@ -320,7 +320,7 @@ function showLv(section, lv) {
 <tr class="indent" ><td>↳ rage active</td><td class="gold">930</td><td>82.6</td><td>69.6</td><td>58.2</td><td>70.1</td><td>0.0754</td></tr>
 <tr ><td>Mace (avg warcry)</td><td class="gold">1000</td><td>79.7</td><td>65.5</td><td>58.4</td><td>67.9</td><td>0.0679</td></tr>
 <tr class="indent" ><td>↳ no warcry</td><td class="gold">1000</td><td>60.4</td><td>49.9</td><td>44.0</td><td>51.4</td><td>0.0514</td></tr>
-<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>175.9</td><td>143.6</td><td>130.4</td><td>150.0</td><td>0.1500</td></tr>
+<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>175.9</td><td>143.6</td><td>130.4</td><td>150.0</td><td class="best">0.1500</td></tr>
 <tr ><td>Spear ★</td><td class="gold">750</td><td>38.8</td><td>32.7</td><td>27.3</td><td>32.9</td><td>0.0439</td></tr>
 <tr class="indent" ><td>↳ no fervor</td><td class="gold">750</td><td>30.0</td><td>25.3</td><td>21.1</td><td>25.5</td><td>0.0340</td></tr>
 <tr class="indent" ><td>↳ full fervor</td><td class="gold">750</td><td>38.8</td><td>32.7</td><td>27.3</td><td>32.9</td><td>0.0439</td></tr>
@@ -328,8 +328,8 @@ function showLv(section, lv) {
 <tr class="indent" ><td>↳ no ward</td><td class="gold">765</td><td>26.3</td><td>22.2</td><td>18.6</td><td>22.4</td><td>0.0292</td></tr>
 <tr class="indent" ><td>↳ ward on target</td><td class="gold">765</td><td>44.7</td><td>37.6</td><td>31.5</td><td>37.9</td><td>0.0496</td></tr>
 <tr ><td>Foreteller (base 3%)</td><td class="gold">860</td><td>70.3</td><td>64.9</td><td>48.9</td><td>61.4</td><td>0.0714</td></tr>
-<tr class="indent" ><td>↳ spell buff (8%)</td><td class="gold">860</td><td>166.7</td><td>155.5</td><td>115.6</td><td>145.9</td><td class="best">0.1697</td></tr>
-<tr ><td>Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>0.1500</td></tr>
+<tr class="indent" ><td>↳ spell buff (+5% mana pool)</td><td class="gold">860</td><td>73.2</td><td>67.6</td><td>50.9</td><td>63.9</td><td>0.0743</td></tr>
+<tr ><td>Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td class="best">0.1500</td></tr>
 <tr ><td>Highseer Slippers</td><td class="gold">750</td><td>32.1</td><td>27.1</td><td>22.6</td><td>27.3</td><td>0.0363</td></tr>
 </tbody></table></div>
 <div id="t3o-new-lv6" class="lv-panel">
@@ -339,7 +339,7 @@ function showLv(section, lv) {
 <tr class="indent" ><td>↳ rage active</td><td class="gold">930</td><td>113.4</td><td>95.5</td><td>79.8</td><td>96.2</td><td>0.1035</td></tr>
 <tr ><td>Mace (avg warcry)</td><td class="gold">1000</td><td>99.0</td><td>80.9</td><td>74.2</td><td>84.7</td><td>0.0847</td></tr>
 <tr class="indent" ><td>↳ no warcry</td><td class="gold">1000</td><td>73.4</td><td>60.2</td><td>54.5</td><td>62.7</td><td>0.0627</td></tr>
-<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>227.2</td><td>184.2</td><td>172.8</td><td>194.7</td><td>0.1947</td></tr>
+<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>227.2</td><td>184.2</td><td>172.8</td><td>194.7</td><td class="best">0.1947</td></tr>
 <tr ><td>Spear ★</td><td class="gold">750</td><td>47.1</td><td>39.7</td><td>33.2</td><td>40.0</td><td>0.0533</td></tr>
 <tr class="indent" ><td>↳ no fervor</td><td class="gold">750</td><td>36.5</td><td>30.7</td><td>25.7</td><td>31.0</td><td>0.0413</td></tr>
 <tr class="indent" ><td>↳ full fervor</td><td class="gold">750</td><td>47.1</td><td>39.7</td><td>33.2</td><td>40.0</td><td>0.0533</td></tr>
@@ -347,7 +347,7 @@ function showLv(section, lv) {
 <tr class="indent" ><td>↳ no ward</td><td class="gold">765</td><td>29.5</td><td>24.9</td><td>20.8</td><td>25.1</td><td>0.0328</td></tr>
 <tr class="indent" ><td>↳ ward on target</td><td class="gold">765</td><td>51.9</td><td>43.7</td><td>36.5</td><td>44.1</td><td>0.0576</td></tr>
 <tr ><td>Foreteller (base 3%)</td><td class="gold">860</td><td>93.0</td><td>91.7</td><td>64.8</td><td>83.2</td><td>0.0967</td></tr>
-<tr class="indent" ><td>↳ spell buff (8%)</td><td class="gold">860</td><td>222.7</td><td>223.3</td><td>155.0</td><td>200.3</td><td class="best">0.2329</td></tr>
+<tr class="indent" ><td>↳ spell buff (+5% mana pool)</td><td class="gold">860</td><td>96.9</td><td>95.7</td><td>67.5</td><td>86.7</td><td>0.1008</td></tr>
 <tr ><td>Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>0.1500</td></tr>
 <tr ><td>Highseer Slippers</td><td class="gold">750</td><td>33.6</td><td>28.3</td><td>23.7</td><td>28.5</td><td>0.0380</td></tr>
 </tbody></table></div>
@@ -358,7 +358,7 @@ function showLv(section, lv) {
 <tr class="indent" ><td>↳ rage active</td><td class="gold">930</td><td>135.1</td><td>113.8</td><td>95.1</td><td>114.7</td><td>0.1233</td></tr>
 <tr ><td>Mace (avg warcry)</td><td class="gold">1000</td><td>112.6</td><td>91.7</td><td>85.4</td><td>96.5</td><td>0.0965</td></tr>
 <tr class="indent" ><td>↳ no warcry</td><td class="gold">1000</td><td>82.4</td><td>67.5</td><td>61.9</td><td>70.6</td><td>0.0706</td></tr>
-<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>263.3</td><td>212.8</td><td>202.7</td><td>226.3</td><td>0.2263</td></tr>
+<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>263.3</td><td>212.8</td><td>202.7</td><td>226.3</td><td class="best">0.2263</td></tr>
 <tr ><td>Spear ★</td><td class="gold">750</td><td>52.6</td><td>44.4</td><td>37.1</td><td>44.7</td><td>0.0596</td></tr>
 <tr class="indent" ><td>↳ no fervor</td><td class="gold">750</td><td>40.7</td><td>34.3</td><td>28.7</td><td>34.6</td><td>0.0461</td></tr>
 <tr class="indent" ><td>↳ full fervor</td><td class="gold">750</td><td>52.6</td><td>44.4</td><td>37.1</td><td>44.7</td><td>0.0596</td></tr>
@@ -366,7 +366,7 @@ function showLv(section, lv) {
 <tr class="indent" ><td>↳ no ward</td><td class="gold">765</td><td>31.7</td><td>26.7</td><td>22.3</td><td>26.9</td><td>0.0351</td></tr>
 <tr class="indent" ><td>↳ ward on target</td><td class="gold">765</td><td>56.8</td><td>47.9</td><td>40.0</td><td>48.3</td><td>0.0631</td></tr>
 <tr ><td>Foreteller (base 3%)</td><td class="gold">860</td><td>108.8</td><td>110.5</td><td>75.9</td><td>98.4</td><td>0.1145</td></tr>
-<tr class="indent" ><td>↳ spell buff (8%)</td><td class="gold">860</td><td>261.9</td><td>270.9</td><td>182.6</td><td>238.5</td><td class="best">0.2773</td></tr>
+<tr class="indent" ><td>↳ spell buff (+5% mana pool)</td><td class="gold">860</td><td>113.4</td><td>115.3</td><td>79.1</td><td>102.6</td><td>0.1193</td></tr>
 <tr ><td>Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>0.1500</td></tr>
 <tr ><td>Highseer Slippers</td><td class="gold">750</td><td>34.6</td><td>29.1</td><td>24.3</td><td>29.4</td><td>0.0391</td></tr>
 </tbody></table></div>
