@@ -1,30 +1,30 @@
-<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Analysis — Decent V5</title><link rel="stylesheet" href="css/styles.css">
 <style>
 .aw{padding:24px 32px;max-width:1400px;margin:0 auto;overflow-y:auto;height:calc(100vh - 48px)}
 .aw h1{font-size:22px;margin-bottom:4px;color:var(--accent)}
-.aw h2{font-size:17px;margin:32px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
-.aw h3{font-size:14px;margin:16px 0 6px;color:var(--text-muted)}
-.aw p,.aw li{font-size:13px;color:var(--text-muted);line-height:1.6}
-.aw .sub{color:var(--text-muted);font-size:13px;margin-bottom:20px}
-.aw table{width:100%;border-collapse:collapse;font-size:12px;margin:8px 0 16px}
-.aw th{background:var(--surface2);padding:6px 8px;text-align:left;font-weight:600;border-bottom:2px solid var(--border);white-space:nowrap}
-.aw td{padding:5px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
+.aw h2{font-size:17px;margin:36px 0 8px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.aw h3{font-size:13px;margin:14px 0 4px;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.5px}
+.aw p{font-size:12px;color:var(--text-muted);line-height:1.5;margin:4px 0 8px}
+.aw .sub{font-size:13px;margin-bottom:20px}
+.aw table{width:100%;border-collapse:collapse;font-size:12px;margin:6px 0 14px}
+.aw th{background:var(--surface2);padding:5px 8px;text-align:left;font-weight:600;border-bottom:2px solid var(--border);white-space:nowrap}
+.aw td{padding:4px 8px;border-bottom:1px solid var(--border);white-space:nowrap}
 .aw tr:hover td{background:rgba(88,166,255,0.04)}
 .best{color:#fbbf24;font-weight:700}
 .good{color:#4ade80;font-weight:600}
-.bad{color:#f87171}
+.bad{color:#f87171;font-weight:600}
 .dim{color:var(--text-muted)}
 .tl{font-weight:600;color:var(--accent)}
-.sg{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px 20px;margin:12px 0}
-.ch{background:rgba(251,191,36,0.06);border-left:3px solid #fbbf24;padding:8px 12px;margin:8px 0;font-size:12px}
+.sg{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 18px;margin:10px 0}
+.ch{border-left:3px solid #fbbf24;padding:6px 12px;margin:8px 0;font-size:12px;background:rgba(251,191,36,0.05)}
 .ch strong{color:#fbbf24}
-.ba{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:8px 0}
-.ba>div{border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px}
-.ba .before{border-color:#f87171} .ba .after{border-color:#4ade80}
-.ba h4{font-size:12px;margin:0 0 6px;text-transform:uppercase;letter-spacing:1px}
-.ba .before h4{color:#f87171} .ba .after h4{color:#4ade80}
+.ba{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+.ba>div{border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px}
+.ba .bef{border-color:#f87171} .ba .aft{border-color:#4ade80}
+.ba h4{font-size:11px;margin:0 0 4px;text-transform:uppercase;letter-spacing:1px}
+.ba .bef h4{color:#f87171} .ba .aft h4{color:#4ade80}
 @media(max-width:1000px){.ba{grid-template-columns:1fr}}
 </style></head><body><div class="app">
 <header class="topbar"><span class="topbar-title">⬡ Item Tree</span><div class="topbar-spacer"></div>
@@ -34,112 +34,102 @@
 <a class="nav-btn active" href="analysis.html">Analysis</a><a class="nav-btn" href="about.html">About</a>
 </nav></header><div class="aw">
 <h1>Decent V5 — Balance Analysis</h1>
-<p class="sub">36 Super Towers (1850 raw DPS, ranged ×0.5) · Walls: 15 armor, 500 HP, fortified ×0.55 · Lucidious / Glacious / Granitacles</p>
+<p class="sub">36 Super Towers (1850 DPS, ranged ×0.5) · Wall: 15 arm, 500 HP, fortified 0.55</p>
 <h2>T1 Defensive</h2>
-<h3>Current Balance (Lucidious)</h3>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>/gold</th><th>Lv6 ΔTTD</th><th>/gold</th><th>Lv8 ΔTTD</th><th>/gold</th></tr></thead><tbody>
+<h3>Current — extra seconds alive per gold vs 36 supers (Lucidious)</h3>
+<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>ΔTTD/gold</th><th>Lv6 ΔTTD</th><th>ΔTTD/gold</th><th>Lv8 ΔTTD</th><th>ΔTTD/gold</th></tr></thead><tbody>
 <tr><td>Reef Shield</td><td>85g</td><td>0.49s</td><td class="best">0.0058</td><td>0.65s</td><td class="best">0.0077</td><td>0.76s</td><td class="best">0.0090</td></tr>
 <tr><td>Tide's Heart</td><td>100g</td><td>0.31s</td><td>0.0031</td><td>0.38s</td><td>0.0038</td><td>0.42s</td><td>0.0042</td></tr>
 <tr><td>Regen Spines</td><td>70g</td><td>0.03s</td><td>0.0004</td><td>0.05s</td><td>0.0007</td><td>0.07s</td><td>0.0011</td></tr>
 </tbody></table>
-<div class="sg"><h3>Problem</h3>
+<div class="sg"><p>Reef Shield 1.8-2.4× better than Tide's Heart on all titans. HP always loses to armor.</p>
 <table><thead><tr><th>Titan</th>
 <th>Lv3 RS÷TH</th>
 <th>Lv6 RS÷TH</th>
 <th>Lv8 RS÷TH</th>
 </tr></thead><tbody>
 <tr><td class="tl">Lucidious</td>
-<td class="bad"><strong>1.85×</strong></td>
-<td class="bad"><strong>2.01×</strong></td>
-<td class="bad"><strong>2.12×</strong></td>
+<td class="bad">1.85×</td>
+<td class="bad">2.01×</td>
+<td class="bad">2.12×</td>
 </tr>
 <tr><td class="tl">Glacious</td>
-<td class="bad"><strong>1.77×</strong></td>
-<td class="bad"><strong>1.91×</strong></td>
-<td class="bad"><strong>2.01×</strong></td>
+<td class="bad">1.77×</td>
+<td class="bad">1.91×</td>
+<td class="bad">2.01×</td>
 </tr>
 <tr><td class="tl">Granitacles</td>
-<td class="bad"><strong>1.98×</strong></td>
-<td class="bad"><strong>2.22×</strong></td>
-<td class="bad"><strong>2.37×</strong></td>
+<td class="bad">1.98×</td>
+<td class="bad">2.22×</td>
+<td class="bad">2.37×</td>
 </tr>
-</tbody></table>
-<p>RS 1.8-2.4× better than TH per gold. HP never worth over armor.</p>
-</div>
-<div class="ch"><strong>Changes:</strong> Tide's Heart +200 HP → <strong>+325 HP</strong> · Regen Spines +3/s → <strong>+5/s</strong></div>
-<div class="ba"><div class="before"><h4>Before</h4>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>/gold</th><th>Lv6 ΔTTD</th><th>/gold</th><th>Lv8 ΔTTD</th><th>/gold</th></tr></thead><tbody>
+</tbody></table></div>
+<div class="ch"><strong>Tide's Heart:</strong> +200 → +325 HP · <strong>Regen Spines:</strong> +3 → +5/s</div>
+<div class="ba"><div class="bef"><h4>Before</h4><table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>ΔTTD/gold</th><th>Lv6 ΔTTD</th><th>ΔTTD/gold</th><th>Lv8 ΔTTD</th><th>ΔTTD/gold</th></tr></thead><tbody>
 <tr><td>Reef Shield</td><td>85g</td><td>0.49s</td><td class="best">0.0058</td><td>0.65s</td><td class="best">0.0077</td><td>0.76s</td><td class="best">0.0090</td></tr>
 <tr><td>Tide's Heart</td><td>100g</td><td>0.31s</td><td>0.0031</td><td>0.38s</td><td>0.0038</td><td>0.42s</td><td>0.0042</td></tr>
 <tr><td>Regen Spines</td><td>70g</td><td>0.03s</td><td>0.0004</td><td>0.05s</td><td>0.0007</td><td>0.07s</td><td>0.0011</td></tr>
-</tbody></table>
-</div><div class="after"><h4>After</h4>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>/gold</th><th>Lv6 ΔTTD</th><th>/gold</th><th>Lv8 ΔTTD</th><th>/gold</th></tr></thead><tbody>
+</tbody></table></div>
+<div class="aft"><h4>After</h4><table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>ΔTTD/gold</th><th>Lv6 ΔTTD</th><th>ΔTTD/gold</th><th>Lv8 ΔTTD</th><th>ΔTTD/gold</th></tr></thead><tbody>
 <tr><td>Reef Shield</td><td>85g</td><td>0.49s</td><td class="best">0.0058</td><td>0.65s</td><td class="best">0.0077</td><td>0.76s</td><td class="best">0.0090</td></tr>
 <tr><td>Tide's Heart ★</td><td>100g</td><td>0.51s</td><td>0.0051</td><td>0.62s</td><td>0.0062</td><td>0.69s</td><td>0.0069</td></tr>
 <tr><td>Regen Spines ★</td><td>70g</td><td>0.04s</td><td>0.0006</td><td>0.09s</td><td>0.0013</td><td>0.13s</td><td>0.0018</td></tr>
-</tbody></table>
-</div></div>
-<h3>After — RS÷TH ratio</h3>
-<table><thead><tr><th>Titan</th>
-<th>Lv3 RS÷TH</th>
-<th>Lv6 RS÷TH</th>
-<th>Lv8 RS÷TH</th>
+</tbody></table></div></div>
+<h3>After — RS÷TH ratio</h3><table><thead><tr><th>Titan</th>
+<th>Lv3</th>
+<th>Lv6</th>
+<th>Lv8</th>
 </tr></thead><tbody>
 <tr><td class="tl">Lucidious</td>
-<td class="good"><strong>1.14×</strong></td>
-<td class="good"><strong>1.24×</strong></td>
-<td class="dim"><strong>1.31×</strong></td>
+<td class="good">1.14×</td>
+<td class="good">1.24×</td>
+<td class="dim">1.31×</td>
 </tr>
 <tr><td class="tl">Glacious</td>
-<td class="good"><strong>1.09×</strong></td>
-<td class="good"><strong>1.18×</strong></td>
-<td class="good"><strong>1.24×</strong></td>
+<td class="good">1.09×</td>
+<td class="good">1.18×</td>
+<td class="good">1.24×</td>
 </tr>
 <tr><td class="tl">Granitacles</td>
-<td class="good"><strong>1.22×</strong></td>
-<td class="dim"><strong>1.37×</strong></td>
-<td class="dim"><strong>1.46×</strong></td>
+<td class="good">1.22×</td>
+<td class="dim">1.37×</td>
+<td class="dim">1.46×</td>
 </tr>
 </tbody></table>
-<p>+325 HP: Lv3 ~1.1× (close), Lv8 ~1.3× (armor ahead). HP strong early, armor wins late.</p>
+<p>Lv3 ~1.1× (close). Lv8 ~1.3× (armor pulls ahead). HP viable early, armor scales late.</p>
 <h2>T2 Defensive</h2>
-<h3>Current Balance (Lucidious)</h3>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>/gold</th><th>Lv6 ΔTTD</th><th>/gold</th><th>Lv8 ΔTTD</th><th>/gold</th></tr></thead><tbody>
+<h3>Current — Lucidious</h3>
+<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>ΔTTD/gold</th><th>Lv6 ΔTTD</th><th>ΔTTD/gold</th><th>Lv8 ΔTTD</th><th>ΔTTD/gold</th></tr></thead><tbody>
 <tr><td>Reef Armor</td><td>335g</td><td>1.69s</td><td class="best">0.0050</td><td>2.20s</td><td class="best">0.0066</td><td>2.56s</td><td class="best">0.0076</td></tr>
-<tr><td>Super Regen Spines</td><td>250g</td><td>0.17s</td><td>0.0007</td><td>0.33s</td><td>0.0013</td><td>0.47s</td><td>0.0019</td></tr>
+<tr><td>Super Regen</td><td>250g</td><td>0.17s</td><td>0.0007</td><td>0.33s</td><td>0.0013</td><td>0.47s</td><td>0.0019</td></tr>
 <tr><td>Casque of Valor</td><td>335g</td><td>0.83s</td><td>0.0025</td><td>1.06s</td><td>0.0032</td><td>1.22s</td><td>0.0036</td></tr>
 <tr><td>Enchantress' Fluid</td><td>375g</td><td>0.67s</td><td>0.0018</td><td>0.86s</td><td>0.0023</td><td>0.98s</td><td>0.0026</td></tr>
 <tr><td>Heart of the Sea</td><td>340g</td><td>0.43s</td><td>0.0013</td><td>0.55s</td><td>0.0016</td><td>0.63s</td><td>0.0019</td></tr>
 <tr><td>Eternal Wards</td><td>220g</td><td>0.04s</td><td>0.0002</td><td>0.09s</td><td>0.0004</td><td>0.13s</td><td>0.0006</td></tr>
 </tbody></table>
-<div class="sg"><h3>Problem</h3>
-<p>Reef Armor 0.0050/g vs Casque 0.0025/g at same 335g = <strong>2× gap</strong>. Super Regen 0.0007/g, 12 reg/s vs 487-651 eff DPS = nothing. Enchantress 375g < Casque 335g.</p>
-</div>
-<div class="ch"><strong>Changes:</strong> Casque +200 HP → <strong>+350 HP</strong> · Super Regen +12/s → <strong>+16/s</strong> · Enchantress heal 300 → <strong>500</strong> HP (= 8.3 HP/s avg)</div>
-<div class="ba"><div class="before"><h4>Before</h4>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>/gold</th><th>Lv6 ΔTTD</th><th>/gold</th><th>Lv8 ΔTTD</th><th>/gold</th></tr></thead><tbody>
+<div class="sg"><p>Reef Armor 0.0050/g vs Casque 0.0025/g (same 335g) = 2× gap. Super Regen 0.0007/g vs 487-651 eff tower DPS.</p></div>
+<div class="ch"><strong>Casque:</strong> +200 → +350 HP · <strong>Super Regen:</strong> +12 → +16/s · <strong>Enchantress heal:</strong> 300 → 500 HP</div>
+<div class="ba"><div class="bef"><h4>Before</h4><table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>ΔTTD/gold</th><th>Lv6 ΔTTD</th><th>ΔTTD/gold</th><th>Lv8 ΔTTD</th><th>ΔTTD/gold</th></tr></thead><tbody>
 <tr><td>Reef Armor</td><td>335g</td><td>1.69s</td><td class="best">0.0050</td><td>2.20s</td><td class="best">0.0066</td><td>2.56s</td><td class="best">0.0076</td></tr>
-<tr><td>Super Regen Spines</td><td>250g</td><td>0.17s</td><td>0.0007</td><td>0.33s</td><td>0.0013</td><td>0.47s</td><td>0.0019</td></tr>
+<tr><td>Super Regen</td><td>250g</td><td>0.17s</td><td>0.0007</td><td>0.33s</td><td>0.0013</td><td>0.47s</td><td>0.0019</td></tr>
 <tr><td>Casque of Valor</td><td>335g</td><td>0.83s</td><td>0.0025</td><td>1.06s</td><td>0.0032</td><td>1.22s</td><td>0.0036</td></tr>
 <tr><td>Enchantress' Fluid</td><td>375g</td><td>0.67s</td><td>0.0018</td><td>0.86s</td><td>0.0023</td><td>0.98s</td><td>0.0026</td></tr>
 <tr><td>Heart of the Sea</td><td>340g</td><td>0.43s</td><td>0.0013</td><td>0.55s</td><td>0.0016</td><td>0.63s</td><td>0.0019</td></tr>
 <tr><td>Eternal Wards</td><td>220g</td><td>0.04s</td><td>0.0002</td><td>0.09s</td><td>0.0004</td><td>0.13s</td><td>0.0006</td></tr>
-</tbody></table>
-</div><div class="after"><h4>After</h4>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>/gold</th><th>Lv6 ΔTTD</th><th>/gold</th><th>Lv8 ΔTTD</th><th>/gold</th></tr></thead><tbody>
+</tbody></table></div>
+<div class="aft"><h4>After</h4><table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>ΔTTD/gold</th><th>Lv6 ΔTTD</th><th>ΔTTD/gold</th><th>Lv8 ΔTTD</th><th>ΔTTD/gold</th></tr></thead><tbody>
 <tr><td>Reef Armor</td><td>335g</td><td>1.69s</td><td class="best">0.0050</td><td>2.20s</td><td class="best">0.0066</td><td>2.56s</td><td class="best">0.0076</td></tr>
 <tr><td>Super Regen ★</td><td>250g</td><td>0.22s</td><td>0.0009</td><td>0.44s</td><td>0.0018</td><td>0.63s</td><td>0.0025</td></tr>
-<tr><td>Casque of Valor ★</td><td>335g</td><td>1.08s</td><td>0.0032</td><td>1.37s</td><td>0.0041</td><td>1.56s</td><td>0.0046</td></tr>
-<tr><td>Enchantress' Fluid ★</td><td>375g</td><td>0.71s</td><td>0.0019</td><td>0.92s</td><td>0.0025</td><td>1.07s</td><td>0.0029</td></tr>
+<tr><td>Casque ★</td><td>335g</td><td>1.08s</td><td>0.0032</td><td>1.37s</td><td>0.0041</td><td>1.56s</td><td>0.0046</td></tr>
+<tr><td>Enchantress' ★</td><td>375g</td><td>0.71s</td><td>0.0019</td><td>0.92s</td><td>0.0025</td><td>1.07s</td><td>0.0029</td></tr>
 <tr><td>Heart of the Sea</td><td>340g</td><td>0.43s</td><td>0.0013</td><td>0.55s</td><td>0.0016</td><td>0.63s</td><td>0.0019</td></tr>
 <tr><td>Eternal Wards</td><td>220g</td><td>0.04s</td><td>0.0002</td><td>0.09s</td><td>0.0004</td><td>0.13s</td><td>0.0006</td></tr>
-</tbody></table>
-</div></div>
-<p>Casque 0.0025 → 0.0040/g Lv3 (Reef 0.0050). Gap from 2× to 1.25×. Reef still ahead at Lv8.</p>
+</tbody></table></div></div>
+<p>Casque 0.0025→0.0040/g (gap Reef to Casque: 2× → 1.25×). Super Regen 0.0007→0.0009.</p>
 <h2>T2 Offensive — Wall DPS</h2>
-<h3>Current Balance (Lucidious)</h3>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δwall</th><th>/gold</th><th>Lv6 Δwall</th><th>/gold</th><th>Lv8 Δwall</th><th>/gold</th></tr></thead><tbody>
+<p>Δ wall DPS = extra structure damage/second over naked titan, vs 15 armor wall with 0.55 fortified.</p>
+<h3>Current — Lucidious</h3>
+<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv6 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv8 Δ Wall DPS</th><th>Wall DPS/gold</th></tr></thead><tbody>
 <tr><td>Titanic Tridents</td><td>355g</td><td>33.6</td><td>0.0945</td><td>43.2</td><td>0.1216</td><td>50.0</td><td class="best">0.1407</td></tr>
 <tr><td>Warbanner (avg shout)</td><td>300g</td><td>17.0</td><td>0.0565</td><td>19.4</td><td>0.0646</td><td>21.0</td><td>0.0701</td></tr>
 <tr><td>Berserker's Gem</td><td>250g</td><td>12.5</td><td>0.0500</td><td>15.2</td><td>0.0608</td><td>17.0</td><td>0.0679</td></tr>
@@ -147,133 +137,161 @@
 <tr><td>Voodoo Doll</td><td>230g</td><td>11.6</td><td>0.0505</td><td>13.4</td><td>0.0581</td><td>14.6</td><td>0.0634</td></tr>
 <tr><td>Gauntlets of Embers</td><td>200g</td><td>25.0</td><td class="best">0.1250</td><td>25.0</td><td class="best">0.1250</td><td>25.0</td><td>0.1250</td></tr>
 </tbody></table>
-<div class="sg"><h3>Problem</h3>
-<p>Runic Axe 0.086/g, Voodoo 0.024/g personal vs Tridents 0.095-0.14/g. Voodoo −3 arm = +10.5% team phys (hard to value/g). Runic bypasses wall armor but damage too low for 260g.</p>
-</div>
-<div class="ch"><strong>Changes:</strong> Runic Axe 35 → <strong>45</strong> magic · Voodoo Decay −3 → <strong>−4</strong> armor</div>
-<div class="ba"><div class="before"><h4>Before</h4>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δwall</th><th>/gold</th><th>Lv6 Δwall</th><th>/gold</th><th>Lv8 Δwall</th><th>/gold</th></tr></thead><tbody>
+<div class="sg"><p>Runic Axe 0.086/g lowest DPS item. Voodoo 0.024/g personal (has armor debuff utility not shown).</p></div>
+<div class="ch"><strong>Runic Axe:</strong> 35 → 45 magic · <strong>Voodoo:</strong> −3 → −4 armor</div>
+<div class="ba"><div class="bef"><h4>Before</h4><table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv6 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv8 Δ Wall DPS</th><th>Wall DPS/gold</th></tr></thead><tbody>
 <tr><td>Titanic Tridents</td><td>355g</td><td>33.6</td><td>0.0945</td><td>43.2</td><td>0.1216</td><td>50.0</td><td class="best">0.1407</td></tr>
 <tr><td>Warbanner (avg shout)</td><td>300g</td><td>17.0</td><td>0.0565</td><td>19.4</td><td>0.0646</td><td>21.0</td><td>0.0701</td></tr>
 <tr><td>Berserker's Gem</td><td>250g</td><td>12.5</td><td>0.0500</td><td>15.2</td><td>0.0608</td><td>17.0</td><td>0.0679</td></tr>
 <tr><td>Runic Axe</td><td>260g</td><td>22.5</td><td>0.0864</td><td>23.5</td><td>0.0904</td><td>24.2</td><td>0.0931</td></tr>
 <tr><td>Voodoo Doll</td><td>230g</td><td>11.6</td><td>0.0505</td><td>13.4</td><td>0.0581</td><td>14.6</td><td>0.0634</td></tr>
 <tr><td>Gauntlets of Embers</td><td>200g</td><td>25.0</td><td class="best">0.1250</td><td>25.0</td><td class="best">0.1250</td><td>25.0</td><td>0.1250</td></tr>
-</tbody></table>
-</div><div class="after"><h4>After</h4>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δwall</th><th>/gold</th><th>Lv6 Δwall</th><th>/gold</th><th>Lv8 Δwall</th><th>/gold</th></tr></thead><tbody>
+</tbody></table></div>
+<div class="aft"><h4>After</h4><table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv6 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv8 Δ Wall DPS</th><th>Wall DPS/gold</th></tr></thead><tbody>
 <tr><td>Titanic Tridents</td><td>355g</td><td>33.6</td><td>0.0945</td><td>43.2</td><td>0.1216</td><td>50.0</td><td class="best">0.1407</td></tr>
 <tr><td>Warbanner (avg shout)</td><td>300g</td><td>17.0</td><td>0.0565</td><td>19.4</td><td>0.0646</td><td>21.0</td><td>0.0701</td></tr>
 <tr><td>Berserker's Gem</td><td>250g</td><td>12.5</td><td>0.0500</td><td>15.2</td><td>0.0608</td><td>17.0</td><td>0.0679</td></tr>
 <tr><td>Runic Axe ★</td><td>260g</td><td>28.9</td><td>0.1111</td><td>30.2</td><td>0.1162</td><td>31.1</td><td>0.1197</td></tr>
 <tr><td>Voodoo Doll ★</td><td>230g</td><td>13.9</td><td>0.0605</td><td>16.2</td><td>0.0706</td><td>17.9</td><td>0.0777</td></tr>
 <tr><td>Gauntlets of Embers</td><td>200g</td><td>25.0</td><td class="best">0.1250</td><td>25.0</td><td class="best">0.1250</td><td>25.0</td><td>0.1250</td></tr>
-</tbody></table>
-</div></div>
-<h3>Voodoo team value</h3>
-<table><thead><tr><th>Decay</th><th>Wall arm</th><th>Phys mult</th><th>Team phys boost</th><th>3-titan team DPS gain (est ~180 base)</th></tr></thead><tbody>
-<tr><td>-3 </td><td>12</td><td>0.5814</td><td class="good">+10.5%</td><td>+18.8 DPS</td></tr>
-<tr><td>-4 ★</td><td>11</td><td>0.6024</td><td class="good">+14.5%</td><td>+26.0 DPS</td></tr>
-</tbody></table>
-<p>−4 arm = +13.7% team phys (was +10.5%). 3 titans ~180 combined → +24.7 team DPS for 230g.</p>
-<h2>T3 Defensive</h2>
-<h3>Current Balance (Lucidious, passive only — no active uptime)</h3>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>/gold</th><th>Lv6 ΔTTD</th><th>/gold</th><th>Lv8 ΔTTD</th><th>/gold</th></tr></thead><tbody>
-<tr><td>Armor of Tides</td><td>785g</td><td>2.82s</td><td class="best">0.0036</td><td>3.84s</td><td class="best">0.0049</td><td>4.58s</td><td class="best">0.0058</td></tr>
-<tr><td>Dawnkeeper</td><td>860g</td><td>2.18s</td><td>0.0025</td><td>2.76s</td><td>0.0032</td><td>3.15s</td><td>0.0037</td></tr>
-<tr><td>Enchanted Magic Armor</td><td>715g</td><td>0.17s</td><td>0.0002</td><td>0.33s</td><td>0.0005</td><td>0.47s</td><td>0.0007</td></tr>
-<tr><td>Robe of Spellcraft</td><td>920g</td><td>1.80s</td><td>0.0020</td><td>2.31s</td><td>0.0025</td><td>2.66s</td><td>0.0029</td></tr>
-<tr><td>Essence of Pure Magic</td><td>910g</td><td>0.94s</td><td>0.0010</td><td>1.14s</td><td>0.0013</td><td>1.27s</td><td>0.0014</td></tr>
-</tbody></table>
-<div class="sg"><h3>Analysis</h3>
-<p>AoT (785g) best raw stats. Dawnkeeper (860g) = Call of Valor active. Essence (910g) = Immortality invuln. Robe = Spell Armor stacking. T3 def differentiated by actives, not stat gaps. No changes needed.</p>
-</div>
+</tbody></table></div></div>
+<p>Runic Axe 0.086→0.111/g. Voodoo personal 0.024→0.028/g (still low, value is in debuff utility).</p>
 <h2>T3 Offensive — Wall DPS</h2>
-<h3>Current — Lucidious</h3>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δwall</th><th>/gold</th><th>Lv6 Δwall</th><th>/gold</th><th>Lv8 Δwall</th><th>/gold</th></tr></thead><tbody>
+<p>Δ wall DPS over naked titan. Actives averaged: Rage 10s/30s=33%, War Cry 10s/60s=17%, Fervor ~70% stacks sustained. Foreteller spell buff 5s/~15s=33%.</p>
+<h3>Lucidious</h3>
+<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv6 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv8 Δ Wall DPS</th><th>Wall DPS/gold</th></tr></thead><tbody>
 <tr><td>Poseidon's Trident</td><td>930g</td><td>69.3</td><td>0.0745</td><td>96.5</td><td>0.1038</td><td>115.7</td><td>0.1245</td></tr>
 <tr><td>Mace of Mortality</td><td>1000g</td><td>79.7</td><td>0.0797</td><td>99.0</td><td>0.0990</td><td>112.6</td><td>0.1126</td></tr>
 <tr><td>Spear of Fervor</td><td>750g</td><td>32.0</td><td>0.0427</td><td>38.9</td><td>0.0518</td><td>43.5</td><td>0.0579</td></tr>
 <tr><td>Helmet of Damned</td><td>765g</td><td>41.0</td><td>0.0536</td><td>47.5</td><td>0.0620</td><td>51.9</td><td>0.0678</td></tr>
-<tr><td>Foreteller's Sickle</td><td>860g</td><td>98.2</td><td>0.1142</td><td>121.9</td><td>0.1417</td><td>138.4</td><td>0.1609</td></tr>
-<tr><td>Foreteller +spell</td><td>860g</td><td>194.5</td><td class="best">0.2262</td><td>251.6</td><td class="best">0.2925</td><td>291.5</td><td class="best">0.3389</td></tr>
+<tr><td>Foreteller (base)</td><td>860g</td><td>70.3</td><td>0.0818</td><td>93.0</td><td>0.1081</td><td>108.8</td><td>0.1265</td></tr>
+<tr><td>Foreteller (spell buff)</td><td>860g</td><td>166.7</td><td class="best">0.1938</td><td>222.7</td><td class="best">0.2589</td><td>261.9</td><td class="best">0.3045</td></tr>
+<tr><td>Foreteller (avg 33% buff)</td><td>860g</td><td>102.1</td><td>0.1187</td><td>135.8</td><td>0.1579</td><td>159.3</td><td>0.1853</td></tr>
 <tr><td>Molten Blade</td><td>500g</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td></tr>
 <tr><td>Highseer Slippers</td><td>750g</td><td>32.1</td><td>0.0428</td><td>33.6</td><td>0.0448</td><td>34.6</td><td>0.0461</td></tr>
 </tbody></table>
-<h3>Current — Glacious</h3>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δwall</th><th>/gold</th><th>Lv6 Δwall</th><th>/gold</th><th>Lv8 Δwall</th><th>/gold</th></tr></thead><tbody>
+<h3>Glacious</h3>
+<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv6 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv8 Δ Wall DPS</th><th>Wall DPS/gold</th></tr></thead><tbody>
 <tr><td>Poseidon's Trident</td><td>930g</td><td>58.4</td><td>0.0628</td><td>81.3</td><td>0.0875</td><td>97.6</td><td>0.1049</td></tr>
 <tr><td>Mace of Mortality</td><td>1000g</td><td>65.5</td><td>0.0655</td><td>80.9</td><td>0.0809</td><td>91.7</td><td>0.0917</td></tr>
 <tr><td>Spear of Fervor</td><td>750g</td><td>27.0</td><td>0.0360</td><td>32.8</td><td>0.0437</td><td>36.6</td><td>0.0488</td></tr>
 <tr><td>Helmet of Damned</td><td>765g</td><td>34.6</td><td>0.0452</td><td>40.0</td><td>0.0523</td><td>43.7</td><td>0.0571</td></tr>
-<tr><td>Foreteller's Sickle</td><td>860g</td><td>88.4</td><td>0.1028</td><td>116.1</td><td>0.1350</td><td>135.5</td><td>0.1575</td></tr>
-<tr><td>Foreteller +spell</td><td>860g</td><td>179.0</td><td class="best">0.2081</td><td>247.7</td><td class="best">0.2880</td><td>295.9</td><td class="best">0.3440</td></tr>
+<tr><td>Foreteller (base)</td><td>860g</td><td>64.9</td><td>0.0755</td><td>91.7</td><td>0.1067</td><td>110.5</td><td>0.1285</td></tr>
+<tr><td>Foreteller (spell buff)</td><td>860g</td><td>155.5</td><td class="best">0.1808</td><td>223.3</td><td class="best">0.2597</td><td>270.9</td><td class="best">0.3150</td></tr>
+<tr><td>Foreteller (avg 33% buff)</td><td>860g</td><td>94.8</td><td>0.1102</td><td>135.2</td><td>0.1572</td><td>163.5</td><td>0.1901</td></tr>
 <tr><td>Molten Blade</td><td>500g</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td></tr>
 <tr><td>Highseer Slippers</td><td>750g</td><td>27.1</td><td>0.0361</td><td>28.3</td><td>0.0377</td><td>29.1</td><td>0.0388</td></tr>
 </tbody></table>
-<h3>Current — Granitacles</h3>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δwall</th><th>/gold</th><th>Lv6 Δwall</th><th>/gold</th><th>Lv8 Δwall</th><th>/gold</th></tr></thead><tbody>
+<h3>Granitacles</h3>
+<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv6 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv8 Δ Wall DPS</th><th>Wall DPS/gold</th></tr></thead><tbody>
 <tr><td>Poseidon's Trident</td><td>930g</td><td>48.8</td><td>0.0524</td><td>68.0</td><td>0.0731</td><td>81.5</td><td>0.0877</td></tr>
 <tr><td>Mace of Mortality</td><td>1000g</td><td>58.4</td><td>0.0584</td><td>74.2</td><td>0.0742</td><td>85.4</td><td>0.0854</td></tr>
 <tr><td>Spear of Fervor</td><td>750g</td><td>22.6</td><td>0.0301</td><td>27.4</td><td>0.0365</td><td>30.6</td><td>0.0408</td></tr>
 <tr><td>Helmet of Damned</td><td>765g</td><td>28.9</td><td>0.0378</td><td>33.4</td><td>0.0437</td><td>36.5</td><td>0.0477</td></tr>
-<tr><td>Foreteller's Sickle</td><td>860g</td><td>68.5</td><td>0.0796</td><td>85.2</td><td>0.0990</td><td>96.8</td><td>0.1125</td></tr>
-<tr><td>Foreteller +spell</td><td>860g</td><td>135.2</td><td class="best">0.1572</td><td>175.3</td><td class="best">0.2039</td><td>203.4</td><td class="best">0.2365</td></tr>
-<tr><td>Molten Blade</td><td>500g</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td></tr>
+<tr><td>Foreteller (base)</td><td>860g</td><td>48.9</td><td>0.0568</td><td>64.8</td><td>0.0753</td><td>75.9</td><td>0.0883</td></tr>
+<tr><td>Foreteller (spell buff)</td><td>860g</td><td>115.6</td><td>0.1344</td><td>155.0</td><td class="best">0.1802</td><td>182.6</td><td class="best">0.2123</td></tr>
+<tr><td>Foreteller (avg 33% buff)</td><td>860g</td><td>70.9</td><td>0.0824</td><td>94.6</td><td>0.1099</td><td>111.1</td><td>0.1292</td></tr>
+<tr><td>Molten Blade</td><td>500g</td><td>75.0</td><td class="best">0.1500</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td></tr>
 <tr><td>Highseer Slippers</td><td>750g</td><td>22.6</td><td>0.0301</td><td>23.7</td><td>0.0315</td><td>24.3</td><td>0.0325</td></tr>
 </tbody></table>
-<div class="sg"><h3>Problem</h3>
-<p>Poseidon 0.1245/g Lv8 = top. Spear 0.0579/g, no AD, pure AS. Foreteller Luci 0.1609/g vs Glacious 0.1575/g. Base 3% mana too low without spell buff (5s window only).</p>
+<div class="sg">
+<p>Luci Lv8 /gold: Poseidon 0.1245, Mace 0.1126, Spear 0.0579, Foreteller avg 0.1853, Helmet 0.0678, Molten 0.1500, Highseer 0.0461</p>
+<p>Glacious Lv8 Foreteller avg: 0.1901/g (higher mana pool)</p>
+<p>Granitacles Lv8 Mace: 0.0854/g (higher HP for Colossus/War Cry)</p>
 </div>
-<div class="ch"><strong>Changes:</strong> Foreteller Runic Wrath 3% → <strong>4%</strong> base · Spear of Fervor +50% AS → <strong>+60% AS</strong>, Fervor 20% → <strong>25%</strong> · Helmet Voodoo Decay −5 → <strong>−6</strong></div>
-<div class="ba"><div class="before"><h4>Before (Lucidious)</h4>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δwall</th><th>/gold</th><th>Lv6 Δwall</th><th>/gold</th><th>Lv8 Δwall</th><th>/gold</th></tr></thead><tbody>
+<div class="ch"><strong>Foreteller:</strong> 3% → 4% base mana · <strong>Spear:</strong> +50% → +60% AS, Fervor 20% → 25% · <strong>Helmet:</strong> −5 → −6 armor</div>
+<h3>Before vs After — Lucidious</h3>
+<div class="ba"><div class="bef"><h4>Before</h4><table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv6 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv8 Δ Wall DPS</th><th>Wall DPS/gold</th></tr></thead><tbody>
 <tr><td>Poseidon's Trident</td><td>930g</td><td>69.3</td><td>0.0745</td><td>96.5</td><td>0.1038</td><td>115.7</td><td>0.1245</td></tr>
 <tr><td>Mace of Mortality</td><td>1000g</td><td>79.7</td><td>0.0797</td><td>99.0</td><td>0.0990</td><td>112.6</td><td>0.1126</td></tr>
 <tr><td>Spear of Fervor</td><td>750g</td><td>32.0</td><td>0.0427</td><td>38.9</td><td>0.0518</td><td>43.5</td><td>0.0579</td></tr>
 <tr><td>Helmet of Damned</td><td>765g</td><td>41.0</td><td>0.0536</td><td>47.5</td><td>0.0620</td><td>51.9</td><td>0.0678</td></tr>
-<tr><td>Foreteller's Sickle</td><td>860g</td><td>98.2</td><td>0.1142</td><td>121.9</td><td>0.1417</td><td>138.4</td><td>0.1609</td></tr>
-<tr><td>Foreteller +spell</td><td>860g</td><td>194.5</td><td class="best">0.2262</td><td>251.6</td><td class="best">0.2925</td><td>291.5</td><td class="best">0.3389</td></tr>
+<tr><td>Foreteller (base)</td><td>860g</td><td>70.3</td><td>0.0818</td><td>93.0</td><td>0.1081</td><td>108.8</td><td>0.1265</td></tr>
+<tr><td>Foreteller (spell buff)</td><td>860g</td><td>166.7</td><td class="best">0.1938</td><td>222.7</td><td class="best">0.2589</td><td>261.9</td><td class="best">0.3045</td></tr>
+<tr><td>Foreteller (avg 33% buff)</td><td>860g</td><td>102.1</td><td>0.1187</td><td>135.8</td><td>0.1579</td><td>159.3</td><td>0.1853</td></tr>
 <tr><td>Molten Blade</td><td>500g</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td></tr>
 <tr><td>Highseer Slippers</td><td>750g</td><td>32.1</td><td>0.0428</td><td>33.6</td><td>0.0448</td><td>34.6</td><td>0.0461</td></tr>
-</tbody></table>
-</div><div class="after"><h4>After (Lucidious)</h4>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δwall</th><th>/gold</th><th>Lv6 Δwall</th><th>/gold</th><th>Lv8 Δwall</th><th>/gold</th></tr></thead><tbody>
+</tbody></table></div>
+<div class="aft"><h4>After</h4><table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv6 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv8 Δ Wall DPS</th><th>Wall DPS/gold</th></tr></thead><tbody>
 <tr><td>Poseidon's Trident</td><td>930g</td><td>69.3</td><td>0.0745</td><td>96.5</td><td>0.1038</td><td>115.7</td><td>0.1245</td></tr>
 <tr><td>Mace of Mortality</td><td>1000g</td><td>79.7</td><td>0.0797</td><td>99.0</td><td>0.0990</td><td>112.6</td><td>0.1126</td></tr>
 <tr><td>Spear of Fervor ★</td><td>750g</td><td>38.8</td><td>0.0517</td><td>47.1</td><td>0.0628</td><td>52.6</td><td>0.0702</td></tr>
 <tr><td>Helmet of Damned ★</td><td>765g</td><td>44.7</td><td>0.0584</td><td>51.9</td><td>0.0678</td><td>56.8</td><td>0.0743</td></tr>
-<tr><td>Foreteller's ★</td><td>860g</td><td>117.5</td><td>0.1366</td><td>147.8</td><td>0.1719</td><td>169.0</td><td>0.1965</td></tr>
-<tr><td>Foreteller ★+spell</td><td>860g</td><td>213.8</td><td class="best">0.2486</td><td>277.5</td><td class="best">0.3227</td><td>322.1</td><td class="best">0.3745</td></tr>
+<tr><td>Foreteller ★ (base)</td><td>860g</td><td>89.6</td><td>0.1042</td><td>118.9</td><td>0.1383</td><td>139.4</td><td>0.1621</td></tr>
+<tr><td>Foreteller ★ (spell)</td><td>860g</td><td>185.9</td><td class="best">0.2162</td><td>248.6</td><td class="best">0.2891</td><td>292.5</td><td class="best">0.3401</td></tr>
+<tr><td>Foreteller ★ (avg 33%)</td><td>860g</td><td>121.4</td><td>0.1411</td><td>161.7</td><td>0.1880</td><td>189.9</td><td>0.2209</td></tr>
 <tr><td>Molten Blade</td><td>500g</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td></tr>
 <tr><td>Highseer Slippers</td><td>750g</td><td>32.1</td><td>0.0428</td><td>33.6</td><td>0.0448</td><td>34.6</td><td>0.0461</td></tr>
-</tbody></table>
-</div></div>
-<div class="ba"><div class="before"><h4>Before (Glacious)</h4>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δwall</th><th>/gold</th><th>Lv6 Δwall</th><th>/gold</th><th>Lv8 Δwall</th><th>/gold</th></tr></thead><tbody>
+</tbody></table></div></div>
+<h3>Before vs After — Glacious (mana titan)</h3>
+<div class="ba"><div class="bef"><h4>Before</h4><table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv6 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv8 Δ Wall DPS</th><th>Wall DPS/gold</th></tr></thead><tbody>
 <tr><td>Poseidon's Trident</td><td>930g</td><td>58.4</td><td>0.0628</td><td>81.3</td><td>0.0875</td><td>97.6</td><td>0.1049</td></tr>
 <tr><td>Mace of Mortality</td><td>1000g</td><td>65.5</td><td>0.0655</td><td>80.9</td><td>0.0809</td><td>91.7</td><td>0.0917</td></tr>
 <tr><td>Spear of Fervor</td><td>750g</td><td>27.0</td><td>0.0360</td><td>32.8</td><td>0.0437</td><td>36.6</td><td>0.0488</td></tr>
 <tr><td>Helmet of Damned</td><td>765g</td><td>34.6</td><td>0.0452</td><td>40.0</td><td>0.0523</td><td>43.7</td><td>0.0571</td></tr>
-<tr><td>Foreteller's Sickle</td><td>860g</td><td>88.4</td><td>0.1028</td><td>116.1</td><td>0.1350</td><td>135.5</td><td>0.1575</td></tr>
-<tr><td>Foreteller +spell</td><td>860g</td><td>179.0</td><td class="best">0.2081</td><td>247.7</td><td class="best">0.2880</td><td>295.9</td><td class="best">0.3440</td></tr>
+<tr><td>Foreteller (base)</td><td>860g</td><td>64.9</td><td>0.0755</td><td>91.7</td><td>0.1067</td><td>110.5</td><td>0.1285</td></tr>
+<tr><td>Foreteller (spell buff)</td><td>860g</td><td>155.5</td><td class="best">0.1808</td><td>223.3</td><td class="best">0.2597</td><td>270.9</td><td class="best">0.3150</td></tr>
+<tr><td>Foreteller (avg 33% buff)</td><td>860g</td><td>94.8</td><td>0.1102</td><td>135.2</td><td>0.1572</td><td>163.5</td><td>0.1901</td></tr>
 <tr><td>Molten Blade</td><td>500g</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td></tr>
 <tr><td>Highseer Slippers</td><td>750g</td><td>27.1</td><td>0.0361</td><td>28.3</td><td>0.0377</td><td>29.1</td><td>0.0388</td></tr>
-</tbody></table>
-</div><div class="after"><h4>After (Glacious)</h4>
-<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δwall</th><th>/gold</th><th>Lv6 Δwall</th><th>/gold</th><th>Lv8 Δwall</th><th>/gold</th></tr></thead><tbody>
+</tbody></table></div>
+<div class="aft"><h4>After</h4><table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv6 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv8 Δ Wall DPS</th><th>Wall DPS/gold</th></tr></thead><tbody>
 <tr><td>Poseidon's Trident</td><td>930g</td><td>58.4</td><td>0.0628</td><td>81.3</td><td>0.0875</td><td>97.6</td><td>0.1049</td></tr>
 <tr><td>Mace of Mortality</td><td>1000g</td><td>65.5</td><td>0.0655</td><td>80.9</td><td>0.0809</td><td>91.7</td><td>0.0917</td></tr>
 <tr><td>Spear of Fervor ★</td><td>750g</td><td>32.7</td><td>0.0436</td><td>39.7</td><td>0.0529</td><td>44.4</td><td>0.0591</td></tr>
 <tr><td>Helmet of Damned ★</td><td>765g</td><td>37.6</td><td>0.0492</td><td>43.7</td><td>0.0572</td><td>47.9</td><td>0.0626</td></tr>
-<tr><td>Foreteller's ★</td><td>860g</td><td>106.5</td><td>0.1239</td><td>142.4</td><td>0.1656</td><td>167.6</td><td>0.1948</td></tr>
-<tr><td>Foreteller ★+spell</td><td>860g</td><td>197.1</td><td class="best">0.2292</td><td>274.0</td><td class="best">0.3186</td><td>327.9</td><td class="best">0.3813</td></tr>
+<tr><td>Foreteller ★ (base)</td><td>860g</td><td>83.0</td><td>0.0965</td><td>118.1</td><td>0.1373</td><td>142.6</td><td>0.1658</td></tr>
+<tr><td>Foreteller ★ (spell)</td><td>860g</td><td>173.6</td><td class="best">0.2019</td><td>249.6</td><td class="best">0.2903</td><td>303.0</td><td class="best">0.3523</td></tr>
+<tr><td>Foreteller ★ (avg 33%)</td><td>860g</td><td>112.9</td><td>0.1313</td><td>161.5</td><td>0.1878</td><td>195.5</td><td>0.2274</td></tr>
 <tr><td>Molten Blade</td><td>500g</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td></tr>
 <tr><td>Highseer Slippers</td><td>750g</td><td>27.1</td><td>0.0361</td><td>28.3</td><td>0.0377</td><td>29.1</td><td>0.0388</td></tr>
+</tbody></table></div></div>
+<h3>Before vs After — Granitacles (HP titan)</h3>
+<div class="ba"><div class="bef"><h4>Before</h4><table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv6 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv8 Δ Wall DPS</th><th>Wall DPS/gold</th></tr></thead><tbody>
+<tr><td>Poseidon's Trident</td><td>930g</td><td>48.8</td><td>0.0524</td><td>68.0</td><td>0.0731</td><td>81.5</td><td>0.0877</td></tr>
+<tr><td>Mace of Mortality</td><td>1000g</td><td>58.4</td><td>0.0584</td><td>74.2</td><td>0.0742</td><td>85.4</td><td>0.0854</td></tr>
+<tr><td>Spear of Fervor</td><td>750g</td><td>22.6</td><td>0.0301</td><td>27.4</td><td>0.0365</td><td>30.6</td><td>0.0408</td></tr>
+<tr><td>Helmet of Damned</td><td>765g</td><td>28.9</td><td>0.0378</td><td>33.4</td><td>0.0437</td><td>36.5</td><td>0.0477</td></tr>
+<tr><td>Foreteller (base)</td><td>860g</td><td>48.9</td><td>0.0568</td><td>64.8</td><td>0.0753</td><td>75.9</td><td>0.0883</td></tr>
+<tr><td>Foreteller (spell buff)</td><td>860g</td><td>115.6</td><td>0.1344</td><td>155.0</td><td class="best">0.1802</td><td>182.6</td><td class="best">0.2123</td></tr>
+<tr><td>Foreteller (avg 33% buff)</td><td>860g</td><td>70.9</td><td>0.0824</td><td>94.6</td><td>0.1099</td><td>111.1</td><td>0.1292</td></tr>
+<tr><td>Molten Blade</td><td>500g</td><td>75.0</td><td class="best">0.1500</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td></tr>
+<tr><td>Highseer Slippers</td><td>750g</td><td>22.6</td><td>0.0301</td><td>23.7</td><td>0.0315</td><td>24.3</td><td>0.0325</td></tr>
+</tbody></table></div>
+<div class="aft"><h4>After</h4><table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv6 Δ Wall DPS</th><th>Wall DPS/gold</th><th>Lv8 Δ Wall DPS</th><th>Wall DPS/gold</th></tr></thead><tbody>
+<tr><td>Poseidon's Trident</td><td>930g</td><td>48.8</td><td>0.0524</td><td>68.0</td><td>0.0731</td><td>81.5</td><td>0.0877</td></tr>
+<tr><td>Mace of Mortality</td><td>1000g</td><td>58.4</td><td>0.0584</td><td>74.2</td><td>0.0742</td><td>85.4</td><td>0.0854</td></tr>
+<tr><td>Spear of Fervor ★</td><td>750g</td><td>27.3</td><td>0.0364</td><td>33.2</td><td>0.0442</td><td>37.1</td><td>0.0494</td></tr>
+<tr><td>Helmet of Damned ★</td><td>765g</td><td>31.5</td><td>0.0411</td><td>36.5</td><td>0.0478</td><td>40.0</td><td>0.0523</td></tr>
+<tr><td>Foreteller ★ (base)</td><td>860g</td><td>62.2</td><td>0.0723</td><td>82.8</td><td>0.0963</td><td>97.3</td><td>0.1131</td></tr>
+<tr><td>Foreteller ★ (spell)</td><td>860g</td><td>128.9</td><td>0.1499</td><td>173.0</td><td class="best">0.2012</td><td>203.9</td><td class="best">0.2371</td></tr>
+<tr><td>Foreteller ★ (avg 33%)</td><td>860g</td><td>84.2</td><td>0.0979</td><td>112.6</td><td>0.1309</td><td>132.4</td><td>0.1540</td></tr>
+<tr><td>Molten Blade</td><td>500g</td><td>75.0</td><td class="best">0.1500</td><td>75.0</td><td>0.1500</td><td>75.0</td><td>0.1500</td></tr>
+<tr><td>Highseer Slippers</td><td>750g</td><td>22.6</td><td>0.0301</td><td>23.7</td><td>0.0315</td><td>24.3</td><td>0.0325</td></tr>
+</tbody></table></div></div>
+<h2>T3 Defensive</h2>
+<h3>Lucidious</h3>
+<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>ΔTTD/gold</th><th>Lv6 ΔTTD</th><th>ΔTTD/gold</th><th>Lv8 ΔTTD</th><th>ΔTTD/gold</th></tr></thead><tbody>
+<tr><td>Armor of Tides</td><td>785g</td><td>2.82s</td><td class="best">0.0036</td><td>3.84s</td><td class="best">0.0049</td><td>4.58s</td><td class="best">0.0058</td></tr>
+<tr><td>Dawnkeeper</td><td>860g</td><td>2.18s</td><td>0.0025</td><td>2.76s</td><td>0.0032</td><td>3.15s</td><td>0.0037</td></tr>
+<tr><td>Ench. Magic Armor</td><td>715g</td><td>0.17s</td><td>0.0002</td><td>0.33s</td><td>0.0005</td><td>0.47s</td><td>0.0007</td></tr>
+<tr><td>Robe of Spellcraft</td><td>920g</td><td>1.80s</td><td>0.0020</td><td>2.31s</td><td>0.0025</td><td>2.66s</td><td>0.0029</td></tr>
+<tr><td>Essence of Pure Magic</td><td>910g</td><td>0.94s</td><td>0.0010</td><td>1.14s</td><td>0.0013</td><td>1.27s</td><td>0.0014</td></tr>
+<tr><td>Mistlord's Cape</td><td>745g</td><td>0.17s</td><td>0.0002</td><td>0.33s</td><td>0.0004</td><td>0.47s</td><td>0.0006</td></tr>
 </tbody></table>
-</div></div>
-<h3>Foreteller Mana Scaling Detail</h3>
-<table><thead><tr><th>Titan</th><th>Lv</th><th>Mana</th><th>Before 3%</th><th>After 4%</th><th>Before 8% buff</th><th>After 9% buff</th></tr></thead><tbody>
+<h3>Granitacles</h3>
+<table><thead><tr><th>Item</th><th>Cost</th><th>Lv3 ΔTTD</th><th>ΔTTD/gold</th><th>Lv6 ΔTTD</th><th>ΔTTD/gold</th><th>Lv8 ΔTTD</th><th>ΔTTD/gold</th></tr></thead><tbody>
+<tr><td>Armor of Tides</td><td>785g</td><td>2.98s</td><td class="best">0.0038</td><td>4.16s</td><td class="best">0.0053</td><td>5.03s</td><td class="best">0.0064</td></tr>
+<tr><td>Dawnkeeper</td><td>860g</td><td>2.27s</td><td>0.0026</td><td>2.93s</td><td>0.0034</td><td>3.38s</td><td>0.0039</td></tr>
+<tr><td>Ench. Magic Armor</td><td>715g</td><td>0.18s</td><td>0.0002</td><td>0.36s</td><td>0.0005</td><td>0.52s</td><td>0.0007</td></tr>
+<tr><td>Robe of Spellcraft</td><td>920g</td><td>1.89s</td><td>0.0021</td><td>2.48s</td><td>0.0027</td><td>2.89s</td><td>0.0031</td></tr>
+<tr><td>Essence of Pure Magic</td><td>910g</td><td>0.94s</td><td>0.0010</td><td>1.15s</td><td>0.0013</td><td>1.28s</td><td>0.0014</td></tr>
+<tr><td>Mistlord's Cape</td><td>745g</td><td>0.18s</td><td>0.0002</td><td>0.36s</td><td>0.0005</td><td>0.52s</td><td>0.0007</td></tr>
+</tbody></table>
+<p>AoT leads raw stats. Others defined by actives (Dawnkeeper Bond, Essence Immortality, Robe Spell Armor). No number changes — balance is via ability identity.</p>
+<h2>Mana & HP Titan Scaling</h2>
+<h3>Foreteller: Runic Wrath damage per hit vs walls (after: 4% base)</h3>
+<table><thead><tr><th>Titan</th><th>Lv</th><th>Mana w/Sickle</th><th>Before 3%</th><th>After 4%</th><th>Before 8% buff</th><th>After 9% buff</th></tr></thead><tbody>
 <tr><td class="tl">Lucidious</td><td>3</td><td>1210</td><td>36.3</td><td class="good">48.4</td><td>96.8</td><td class="good">108.9</td></tr>
 <tr><td class="tl">Lucidious</td><td>6</td><td>1570</td><td>47.1</td><td class="good">62.8</td><td>125.6</td><td class="good">141.3</td></tr>
 <tr><td class="tl">Lucidious</td><td>8</td><td>1810</td><td>54.3</td><td class="good">72.4</td><td>144.8</td><td class="good">162.9</td></tr>
@@ -281,38 +299,26 @@
 <tr><td class="tl">Glacious</td><td>6</td><td>1890</td><td>56.7</td><td class="good">75.6</td><td>151.2</td><td class="good">170.1</td></tr>
 <tr><td class="tl">Glacious</td><td>8</td><td>2250</td><td>67.5</td><td class="good">90.0</td><td>180.0</td><td class="good">202.5</td></tr>
 </tbody></table>
-<p>4% base: Glacious Lv8 = 90/hit (was 67.5). Buff 9%: 202.5 (was 180). +33% base. Luci Lv8 = 72.4 (was 54.3).</p>
-<h3>Helmet Voodoo Decay team value</h3>
-<table><thead><tr><th>Decay</th><th>Wall arm</th><th>Team phys boost</th><th>3-titan est gain</th></tr></thead><tbody>
-<tr><td>-5 </td><td>10</td><td class="good">+18.8%</td><td>+33.8 DPS</td></tr>
-<tr><td>-6 ★</td><td>9</td><td class="good">+23.4%</td><td>+42.1 DPS</td></tr>
+<h3>Mace of Mortality: HP-scaling per hit (Colossus 2%)</h3>
+<table><thead><tr><th>Titan</th><th>Lv</th><th>HP w/Mace</th><th>Colossus/hit</th><th>War Cry +AD</th><th>War Cry Colossus 2×</th></tr></thead><tbody>
+<tr><td class="tl">Lucidious</td><td>3</td><td>4050</td><td>81.0</td><td>+202</td><td class="good">162.0</td></tr>
+<tr><td class="tl">Lucidious</td><td>6</td><td>5175</td><td>103.5</td><td>+259</td><td class="good">207.0</td></tr>
+<tr><td class="tl">Lucidious</td><td>8</td><td>5925</td><td>118.5</td><td>+296</td><td class="good">237.0</td></tr>
+<tr><td class="tl">Granitacles</td><td>3</td><td>4300</td><td>86.0</td><td>+215</td><td class="good">172.0</td></tr>
+<tr><td class="tl">Granitacles</td><td>6</td><td>5650</td><td>113.0</td><td>+282</td><td class="good">226.0</td></tr>
+<tr><td class="tl">Granitacles</td><td>8</td><td>6550</td><td>131.0</td><td>+328</td><td class="good">262.0</td></tr>
 </tbody></table>
-<h2>Mana & HP Titan Scaling</h2>
-<h3>Foreteller on Glacious vs Lucidious (after: 4% base)</h3>
-<table><thead><tr><th>Titan</th><th>Lv8 Mana</th><th>4% base/hit</th><th>vs walls</th><th>Advantage</th></tr></thead><tbody>
-<tr><td class="tl">Lucidious</td><td>1810</td><td>72.4</td><td class="good">72 (uncapped)</td>
-<td>baseline</td></tr>
-<tr><td class="tl">Glacious</td><td>2250</td><td>90.0</td><td class="good">90 (uncapped)</td>
-<td class="good">+24% vs Luci</td></tr>
+<h2>All Changes</h2>
+<table><thead><tr><th>Item</th><th>Stat</th><th>Before</th><th>After</th><th>Key metric change</th></tr></thead><tbody>
+<tr><td><strong>Tide's Heart</strong></td><td>HP</td><td class="bad">+200</td><td class="good">+325</td><td>RS/TH ratio: 1.85× → 1.14× at Lv3</td></tr>
+<tr><td><strong>Regen Spines</strong></td><td>Regen</td><td class="bad">+3/s</td><td class="good">+5/s</td><td>ΔTTD/g: 0.0004 → 0.0006</td></tr>
+<tr><td><strong>Casque of Valor</strong></td><td>HP</td><td class="bad">+200</td><td class="good">+350</td><td>ΔTTD/g: 0.0025 → 0.0040 (Reef=0.0050)</td></tr>
+<tr><td><strong>Super Regen</strong></td><td>Regen</td><td class="bad">+12/s</td><td class="good">+16/s</td><td>Crisis total: 24 → 32/s</td></tr>
+<tr><td><strong>Enchantress' Fluid</strong></td><td>Heal</td><td class="bad">300 HP</td><td class="good">500 HP</td><td>Avg 5 → 8.3 HP/s</td></tr>
+<tr><td><strong>Runic Axe</strong></td><td>Magic</td><td class="bad">35</td><td class="good">45</td><td>Wall DPS/g: 0.086 → 0.111</td></tr>
+<tr><td><strong>Voodoo Doll</strong></td><td>Decay</td><td class="bad">−3 arm</td><td class="good">−4 arm</td><td>Personal wall DPS/g: 0.024 → 0.028</td></tr>
+<tr><td><strong>Foreteller</strong></td><td>Runic Wrath</td><td class="bad">3% mana</td><td class="good">4% mana</td><td>Glacious Lv8: 67.5 → 90/hit base</td></tr>
+<tr><td><strong>Spear of Fervor</strong></td><td>AS / Fervor</td><td class="bad">50% / 20%</td><td class="good">60% / 25%</td><td>Wall DPS/g: closes gap w/ Poseidon</td></tr>
+<tr><td><strong>Helmet of Damned</strong></td><td>Decay</td><td class="bad">−5 arm</td><td class="good">−6 arm</td><td>Wall arm 15→9, personal DPS +8%</td></tr>
 </tbody></table>
-<h3>Mace of Mortality on Granitacles vs Lucidious</h3>
-<table><thead><tr><th>Titan</th><th>Lv8 HP w/Mace</th><th>Colossus/hit</th><th>War Cry +AD</th><th>Advantage</th></tr></thead><tbody>
-<tr><td class="tl">Lucidious</td><td>5925</td><td>118.5</td><td>+296</td>
-<td>baseline</td></tr>
-<tr><td class="tl">Granitacles</td><td>6550</td><td>131.0</td><td>+328</td>
-<td class="good">+11% vs Luci</td></tr>
-</tbody></table>
-<h2>Summary of All Changes</h2>
-<div class="sg"><table><thead><tr><th>Item</th><th>Stat</th><th>Before</th><th>After</th><th>Rationale</th></tr></thead><tbody>
-<tr><td><strong>Tide's Heart</strong></td><td>HP</td><td class="bad">+200</td><td class="good">+325</td><td>Lv3 RS/TH ratio: 1.85× → 1.14×</td></tr>
-<tr><td><strong>Regen Spines</strong></td><td>HP Regen</td><td class="bad">+3/s</td><td class="good">+5/s</td><td>ΔTTD/g: 0.0004 → 0.0007, feeds T2 scaling</td></tr>
-<tr><td><strong>Casque of Valor</strong></td><td>HP</td><td class="bad">+200</td><td class="good">+350</td><td>Lv3 /g: 0.0025 → 0.0040, closer to Reef 0.0050</td></tr>
-<tr><td><strong>Super Regen</strong></td><td>HP Regen</td><td class="bad">+12/s</td><td class="good">+16/s</td><td>Crisis total: 24 → 32, better sustained niche</td></tr>
-<tr><td><strong>Enchantress' Fluid</strong></td><td>Heal</td><td class="bad">300 HP</td><td class="good">500 HP</td><td>Avg 5 → 8.3 HP/s, justifies 375g premium</td></tr>
-<tr><td><strong>Runic Axe</strong></td><td>Magic dmg</td><td class="bad">35</td><td class="good">45</td><td>Wall /g: 0.086 → 0.111, competitive with Gauntlets</td></tr>
-<tr><td><strong>Voodoo Doll</strong></td><td>Decay</td><td class="bad">−3 arm</td><td class="good">−4 arm</td><td>Team boost: +10.5% → +13.7% allied phys</td></tr>
-<tr><td><strong>Foreteller's Sickle</strong></td><td>Runic Wrath</td><td class="bad">3% mana</td><td class="good">4% mana</td><td>Glacious Lv8: 67.5 → 90/hit base</td></tr>
-<tr><td><strong>Spear of Fervor</strong></td><td>Base AS / Fervor</td><td class="bad">+50% / 20%</td><td class="good">+60% / 25%</td><td>Wall /g: closes gap with Poseidon</td></tr>
-<tr><td><strong>Helmet of Damned</strong></td><td>Decay</td><td class="bad">−5 arm</td><td class="good">−6 arm</td><td>Team boost: +16.1% → +21.4% allied phys</td></tr>
-</tbody></table></div>
 </div></div></body></html>
