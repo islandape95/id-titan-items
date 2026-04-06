@@ -14,10 +14,14 @@
 .cat-panel{display:none}.cat-panel.active{display:block}
 
 /* Item editor */
-.item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin:8px 0 16px}
-.item-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 10px}
-.item-card h4{font-size:12px;margin:0 0 4px;color:var(--accent)}
-.item-card .cost{font-size:10px;color:#fbbf24;margin-bottom:4px}
+.item-grid-wrap{max-height:240px;overflow-y:auto;border:1px solid var(--border);border-radius:var(--radius-sm);margin:8px 0 12px;padding:8px;background:var(--surface)}
+.item-grid-toggle{display:flex;justify-content:space-between;align-items:center;cursor:pointer;padding:4px 0;font-size:12px;color:var(--text-muted);user-select:none}
+.item-grid-toggle:hover{color:var(--accent)}
+.item-grid-wrap.collapsed{max-height:0;padding:0 8px;overflow:hidden;border-color:transparent}
+.item-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:6px}
+.item-card{background:var(--bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:6px 8px}
+.item-card h4{font-size:11px;margin:0 0 3px;color:var(--accent)}
+.item-card .cost{font-size:10px;color:#fbbf24;margin-bottom:3px}
 .stat-row{display:flex;align-items:center;gap:4px;margin:2px 0;font-size:11px}
 .stat-row label{color:var(--text-muted);flex:1;min-width:50px}
 .stat-row input{width:52px;background:var(--bg);border:1px solid var(--border);color:var(--text);padding:2px 4px;border-radius:3px;font-size:11px;text-align:right}
@@ -362,7 +366,8 @@ function initCategories() {
 
 function renderItemCards(cat) {
   const items = categories[cat];
-  let h = '<div class="item-grid">';
+  let h = '<div class="item-grid-toggle" onclick="toggleItemGrid(this)"><span>▼ Item Stats (click to collapse)</span><span style="font-size:10px">edit values → tables update</span></div>';
+  h += '<div class="item-grid-wrap"><div class="item-grid">';
   items.forEach((item, idx) => {
     h += `<div class="item-card"><h4>${item.name}</h4><div class="cost">${item.cost}g</div>`;
     item.fields.forEach((f, fi) => {
@@ -378,7 +383,7 @@ function renderItemCards(cat) {
     if (item.fields.length === 0) h += '<div class="stat-row" style="color:var(--text-muted);font-size:10px">No editable stats</div>';
     h += '</div>';
   });
-  h += '</div>';
+  h += '</div></div>';
   return h;
 }
 
@@ -492,6 +497,12 @@ function showLv(cat, lv, btn) {
   document.querySelectorAll(`#catContent .lv-tabs button`).forEach(b => b.classList.remove('active'));
   document.getElementById(`${cat}-lv${lv}`).classList.add('active');
   if (btn) btn.classList.add('active');
+}
+
+function toggleItemGrid(el) {
+  const wrap = el.nextElementSibling;
+  const collapsed = wrap.classList.toggle('collapsed');
+  el.querySelector('span').textContent = collapsed ? '▶ Item Stats (click to expand)' : '▼ Item Stats (click to collapse)';
 }
 
 function onFieldChange(input) {
