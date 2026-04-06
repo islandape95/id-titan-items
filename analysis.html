@@ -1,339 +1,425 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Item Tree — Balance Analysis</title>
-  <link rel="stylesheet" href="css/styles.css">
-  <style>
-    .analysis-wrap {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 24px 20px;
-      overflow-y: auto;
-      height: calc(100vh - 48px);
-    }
-    .analysis-wrap h1 {
-      font-size: 22px;
-      font-weight: 700;
-      margin-bottom: 6px;
-      background: linear-gradient(90deg, #58a6ff, #a78bfa);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-    }
-    .analysis-wrap > p {
-      color: var(--text-muted);
-      font-size: 13px;
-      margin-bottom: 20px;
-    }
-    .analysis-section {
-      margin-bottom: 36px;
-    }
-    .analysis-section h2 {
-      font-size: 17px;
-      font-weight: 700;
-      color: var(--accent);
-      margin-bottom: 10px;
-      border-bottom: 1px solid var(--border);
-      padding-bottom: 6px;
-    }
-    .analysis-section h3 {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
-      margin: 12px 0 6px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .analysis-table-wrap {
-      overflow-x: auto;
-      margin-bottom: 8px;
-    }
-    .analysis-table {
-      border-collapse: collapse;
-      font-size: 12px;
-      width: 100%;
-      min-width: 700px;
-    }
-    .analysis-table th, .analysis-table td {
-      padding: 5px 8px;
-      border: 1px solid var(--border);
-      text-align: right;
-      white-space: nowrap;
-    }
-    .analysis-table th {
-      background: var(--surface2);
-      color: var(--text-muted);
-      font-weight: 600;
-      font-size: 11px;
-      cursor: help;
-    }
-    .analysis-table td.item-name {
-      text-align: left;
-      font-weight: 600;
-      color: var(--text);
-    }
-    .analysis-table td.gold {
-      color: #fbbf24;
-    }
-    .val-low { color: #f87171; font-weight: 700; }
-    .val-mid { color: var(--text); }
-    .val-high { color: #34d399; font-weight: 700; }
-    .balance-note {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin: 4px 0 10px;
-      padding: 6px 10px;
-      background: var(--surface);
-      border-left: 3px solid var(--accent);
-      border-radius: var(--radius-sm);
-    }
-    .change-list {
-      font-size: 12px;
-      color: var(--text);
-      margin: 4px 0 10px 18px;
-    }
-    .change-list li {
-      margin-bottom: 3px;
-    }
-    .change-list b {
-      color: var(--accent);
-    }
-    .toc {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-      margin-bottom: 20px;
-    }
-    .toc a {
-      padding: 4px 10px;
-      border-radius: var(--radius-sm);
-      border: 1px solid var(--border);
-      background: var(--surface2);
-      color: var(--text-muted);
-      font-size: 11px;
-      text-decoration: none;
-      transition: all 0.15s;
-    }
-    .toc a:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-    }
-    .analysis-table tbody tr:hover {
-      background: rgba(88,166,255,0.04);
-    }
-  </style>
-</head>
-<body>
-<div class="app">
-  <header class="topbar">
-    <span class="topbar-title">&#x2B21; Item Tree</span>
-    <div class="topbar-spacer"></div>
-    <nav class="topbar-nav">
-      <a class="nav-btn" href="index.html">Visualizer</a>
-      <a class="nav-btn" href="editor.html">Editor</a>
-      <a class="nav-btn" href="changelog.html">Changelog</a>
-      <a class="nav-btn" href="simulator.html">Simulator</a>
-      <a class="nav-btn active" href="analysis.html">Analysis</a>
-      <a class="nav-btn" href="about.html">About</a>
-    </nav>
-  </header>
-
-  <div class="analysis-wrap">
-    <h1>Balance Analysis (v5)</h1>
-    <p>Wall DPS and TTD computed from actual v5 item data. Titans: Lucidious, Glacious, Granitacles. Levels: 3, 6, 8. Wall: 15 armor, 500 HP, fortified (0.55). Towers: 36 super = 1850 raw DPS (&times;0.5 vs hero).</p>
-
-    <div class="toc">
-      <a href="#t1-def">T1 Defensive</a>
-      <a href="#t2-def">T2 Defensive</a>
-      <a href="#t2-off">T2 Offensive</a>
-      <a href="#t3-off">T3 Offensive</a>
-      <a href="#t3-def">T3 Defensive</a>
-      <a href="#baselines">Baselines</a>
-    </div>
-
-<section class="analysis-section" id="t1-def">
+<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Balance Analysis — Decent V5</title><link rel="stylesheet" href="css/styles.css">
+<style>
+.aw{padding:20px 28px;max-width:1440px;margin:0 auto;overflow-y:auto;height:calc(100vh - 48px)}
+.aw h1{font-size:22px;color:var(--accent);margin-bottom:4px}
+.aw h2{font-size:16px;margin:30px 0 6px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.aw h3{font-size:12px;margin:14px 0 4px;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px}
+.aw p{font-size:12px;color:var(--text-muted);margin:2px 0 8px}
+.aw .sub{font-size:13px;margin-bottom:16px}
+.aw table{border-collapse:collapse;font-size:11px;margin:4px 0 12px;width:100%}
+.aw th{background:var(--surface2);padding:4px 7px;text-align:right;font-weight:600;border-bottom:2px solid var(--border);white-space:nowrap;cursor:help;font-size:10px}
+.aw th:first-child{text-align:left}
+.aw td{padding:3px 7px;border-bottom:1px solid var(--border);white-space:nowrap;text-align:right}
+.aw td:first-child{text-align:left;font-weight:600;color:var(--text)}
+.aw tr:hover td{background:rgba(88,166,255,.04)}
+.aw .indent td:first-child{padding-left:20px;font-weight:400;color:var(--text-muted);font-style:italic}
+.best{color:#fbbf24;font-weight:700} .good{color:#4ade80;font-weight:600} .bad{color:#f87171;font-weight:600} .dim{color:var(--text-muted)}
+.gold{color:#fbbf24}
+.sg{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin:8px 0}
+.ch{border-left:3px solid #fbbf24;padding:5px 12px;margin:6px 0;font-size:12px;background:rgba(251,191,36,.05)}
+.ch strong{color:#fbbf24}
+.lvtabs{display:flex;gap:6px;margin:8px 0 4px}
+.lvtabs button{padding:4px 12px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);cursor:pointer;font-size:11px}
+.lvtabs button.active{border-color:var(--accent);color:var(--accent);background:rgba(88,166,255,.08)}
+.lv-panel{display:none} .lv-panel.active{display:block}
+</style></head><body><div class="app">
+<header class="topbar"><span class="topbar-title">⬡ Item Tree</span><div class="topbar-spacer"></div>
+<nav class="topbar-nav">
+<a class="nav-btn" href="index.html">Visualizer</a><a class="nav-btn" href="editor.html">Editor</a>
+<a class="nav-btn" href="changelog.html">Changelog</a><a class="nav-btn" href="simulator.html">Simulator</a>
+<a class="nav-btn active" href="analysis.html">Analysis</a><a class="nav-btn" href="about.html">About</a>
+</nav></header><div class="aw">
+<h1>Decent V5 — Balance Analysis</h1>
+<p class="sub">36 Super Towers (1850 DPS, ranged ×0.5) · Wall: 15 arm, 500 HP, fortified 0.55 · EHP = HP ÷ damage multiplier</p>
+<script>
+function showLv(section, lv) {
+  document.querySelectorAll('#'+section+' .lv-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('#'+section+' .lvtabs button').forEach(b => b.classList.remove('active'));
+  document.getElementById(section+'-lv'+lv).classList.add('active');
+  document.querySelector('#'+section+' .lvtabs button[data-lv="'+lv+'"]').classList.add('active');
+}
+</script>
 <h2>T1 Defensive</h2>
-<h3>Current State</h3>
-<div class="analysis-table-wrap"><table class="analysis-table" id="t1-def-before">
-<thead><tr><th>Item</th><th title="Item total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at level 3 vs naked titan">Luc L3</th><th title="Extra seconds alive for Lucidious at level 6 vs naked titan">Luc L6</th><th title="Extra seconds alive for Lucidious at level 8 vs naked titan">Luc L8</th><th title="Extra seconds alive for Glacious at level 3 vs naked titan">Gla L3</th><th title="Extra seconds alive for Glacious at level 6 vs naked titan">Gla L6</th><th title="Extra seconds alive for Glacious at level 8 vs naked titan">Gla L8</th><th title="Extra seconds alive for Granitacles at level 3 vs naked titan">Gra L3</th><th title="Extra seconds alive for Granitacles at level 6 vs naked titan">Gra L6</th><th title="Extra seconds alive for Granitacles at level 8 vs naked titan">Gra L8</th><th title="Extra seconds alive vs 36 super towers compared to naked titan, averaged across titans/levels">Avg &Delta;TTD</th><th title="Average delta TTD divided by total gold cost — higher is more gold efficient">&Delta;TTD/gold</th></tr></thead>
-<tbody>
-<tr><td class="item-name">Reef Shield</td><td class="gold">85</td><td>0.5</td><td>0.7</td><td>0.8</td><td>0.5</td><td>0.6</td><td>0.7</td><td>0.5</td><td>0.7</td><td>0.9</td><td class="val-high">0.6</td><td>0.008</td></tr>
-<tr><td class="item-name">Regenerative Spines</td><td class="gold">70</td><td>0.0</td><td>0.1</td><td>0.1</td><td>0.0</td><td>0.0</td><td>0.1</td><td>0.0</td><td>0.1</td><td>0.1</td><td class="val-low">0.1</td><td>0.001</td></tr>
-<tr><td class="item-name">Tide's Heart</td><td class="gold">100</td><td>0.3</td><td>0.4</td><td>0.4</td><td>0.3</td><td>0.4</td><td>0.4</td><td>0.3</td><td>0.4</td><td>0.4</td><td class="val-mid">0.4</td><td>0.004</td></tr>
+<h3>Current</h3>
+<div id="t1d-cur"><div class="lvtabs"><button class=" active" data-lv="3" onclick="showLv('t1d-cur',3)">Level 3</button><button class="" data-lv="6" onclick="showLv('t1d-cur',6)">Level 6</button><button class="" data-lv="8" onclick="showLv('t1d-cur',8)">Level 8</button></div>
+<div id="t1d-cur-lv3" class="lv-panel active">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at Lv3 vs 36 supers">Luci ΔTTD</th><th title="Effective HP for Lucidious at Lv3 (HP ÷ dmg multiplier)">Luci EHP</th><th title="Extra seconds alive for Glacious at Lv3 vs 36 supers">Glac ΔTTD</th><th title="Effective HP for Glacious at Lv3 (HP ÷ dmg multiplier)">Glac EHP</th><th title="Extra seconds alive for Granitacles at Lv3 vs 36 supers">Gran ΔTTD</th><th title="Effective HP for Granitacles at Lv3 (HP ÷ dmg multiplier)">Gran EHP</th><th title="ΔTTD averaged across titans">Avg</th><th title="Avg ΔTTD ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Reef Shield</td><td class="gold">85</td><td>0.49</td><td>11242</td><td>0.47</td><td>10780</td><td>0.53</td><td>12012</td><td>0.50</td><td class="best">0.0058</td></tr>
+<tr ><td>Tide's Heart</td><td class="gold">100</td><td>0.31</td><td>10934</td><td>0.31</td><td>10508</td><td>0.31</td><td>11644</td><td>0.31</td><td>0.0031</td></tr>
+<tr ><td>Regen Spines</td><td class="gold">70</td><td>0.03</td><td>10366</td><td>0.03</td><td>9940</td><td>0.03</td><td>11076</td><td>0.03</td><td>0.0004</td></tr>
 </tbody></table></div>
-<p class="balance-note"><b>Reef Shield</b> dominates at 0.6 avg, 0.6 above the weakest. Gold efficiency gap: <b>Reef Shield</b> (0.008/g) vs <b>Regenerative Spines</b> (0.001/g).</p>
-<h3>Suggested Changes</h3>
-<ul class="change-list">
-  <li><b>Regenerative Spines</b>: +3 &rarr; +5 regen</li>
-  <li><b>Tide's Heart</b>: +200 &rarr; +325 HP</li>
-</ul>
-<h3>After Changes</h3>
-<div class="analysis-table-wrap"><table class="analysis-table" id="t1-def-after">
-<thead><tr><th>Item</th><th title="Item total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at level 3 vs naked titan">Luc L3</th><th title="Extra seconds alive for Lucidious at level 6 vs naked titan">Luc L6</th><th title="Extra seconds alive for Lucidious at level 8 vs naked titan">Luc L8</th><th title="Extra seconds alive for Glacious at level 3 vs naked titan">Gla L3</th><th title="Extra seconds alive for Glacious at level 6 vs naked titan">Gla L6</th><th title="Extra seconds alive for Glacious at level 8 vs naked titan">Gla L8</th><th title="Extra seconds alive for Granitacles at level 3 vs naked titan">Gra L3</th><th title="Extra seconds alive for Granitacles at level 6 vs naked titan">Gra L6</th><th title="Extra seconds alive for Granitacles at level 8 vs naked titan">Gra L8</th><th title="Extra seconds alive vs 36 super towers compared to naked titan, averaged across titans/levels">Avg &Delta;TTD</th><th title="Average delta TTD divided by total gold cost — higher is more gold efficient">&Delta;TTD/gold</th></tr></thead>
-<tbody>
-<tr><td class="item-name">Reef Shield</td><td class="gold">85</td><td>0.5</td><td>0.7</td><td>0.8</td><td>0.5</td><td>0.6</td><td>0.7</td><td>0.5</td><td>0.7</td><td>0.9</td><td class="val-high">0.6</td><td>0.008</td></tr>
-<tr><td class="item-name">Regenerative Spines</td><td class="gold">70</td><td>0.0</td><td>0.1</td><td>0.1</td><td>0.0</td><td>0.1</td><td>0.1</td><td>0.0</td><td>0.1</td><td>0.1</td><td class="val-low">0.1</td><td>0.001</td></tr>
-<tr><td class="item-name">Tide's Heart</td><td class="gold">100</td><td>0.5</td><td>0.6</td><td>0.7</td><td>0.5</td><td>0.6</td><td>0.7</td><td>0.5</td><td>0.6</td><td>0.7</td><td class="val-high">0.6</td><td>0.006</td></tr>
+<div id="t1d-cur-lv6" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at Lv6 vs 36 supers">Luci ΔTTD</th><th title="Effective HP for Lucidious at Lv6 (HP ÷ dmg multiplier)">Luci EHP</th><th title="Extra seconds alive for Glacious at Lv6 vs 36 supers">Glac ΔTTD</th><th title="Effective HP for Glacious at Lv6 (HP ÷ dmg multiplier)">Glac EHP</th><th title="Extra seconds alive for Granitacles at Lv6 vs 36 supers">Gran ΔTTD</th><th title="Effective HP for Granitacles at Lv6 (HP ÷ dmg multiplier)">Gran EHP</th><th title="ΔTTD averaged across titans">Avg</th><th title="Avg ΔTTD ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Reef Shield</td><td class="gold">85</td><td>0.65</td><td>17572</td><td>0.62</td><td>16744</td><td>0.72</td><td>19320</td><td>0.66</td><td class="best">0.0078</td></tr>
+<tr ><td>Tide's Heart</td><td class="gold">100</td><td>0.38</td><td>17114</td><td>0.38</td><td>16340</td><td>0.38</td><td>18748</td><td>0.38</td><td>0.0038</td></tr>
+<tr ><td>Regen Spines</td><td class="gold">70</td><td>0.05</td><td>16426</td><td>0.05</td><td>15652</td><td>0.06</td><td>18060</td><td>0.05</td><td>0.0008</td></tr>
 </tbody></table></div>
-<p class="balance-note"><b>Regenerative Spines</b> underperforms at 0.1 avg, 0.6 below the best. Gold efficiency gap: <b>Reef Shield</b> (0.008/g) vs <b>Regenerative Spines</b> (0.001/g).</p>
-</section>
-<section class="analysis-section" id="t2-def">
-<h2>T2 Defensive</h2>
-<h3>Current State</h3>
-<div class="analysis-table-wrap"><table class="analysis-table" id="t2-def-before">
-<thead><tr><th>Item</th><th title="Item total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at level 3 vs naked titan">Luc L3</th><th title="Extra seconds alive for Lucidious at level 6 vs naked titan">Luc L6</th><th title="Extra seconds alive for Lucidious at level 8 vs naked titan">Luc L8</th><th title="Extra seconds alive for Glacious at level 3 vs naked titan">Gla L3</th><th title="Extra seconds alive for Glacious at level 6 vs naked titan">Gla L6</th><th title="Extra seconds alive for Glacious at level 8 vs naked titan">Gla L8</th><th title="Extra seconds alive for Granitacles at level 3 vs naked titan">Gra L3</th><th title="Extra seconds alive for Granitacles at level 6 vs naked titan">Gra L6</th><th title="Extra seconds alive for Granitacles at level 8 vs naked titan">Gra L8</th><th title="Extra seconds alive vs 36 super towers compared to naked titan, averaged across titans/levels">Avg &Delta;TTD</th><th title="Average delta TTD divided by total gold cost — higher is more gold efficient">&Delta;TTD/gold</th></tr></thead>
-<tbody>
-<tr><td class="item-name">Reef Armor</td><td class="gold">335</td><td>1.7</td><td>2.2</td><td>2.6</td><td>1.6</td><td>2.1</td><td>2.4</td><td>1.8</td><td>2.4</td><td>2.8</td><td class="val-high">2.2</td><td>0.007</td></tr>
-<tr><td class="item-name">Super Regenerative Spines</td><td class="gold">250</td><td>0.2</td><td>0.3</td><td>0.5</td><td>0.2</td><td>0.3</td><td>0.4</td><td>0.2</td><td>0.4</td><td>0.5</td><td class="val-low">0.3</td><td>0.001</td></tr>
-<tr><td class="item-name">Casque of Valor</td><td class="gold">335</td><td>0.8</td><td>1.1</td><td>1.2</td><td>0.8</td><td>1.0</td><td>1.2</td><td>0.9</td><td>1.1</td><td>1.3</td><td class="val-mid">1.0</td><td>0.003</td></tr>
-<tr><td class="item-name">  ↳ Bond active</td><td class="gold">335</td><td>2.6</td><td>3.7</td><td>4.5</td><td>2.5</td><td>3.6</td><td>4.3</td><td>2.8</td><td>4.1</td><td>5.0</td><td class="val-high">3.7</td><td>0.011</td></tr>
-<tr><td class="item-name">Enchantress' Fluid</td><td class="gold">375</td><td>0.7</td><td>0.9</td><td>1.0</td><td>0.7</td><td>0.9</td><td>1.0</td><td>0.7</td><td>0.9</td><td>1.0</td><td class="val-mid">0.8</td><td>0.002</td></tr>
-<tr><td class="item-name">Heart of the Sea</td><td class="gold">340</td><td>0.4</td><td>0.6</td><td>0.6</td><td>0.4</td><td>0.5</td><td>0.6</td><td>0.4</td><td>0.6</td><td>0.6</td><td class="val-low">0.5</td><td>0.002</td></tr>
-<tr><td class="item-name">Magic Armor</td><td class="gold">285</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td class="val-low">0.0</td><td>0.000</td></tr>
+<div id="t1d-cur-lv8" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at Lv8 vs 36 supers">Luci ΔTTD</th><th title="Effective HP for Lucidious at Lv8 (HP ÷ dmg multiplier)">Luci EHP</th><th title="Extra seconds alive for Glacious at Lv8 vs 36 supers">Glac ΔTTD</th><th title="Effective HP for Glacious at Lv8 (HP ÷ dmg multiplier)">Glac EHP</th><th title="Extra seconds alive for Granitacles at Lv8 vs 36 supers">Gran ΔTTD</th><th title="Effective HP for Granitacles at Lv8 (HP ÷ dmg multiplier)">Gran EHP</th><th title="ΔTTD averaged across titans">Avg</th><th title="Avg ΔTTD ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Reef Shield</td><td class="gold">85</td><td>0.76</td><td>22321</td><td>0.72</td><td>21210</td><td>0.86</td><td>24846</td><td>0.78</td><td class="best">0.0092</td></tr>
+<tr ><td>Tide's Heart</td><td class="gold">100</td><td>0.42</td><td>21755</td><td>0.42</td><td>20710</td><td>0.43</td><td>24130</td><td>0.42</td><td>0.0042</td></tr>
+<tr ><td>Regen Spines</td><td class="gold">70</td><td>0.07</td><td>20995</td><td>0.07</td><td>19950</td><td>0.08</td><td>23370</td><td>0.08</td><td>0.0011</td></tr>
 </tbody></table></div>
-<p class="balance-note"><b>Reef Armor</b> dominates at 2.2 avg. <b>Magic Armor</b> 0.000/g (only helps vs magic, not tower phys). TTD above is passive-only; active effects add more value:</p>
-<p class="balance-note"><b>Casque Bond</b> (60s cd, 7.5s): share 15% dmg + 2 armor = ~15% dmg reduction during active. Uptime 12.5%. Effective avg ΔTTD boost ~+0.1-0.2s on top of passive.</p>
-<p class="balance-note"><b>Enchantress heal</b> (60s cd, 300 HP): modeled as 5 HP/s avg in table above. At 500 HP (suggested): 8.3 HP/s avg.</p>
-<h3>Suggested Changes</h3>
-<ul class="change-list">
-  <li><b>Super Regenerative Spines</b>: +12 &rarr; +16 regen</li>
-  <li><b>Casque of Valor</b>: +200 &rarr; +350 HP</li>
-  <li><b>Enchantress' Fluid</b>: Heal 300 &rarr; 500 HP</li>
-</ul>
-<h3>After Changes</h3>
-<div class="analysis-table-wrap"><table class="analysis-table" id="t2-def-after">
-<thead><tr><th>Item</th><th title="Item total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at level 3 vs naked titan">Luc L3</th><th title="Extra seconds alive for Lucidious at level 6 vs naked titan">Luc L6</th><th title="Extra seconds alive for Lucidious at level 8 vs naked titan">Luc L8</th><th title="Extra seconds alive for Glacious at level 3 vs naked titan">Gla L3</th><th title="Extra seconds alive for Glacious at level 6 vs naked titan">Gla L6</th><th title="Extra seconds alive for Glacious at level 8 vs naked titan">Gla L8</th><th title="Extra seconds alive for Granitacles at level 3 vs naked titan">Gra L3</th><th title="Extra seconds alive for Granitacles at level 6 vs naked titan">Gra L6</th><th title="Extra seconds alive for Granitacles at level 8 vs naked titan">Gra L8</th><th title="Extra seconds alive vs 36 super towers compared to naked titan, averaged across titans/levels">Avg &Delta;TTD</th><th title="Average delta TTD divided by total gold cost — higher is more gold efficient">&Delta;TTD/gold</th></tr></thead>
-<tbody>
-<tr><td class="item-name">Reef Armor</td><td class="gold">335</td><td>1.7</td><td>2.2</td><td>2.6</td><td>1.6</td><td>2.1</td><td>2.4</td><td>1.8</td><td>2.4</td><td>2.8</td><td class="val-high">2.2</td><td>0.007</td></tr>
-<tr><td class="item-name">Super Regenerative Spines</td><td class="gold">250</td><td>0.2</td><td>0.4</td><td>0.6</td><td>0.2</td><td>0.4</td><td>0.6</td><td>0.2</td><td>0.5</td><td>0.7</td><td class="val-low">0.4</td><td>0.002</td></tr>
-<tr><td class="item-name">Casque of Valor</td><td class="gold">335</td><td>1.1</td><td>1.4</td><td>1.6</td><td>1.1</td><td>1.3</td><td>1.5</td><td>1.1</td><td>1.4</td><td>1.6</td><td class="val-mid">1.3</td><td>0.004</td></tr>
-<tr><td class="item-name">  ↳ Bond active ★</td><td class="gold">335</td><td>2.9</td><td>4.1</td><td>5.0</td><td>2.8</td><td>3.9</td><td>4.7</td><td>3.1</td><td>4.5</td><td>5.4</td><td class="val-high">4.1</td><td>0.012</td></tr>
-<tr><td class="item-name">Enchantress' Fluid</td><td class="gold">375</td><td>0.7</td><td>0.9</td><td>1.1</td><td>0.7</td><td>0.9</td><td>1.1</td><td>0.7</td><td>0.9</td><td>1.1</td><td class="val-mid">0.9</td><td>0.002</td></tr>
-<tr><td class="item-name">Heart of the Sea</td><td class="gold">340</td><td>0.4</td><td>0.6</td><td>0.6</td><td>0.4</td><td>0.5</td><td>0.6</td><td>0.4</td><td>0.6</td><td>0.6</td><td class="val-low">0.5</td><td>0.002</td></tr>
-<tr><td class="item-name">Magic Armor</td><td class="gold">285</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td>0.0</td><td class="val-low">0.0</td><td>0.000</td></tr>
-</tbody></table></div>
-<p class="balance-note">Casque ★ (+350 HP) + Bond active closes gap with Reef Armor. Reef still best passive; Casque competitive with active play.</p>
-</section>
-<section class="analysis-section" id="t2-off">
-<h2>T2 Offensive (Wall DPS)</h2>
-<h3>Current State</h3>
-<div class="analysis-table-wrap"><table class="analysis-table" id="t2-off-before">
-<thead><tr><th>Item</th><th title="Item total gold cost">Gold</th><th title="Wall DPS delta for Lucidious at level 3">Luc L3</th><th title="Wall DPS delta for Lucidious at level 6">Luc L6</th><th title="Wall DPS delta for Lucidious at level 8">Luc L8</th><th title="Wall DPS delta for Glacious at level 3">Gla L3</th><th title="Wall DPS delta for Glacious at level 6">Gla L6</th><th title="Wall DPS delta for Glacious at level 8">Gla L8</th><th title="Wall DPS delta for Granitacles at level 3">Gra L3</th><th title="Wall DPS delta for Granitacles at level 6">Gra L6</th><th title="Wall DPS delta for Granitacles at level 8">Gra L8</th><th title="Average extra wall DPS across all titans and levels vs naked titan">Avg &Delta;DPS</th><th title="Average delta wall DPS divided by total gold cost — higher is more gold efficient">&Delta;DPS/gold</th></tr></thead>
-<tbody>
-<tr><td class="item-name">Voodoo Doll</td><td class="gold">230</td><td>11.6</td><td>13.4</td><td>14.6</td><td>9.8</td><td>11.3</td><td>12.3</td><td>8.2</td><td>9.4</td><td>10.3</td><td class="val-low">11.2</td><td>0.049</td></tr>
-<tr><td class="item-name">  ↳ no ward</td><td class="gold">230</td><td>5.6</td><td>5.8</td><td>6.0</td><td>4.7</td><td>4.9</td><td>5.1</td><td>3.9</td><td>4.1</td><td>4.2</td><td class="dim">4.9</td><td>0.0214</td></tr>
-<tr><td class="item-name">  ↳ ward on target</td><td class="gold">230</td><td>11.6</td><td>13.4</td><td>14.6</td><td>9.8</td><td>11.3</td><td>12.3</td><td>8.2</td><td>9.4</td><td>10.3</td><td class="val-high">11.2</td><td>0.0487</td></tr>
-<tr><td class="item-name">Gauntlets of Embers</td><td class="gold">200</td><td>25.0</td><td>25.0</td><td>25.0</td><td>25.0</td><td>25.0</td><td>25.0</td><td>25.0</td><td>25.0</td><td>25.0</td><td class="val-mid">25.0</td><td>0.125</td></tr>
-<tr><td class="item-name">Runic Axe</td><td class="gold">260</td><td>22.5</td><td>23.5</td><td>24.2</td><td>18.9</td><td>19.8</td><td>20.4</td><td>15.8</td><td>16.6</td><td>17.0</td><td class="val-mid">19.9</td><td>0.076</td></tr>
-<tr><td class="item-name">Titanic Tridents</td><td class="gold">355</td><td>33.6</td><td>43.2</td><td>50.0</td><td>28.3</td><td>36.4</td><td>42.1</td><td>23.6</td><td>30.4</td><td>35.2</td><td class="val-high">35.9</td><td>0.101</td></tr>
-<tr><td class="item-name">Warbanner</td><td class="gold">300</td><td>17.0</td><td>19.4</td><td>21.0</td><td>14.3</td><td>16.3</td><td>17.7</td><td>11.9</td><td>13.6</td><td>14.8</td><td class="val-low">16.2</td><td>0.054</td></tr>
-<tr><td class="item-name">  ↳ no shout</td><td class="gold">300</td><td>13.2</td><td>14.6</td><td>15.5</td><td>11.1</td><td>12.3</td><td>13.1</td><td>9.3</td><td>10.3</td><td>10.9</td><td class="dim">12.2</td><td>0.0408</td></tr>
-<tr><td class="item-name">  ↳ shout active</td><td class="gold">300</td><td>27.4</td><td>32.6</td><td>36.2</td><td>23.1</td><td>27.5</td><td>30.5</td><td>19.3</td><td>23.0</td><td>25.5</td><td class="val-high">27.2</td><td>0.0908</td></tr>
-<tr><td class="item-name">Berserker's Gem</td><td class="gold">250</td><td>12.5</td><td>15.2</td><td>17.0</td><td>10.5</td><td>12.8</td><td>14.3</td><td>8.8</td><td>10.7</td><td>12.0</td><td class="val-low">12.6</td><td>0.051</td></tr>
-</tbody></table></div>
-<p class="balance-note"><b>Gauntlets</b> at 0.125/g is 2.5&times; more efficient than Tridents. Voodoo (0.049/g) and Berserker (0.051/g) weakest. Runic Axe (0.076/g) in between.</p>
-<h3>Suggested Changes</h3>
-<ul class="change-list">
-  <li><b>Gauntlets of Embers</b>: 5% wall HP/s &rarr; 2.5% wall HP/s (burn duration 10s &rarr; 20s). Currently 0.125/g = 2.5&times; Tridents per gold.</li>
-  <li><b>Voodoo Doll</b>: -3 &rarr; -4 armor decay</li>
-  <li><b>Runic Axe</b>: 35 &rarr; 45 magic</li>
-</ul>
-<h3>After Changes</h3>
-<div class="analysis-table-wrap"><table class="analysis-table" id="t2-off-after">
-<thead><tr><th>Item</th><th title="Item total gold cost">Gold</th><th title="Wall DPS delta for Lucidious at level 3">Luc L3</th><th title="Wall DPS delta for Lucidious at level 6">Luc L6</th><th title="Wall DPS delta for Lucidious at level 8">Luc L8</th><th title="Wall DPS delta for Glacious at level 3">Gla L3</th><th title="Wall DPS delta for Glacious at level 6">Gla L6</th><th title="Wall DPS delta for Glacious at level 8">Gla L8</th><th title="Wall DPS delta for Granitacles at level 3">Gra L3</th><th title="Wall DPS delta for Granitacles at level 6">Gra L6</th><th title="Wall DPS delta for Granitacles at level 8">Gra L8</th><th title="Average extra wall DPS across all titans and levels vs naked titan">Avg &Delta;DPS</th><th title="Average delta wall DPS divided by total gold cost — higher is more gold efficient">&Delta;DPS/gold</th></tr></thead>
-<tbody>
-<tr><td class="item-name">Voodoo Doll</td><td class="gold">230</td><td>13.9</td><td>16.2</td><td>17.9</td><td>11.7</td><td>13.7</td><td>15.1</td><td>9.8</td><td>11.4</td><td>12.6</td><td class="val-low">13.6</td><td>0.059</td></tr>
-<tr><td class="item-name">  ↳ no ward</td><td class="gold">230</td><td>5.6</td><td>5.8</td><td>6.0</td><td>4.7</td><td>4.9</td><td>5.1</td><td>3.9</td><td>4.1</td><td>4.2</td><td class="dim">4.9</td><td>0.0214</td></tr>
-<tr><td class="item-name">  ↳ ward on target</td><td class="gold">230</td><td>13.9</td><td>16.2</td><td>17.9</td><td>11.7</td><td>13.7</td><td>15.1</td><td>9.8</td><td>11.4</td><td>12.6</td><td class="val-high">13.6</td><td>0.0591</td></tr>
-<tr><td class="item-name">Gauntlets of Embers ★</td><td class="gold">200</td><td>12.5</td><td>12.5</td><td>12.5</td><td>12.5</td><td>12.5</td><td>12.5</td><td>12.5</td><td>12.5</td><td>12.5</td><td class="val-mid">12.5</td><td>0.063</td></tr>
-<tr><td class="item-name">Runic Axe</td><td class="gold">260</td><td>28.9</td><td>30.2</td><td>31.1</td><td>24.3</td><td>25.5</td><td>26.2</td><td>20.3</td><td>21.3</td><td>21.9</td><td class="val-mid">25.5</td><td>0.098</td></tr>
-<tr><td class="item-name">Titanic Tridents</td><td class="gold">355</td><td>33.6</td><td>43.2</td><td>50.0</td><td>28.3</td><td>36.4</td><td>42.1</td><td>23.6</td><td>30.4</td><td>35.2</td><td class="val-high">35.9</td><td>0.101</td></tr>
-<tr><td class="item-name">Warbanner</td><td class="gold">300</td><td>17.0</td><td>19.4</td><td>21.0</td><td>14.3</td><td>16.3</td><td>17.7</td><td>11.9</td><td>13.6</td><td>14.8</td><td class="val-low">16.2</td><td>0.054</td></tr>
-<tr><td class="item-name">  ↳ no shout</td><td class="gold">300</td><td>13.2</td><td>14.6</td><td>15.5</td><td>11.1</td><td>12.3</td><td>13.1</td><td>9.3</td><td>10.3</td><td>10.9</td><td class="dim">12.2</td><td>0.0408</td></tr>
-<tr><td class="item-name">  ↳ shout active</td><td class="gold">300</td><td>27.4</td><td>32.6</td><td>36.2</td><td>23.1</td><td>27.5</td><td>30.5</td><td>19.3</td><td>23.0</td><td>25.5</td><td class="val-high">27.2</td><td>0.0908</td></tr>
-<tr><td class="item-name">Berserker's Gem</td><td class="gold">250</td><td>12.5</td><td>15.2</td><td>17.0</td><td>10.5</td><td>12.8</td><td>14.3</td><td>8.8</td><td>10.7</td><td>12.0</td><td class="val-low">12.6</td><td>0.051</td></tr>
-</tbody></table></div>
-<p class="balance-note"><b>Berserker's Gem</b> underperforms at 12.6 avg, 23.2 below the best.</p>
-</section>
-<section class="analysis-section" id="t3-off">
-<h2>T3 Offensive (Wall DPS)</h2>
-<h3>Current State</h3>
-<div class="analysis-table-wrap"><table class="analysis-table" id="t3-off-before">
-<thead><tr><th>Item</th><th title="Item total gold cost">Gold</th><th title="Wall DPS delta for Lucidious at level 3">Luc L3</th><th title="Wall DPS delta for Lucidious at level 6">Luc L6</th><th title="Wall DPS delta for Lucidious at level 8">Luc L8</th><th title="Wall DPS delta for Glacious at level 3">Gla L3</th><th title="Wall DPS delta for Glacious at level 6">Gla L6</th><th title="Wall DPS delta for Glacious at level 8">Gla L8</th><th title="Wall DPS delta for Granitacles at level 3">Gra L3</th><th title="Wall DPS delta for Granitacles at level 6">Gra L6</th><th title="Wall DPS delta for Granitacles at level 8">Gra L8</th><th title="Average extra wall DPS across all titans and levels vs naked titan">Avg &Delta;DPS</th><th title="Average delta wall DPS divided by total gold cost — higher is more gold efficient">&Delta;DPS/gold</th></tr></thead>
-<tbody>
-<tr><td class="item-name">Mace of Mortality</td><td class="gold">1000</td><td>79.7</td><td>99.0</td><td>112.6</td><td>65.5</td><td>80.9</td><td>91.7</td><td>58.4</td><td>74.2</td><td>85.4</td><td class="val-high">83.0</td><td>0.083</td></tr>
-<tr><td class="item-name">Poseidon's Trident</td><td class="gold">930</td><td>69.3</td><td>96.5</td><td>115.7</td><td>58.4</td><td>81.3</td><td>97.6</td><td>48.8</td><td>68.0</td><td>81.5</td><td class="val-high">79.7</td><td>0.086</td></tr>
-<tr><td class="item-name">Spear of Fervor</td><td class="gold">750</td><td>32.0</td><td>38.9</td><td>43.5</td><td>27.0</td><td>32.8</td><td>36.6</td><td>22.6</td><td>27.4</td><td>30.6</td><td class="val-low">32.4</td><td>0.043</td></tr>
-<tr><td class="item-name">Foreteller's Sickle</td><td class="gold">860</td><td>70.3</td><td>93.0</td><td>108.8</td><td>64.9</td><td>91.7</td><td>110.5</td><td>48.9</td><td>64.8</td><td>75.9</td><td class="val-high">81.0</td><td>0.094</td></tr>
-<tr><td class="item-name">Helmet of the Damned</td><td class="gold">765</td><td>41.0</td><td>47.5</td><td>51.9</td><td>34.6</td><td>40.0</td><td>43.7</td><td>28.9</td><td>33.4</td><td>36.5</td><td class="val-low">39.7</td><td>0.052</td></tr>
-<tr><td class="item-name">Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td class="val-high">75.0</td><td>0.150</td></tr>
-<tr><td class="item-name">Highseer Slippers</td><td class="gold">750</td><td>32.1</td><td>33.6</td><td>34.6</td><td>27.1</td><td>28.3</td><td>29.1</td><td>22.6</td><td>23.7</td><td>24.3</td><td class="val-low">28.4</td><td>0.038</td></tr>
-</tbody></table></div>
-<p class="balance-note"><b>Highseer Slippers</b> underperforms at 28.4 avg, 54.7 below the best. Gold efficiency gap: <b>Molten Blade</b> (0.150/g) vs <b>Highseer Slippers</b> (0.038/g).</p>
-<h3>Suggested Changes</h3>
-<ul class="change-list">
-  <li><b>Spear of Fervor</b>: +50% &rarr; +60% AS, Fervor 20% &rarr; 25%</li>
-  <li><b>Helmet of the Damned</b>: -5 &rarr; -6 armor decay</li>
-</ul>
-<p class="balance-note"><b>Foreteller's Sickle</b> already at 0.094/g (best T3 /gold after Molten). No change needed.</p>
-<h3>After Changes</h3>
-<div class="analysis-table-wrap"><table class="analysis-table" id="t3-off-after">
-<thead><tr><th>Item</th><th title="Item total gold cost">Gold</th><th title="Wall DPS delta for Lucidious at level 3">Luc L3</th><th title="Wall DPS delta for Lucidious at level 6">Luc L6</th><th title="Wall DPS delta for Lucidious at level 8">Luc L8</th><th title="Wall DPS delta for Glacious at level 3">Gla L3</th><th title="Wall DPS delta for Glacious at level 6">Gla L6</th><th title="Wall DPS delta for Glacious at level 8">Gla L8</th><th title="Wall DPS delta for Granitacles at level 3">Gra L3</th><th title="Wall DPS delta for Granitacles at level 6">Gra L6</th><th title="Wall DPS delta for Granitacles at level 8">Gra L8</th><th title="Average extra wall DPS across all titans and levels vs naked titan">Avg &Delta;DPS</th><th title="Average delta wall DPS divided by total gold cost — higher is more gold efficient">&Delta;DPS/gold</th></tr></thead>
-<tbody>
-<tr><td class="item-name">Mace of Mortality</td><td class="gold">1000</td><td>79.7</td><td>99.0</td><td>112.6</td><td>65.5</td><td>80.9</td><td>91.7</td><td>58.4</td><td>74.2</td><td>85.4</td><td class="val-high">83.0</td><td>0.083</td></tr>
-<tr><td class="item-name">Poseidon's Trident</td><td class="gold">930</td><td>69.3</td><td>96.5</td><td>115.7</td><td>58.4</td><td>81.3</td><td>97.6</td><td>48.8</td><td>68.0</td><td>81.5</td><td class="val-mid">79.7</td><td>0.086</td></tr>
-<tr><td class="item-name">Spear of Fervor</td><td class="gold">750</td><td>38.8</td><td>47.1</td><td>52.6</td><td>32.7</td><td>39.7</td><td>44.4</td><td>27.3</td><td>33.2</td><td>37.1</td><td class="val-low">39.2</td><td>0.052</td></tr>
-<tr><td class="item-name">Foreteller's Sickle</td><td class="gold">860</td><td>70.3</td><td>93.0</td><td>108.8</td><td>64.9</td><td>91.7</td><td>110.5</td><td>48.9</td><td>64.8</td><td>75.9</td><td class="val-high">81.0</td><td>0.094</td></tr>
-<tr><td class="item-name">Helmet of the Damned</td><td class="gold">765</td><td>44.7</td><td>51.9</td><td>56.8</td><td>37.6</td><td>43.7</td><td>47.9</td><td>31.5</td><td>36.5</td><td>40.0</td><td class="val-low">43.4</td><td>0.057</td></tr>
-<tr><td class="item-name">Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td class="val-mid">75.0</td><td>0.150</td></tr>
-<tr><td class="item-name">Highseer Slippers</td><td class="gold">750</td><td>32.1</td><td>33.6</td><td>34.6</td><td>27.1</td><td>28.3</td><td>29.1</td><td>22.6</td><td>23.7</td><td>24.3</td><td class="val-low">28.4</td><td>0.038</td></tr>
-</tbody></table></div>
-<p class="balance-note"><b>Highseer Slippers</b> underperforms at 28.4 avg, 75.4 below the best. Gold efficiency gap: <b>Molten Blade</b> (0.150/g) vs <b>Highseer Slippers</b> (0.038/g).</p>
-</section>
-<section class="analysis-section" id="t3-def">
-<h2>T3 Defensive</h2>
-<h3>Current State</h3>
-<div class="analysis-table-wrap"><table class="analysis-table" id="t3-def-before">
-<thead><tr><th>Item</th><th title="Item total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at level 3 vs naked titan">Luc L3</th><th title="Extra seconds alive for Lucidious at level 6 vs naked titan">Luc L6</th><th title="Extra seconds alive for Lucidious at level 8 vs naked titan">Luc L8</th><th title="Extra seconds alive for Glacious at level 3 vs naked titan">Gla L3</th><th title="Extra seconds alive for Glacious at level 6 vs naked titan">Gla L6</th><th title="Extra seconds alive for Glacious at level 8 vs naked titan">Gla L8</th><th title="Extra seconds alive for Granitacles at level 3 vs naked titan">Gra L3</th><th title="Extra seconds alive for Granitacles at level 6 vs naked titan">Gra L6</th><th title="Extra seconds alive for Granitacles at level 8 vs naked titan">Gra L8</th><th title="Extra seconds alive vs 36 super towers compared to naked titan, averaged across titans/levels">Avg &Delta;TTD</th><th title="Average delta TTD divided by total gold cost — higher is more gold efficient">&Delta;TTD/gold</th></tr></thead>
-<tbody>
-<tr><td class="item-name">Armor of Tides</td><td class="gold">785</td><td>2.8</td><td>3.8</td><td>4.6</td><td>2.7</td><td>3.7</td><td>4.4</td><td>3.0</td><td>4.2</td><td>5.0</td><td class="val-high">3.8</td><td>0.005</td></tr>
-<tr><td class="item-name">Robe of Spellcraft</td><td class="gold">920</td><td>1.8</td><td>2.3</td><td>2.7</td><td>1.7</td><td>2.2</td><td>2.5</td><td>1.9</td><td>2.5</td><td>2.9</td><td class="val-mid">2.3</td><td>0.002</td></tr>
-<tr><td class="item-name">Dawnkeeper</td><td class="gold">860</td><td>2.4</td><td>3.1</td><td>3.6</td><td>2.3</td><td>3.0</td><td>3.4</td><td>2.4</td><td>3.3</td><td>3.8</td><td class="val-high">3.0</td><td>0.004</td></tr>
-<tr><td class="item-name">Essence of Pure Magic</td><td class="gold">910</td><td>1.1</td><td>1.5</td><td>1.7</td><td>1.1</td><td>1.5</td><td>1.7</td><td>1.1</td><td>1.5</td><td>1.8</td><td class="val-mid">1.5</td><td>0.002</td></tr>
-<tr><td class="item-name">Enchanted Magic Armor</td><td class="gold">715</td><td>0.2</td><td>0.3</td><td>0.5</td><td>0.2</td><td>0.3</td><td>0.4</td><td>0.2</td><td>0.4</td><td>0.5</td><td class="val-low">0.3</td><td>0.000</td></tr>
-</tbody></table></div>
-<p class="balance-note"><b>Enchanted Magic Armor</b> underperforms at 0.3 avg, 3.5 below the best. Gold efficiency gap: <b>Armor of Tides</b> (0.005/g) vs <b>Enchanted Magic Armor</b> (0.000/g).</p>
-</section>
-
-
-
-<section class="analysis-section" id="baselines">
-<h2>Naked Baselines</h2>
-<p>Wall DPS and TTD with no items. All deltas in tables above are relative to these.</p>
-<div class="analysis-table-wrap"><table class="analysis-table">
-<thead><tr>
-<th>Titan</th>
-<th title="Titan level">Lvl</th>
-<th title="Wall DPS with no items, vs 15-armor fortified wall">Wall DPS</th>
-<th title="Seconds alive under 36 super towers with no items">TTD (s)</th>
-</tr></thead>
-<tbody>
-<tr><td>Lucidious</td><td>3</td><td>52.0</td><td>5.7</td></tr>
-<tr><td>Lucidious</td><td>6</td><td>66.1</td><td>9.1</td></tr>
-<tr><td>Lucidious</td><td>8</td><td>76.0</td><td>11.7</td></tr>
-<tr><td>Glacious</td><td>3</td><td>43.9</td><td>5.5</td></tr>
-<tr><td>Glacious</td><td>6</td><td>55.7</td><td>8.7</td></tr>
-<tr><td>Glacious</td><td>8</td><td>64.1</td><td>11.1</td></tr>
-<tr><td>Granitacles</td><td>3</td><td>36.6</td><td>6.1</td></tr>
-<tr><td>Granitacles</td><td>6</td><td>46.6</td><td>10.0</td></tr>
-<tr><td>Granitacles</td><td>8</td><td>53.6</td><td>13.1</td></tr>
-</tbody></table></div>
-</section>
-
-
-  </div>
 </div>
-</body>
-</html>
+<div class="sg"><p>Reef Shield 1.8-2.4× better /gold than Tide's Heart at all levels. HP never competitive.</p></div>
+<div class="ch"><strong>Tide's Heart:</strong> +200 → +325 HP · <strong>Regen Spines:</strong> +3 → +5/s</div>
+<h3>After Changes</h3>
+<div id="t1d-new"><div class="lvtabs"><button class=" active" data-lv="3" onclick="showLv('t1d-new',3)">Level 3</button><button class="" data-lv="6" onclick="showLv('t1d-new',6)">Level 6</button><button class="" data-lv="8" onclick="showLv('t1d-new',8)">Level 8</button></div>
+<div id="t1d-new-lv3" class="lv-panel active">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at Lv3 vs 36 supers">Luci ΔTTD</th><th title="Effective HP for Lucidious at Lv3 (HP ÷ dmg multiplier)">Luci EHP</th><th title="Extra seconds alive for Glacious at Lv3 vs 36 supers">Glac ΔTTD</th><th title="Effective HP for Glacious at Lv3 (HP ÷ dmg multiplier)">Glac EHP</th><th title="Extra seconds alive for Granitacles at Lv3 vs 36 supers">Gran ΔTTD</th><th title="Effective HP for Granitacles at Lv3 (HP ÷ dmg multiplier)">Gran EHP</th><th title="ΔTTD averaged across titans">Avg</th><th title="Avg ΔTTD ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Reef Shield</td><td class="gold">85</td><td>0.49</td><td>11242</td><td>0.47</td><td>10780</td><td>0.53</td><td>12012</td><td>0.50</td><td class="best">0.0058</td></tr>
+<tr ><td>Tide's Heart ★</td><td class="gold">100</td><td>0.51</td><td>11289</td><td>0.51</td><td>10863</td><td>0.51</td><td>11999</td><td>0.51</td><td>0.0051</td></tr>
+<tr ><td>Regen Spines ★</td><td class="gold">70</td><td>0.04</td><td>10366</td><td>0.04</td><td>9940</td><td>0.05</td><td>11076</td><td>0.05</td><td>0.0006</td></tr>
+</tbody></table></div>
+<div id="t1d-new-lv6" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at Lv6 vs 36 supers">Luci ΔTTD</th><th title="Effective HP for Lucidious at Lv6 (HP ÷ dmg multiplier)">Luci EHP</th><th title="Extra seconds alive for Glacious at Lv6 vs 36 supers">Glac ΔTTD</th><th title="Effective HP for Glacious at Lv6 (HP ÷ dmg multiplier)">Glac EHP</th><th title="Extra seconds alive for Granitacles at Lv6 vs 36 supers">Gran ΔTTD</th><th title="Effective HP for Granitacles at Lv6 (HP ÷ dmg multiplier)">Gran EHP</th><th title="ΔTTD averaged across titans">Avg</th><th title="Avg ΔTTD ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Reef Shield</td><td class="gold">85</td><td>0.65</td><td>17572</td><td>0.62</td><td>16744</td><td>0.72</td><td>19320</td><td>0.66</td><td class="best">0.0078</td></tr>
+<tr ><td>Tide's Heart ★</td><td class="gold">100</td><td>0.62</td><td>17544</td><td>0.62</td><td>16770</td><td>0.62</td><td>19178</td><td>0.62</td><td>0.0062</td></tr>
+<tr ><td>Regen Spines ★</td><td class="gold">70</td><td>0.09</td><td>16426</td><td>0.08</td><td>15652</td><td>0.10</td><td>18060</td><td>0.09</td><td>0.0013</td></tr>
+</tbody></table></div>
+<div id="t1d-new-lv8" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at Lv8 vs 36 supers">Luci ΔTTD</th><th title="Effective HP for Lucidious at Lv8 (HP ÷ dmg multiplier)">Luci EHP</th><th title="Extra seconds alive for Glacious at Lv8 vs 36 supers">Glac ΔTTD</th><th title="Effective HP for Glacious at Lv8 (HP ÷ dmg multiplier)">Glac EHP</th><th title="Extra seconds alive for Granitacles at Lv8 vs 36 supers">Gran ΔTTD</th><th title="Effective HP for Granitacles at Lv8 (HP ÷ dmg multiplier)">Gran EHP</th><th title="ΔTTD averaged across titans">Avg</th><th title="Avg ΔTTD ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Reef Shield</td><td class="gold">85</td><td>0.76</td><td>22321</td><td>0.72</td><td>21210</td><td>0.86</td><td>24846</td><td>0.78</td><td class="best">0.0092</td></tr>
+<tr ><td>Tide's Heart ★</td><td class="gold">100</td><td>0.69</td><td>22230</td><td>0.69</td><td>21185</td><td>0.69</td><td>24605</td><td>0.69</td><td>0.0069</td></tr>
+<tr ><td>Regen Spines ★</td><td class="gold">70</td><td>0.13</td><td>20995</td><td>0.12</td><td>19950</td><td>0.14</td><td>23370</td><td>0.13</td><td>0.0018</td></tr>
+</tbody></table></div>
+</div>
+<p>At Lv3: TH ★ now close to RS. At Lv8: RS pulls ahead ~30%. HP strong early, armor scales late.</p>
+<h2>T2 Defensive</h2>
+<h3>Current</h3>
+<div id="t2d-cur"><div class="lvtabs"><button class=" active" data-lv="3" onclick="showLv('t2d-cur',3)">Level 3</button><button class="" data-lv="6" onclick="showLv('t2d-cur',6)">Level 6</button><button class="" data-lv="8" onclick="showLv('t2d-cur',8)">Level 8</button></div>
+<div id="t2d-cur-lv3" class="lv-panel active">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at Lv3 vs 36 supers">Luci ΔTTD</th><th title="Effective HP for Lucidious at Lv3 (HP ÷ dmg multiplier)">Luci EHP</th><th title="Extra seconds alive for Glacious at Lv3 vs 36 supers">Glac ΔTTD</th><th title="Effective HP for Glacious at Lv3 (HP ÷ dmg multiplier)">Glac EHP</th><th title="Extra seconds alive for Granitacles at Lv3 vs 36 supers">Gran ΔTTD</th><th title="Effective HP for Granitacles at Lv3 (HP ÷ dmg multiplier)">Gran EHP</th><th title="ΔTTD averaged across titans">Avg</th><th title="Avg ΔTTD ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Reef Armor</td><td class="gold">335</td><td>1.69</td><td>13378</td><td>1.63</td><td>12857</td><td>1.78</td><td>14246</td><td>1.70</td><td class="best">0.0051</td></tr>
+<tr ><td>Super Regen Spines</td><td class="gold">250</td><td>0.17</td><td>10366</td><td>0.16</td><td>9940</td><td>0.18</td><td>11076</td><td>0.17</td><td>0.0007</td></tr>
+<tr ><td>Casque of Valor</td><td class="gold">335</td><td>0.83</td><td>11858</td><td>0.81</td><td>11396</td><td>0.87</td><td>12628</td><td>0.83</td><td>0.0025</td></tr>
+<tr class="indent" ><td>↳ Bond active</td><td class="gold">335</td><td>1.35</td><td>12782</td><td>1.31</td><td>12284</td><td>1.42</td><td>13612</td><td>1.36</td><td>0.0041</td></tr>
+<tr ><td>Enchantress' Fluid</td><td class="gold">375</td><td>0.67</td><td>11502</td><td>0.67</td><td>11076</td><td>0.68</td><td>12212</td><td>0.67</td><td>0.0018</td></tr>
+<tr ><td>Heart of the Sea</td><td class="gold">340</td><td>0.43</td><td>11076</td><td>0.43</td><td>10650</td><td>0.43</td><td>11786</td><td>0.43</td><td>0.0013</td></tr>
+<tr ><td>Magic Armor</td><td class="gold">285</td><td>0.00</td><td>10366</td><td>0.00</td><td>9940</td><td>0.00</td><td>11076</td><td>0.00</td><td>0.0000</td></tr>
+</tbody></table></div>
+<div id="t2d-cur-lv6" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at Lv6 vs 36 supers">Luci ΔTTD</th><th title="Effective HP for Lucidious at Lv6 (HP ÷ dmg multiplier)">Luci EHP</th><th title="Extra seconds alive for Glacious at Lv6 vs 36 supers">Glac ΔTTD</th><th title="Effective HP for Glacious at Lv6 (HP ÷ dmg multiplier)">Glac EHP</th><th title="Extra seconds alive for Granitacles at Lv6 vs 36 supers">Gran ΔTTD</th><th title="Effective HP for Granitacles at Lv6 (HP ÷ dmg multiplier)">Gran EHP</th><th title="ΔTTD averaged across titans">Avg</th><th title="Avg ΔTTD ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Reef Armor</td><td class="gold">335</td><td>2.20</td><td>20302</td><td>2.11</td><td>19384</td><td>2.39</td><td>22240</td><td>2.23</td><td class="best">0.0067</td></tr>
+<tr ><td>Super Regen Spines</td><td class="gold">250</td><td>0.33</td><td>16426</td><td>0.31</td><td>15652</td><td>0.36</td><td>18060</td><td>0.33</td><td>0.0013</td></tr>
+<tr ><td>Casque of Valor</td><td class="gold">335</td><td>1.06</td><td>18308</td><td>1.03</td><td>17480</td><td>1.13</td><td>20056</td><td>1.07</td><td>0.0032</td></tr>
+<tr class="indent" ><td>↳ Bond active</td><td class="gold">335</td><td>1.74</td><td>19502</td><td>1.68</td><td>18620</td><td>1.88</td><td>21364</td><td>1.77</td><td>0.0053</td></tr>
+<tr ><td>Enchantress' Fluid</td><td class="gold">375</td><td>0.86</td><td>17802</td><td>0.85</td><td>17028</td><td>0.87</td><td>19436</td><td>0.86</td><td>0.0023</td></tr>
+<tr ><td>Heart of the Sea</td><td class="gold">340</td><td>0.55</td><td>17286</td><td>0.55</td><td>16512</td><td>0.56</td><td>18920</td><td>0.55</td><td>0.0016</td></tr>
+<tr ><td>Magic Armor</td><td class="gold">285</td><td>0.00</td><td>16426</td><td>0.00</td><td>15652</td><td>0.00</td><td>18060</td><td>0.00</td><td>0.0000</td></tr>
+</tbody></table></div>
+<div id="t2d-cur-lv8" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at Lv8 vs 36 supers">Luci ΔTTD</th><th title="Effective HP for Lucidious at Lv8 (HP ÷ dmg multiplier)">Luci EHP</th><th title="Extra seconds alive for Glacious at Lv8 vs 36 supers">Glac ΔTTD</th><th title="Effective HP for Glacious at Lv8 (HP ÷ dmg multiplier)">Glac EHP</th><th title="Extra seconds alive for Granitacles at Lv8 vs 36 supers">Gran ΔTTD</th><th title="Effective HP for Granitacles at Lv8 (HP ÷ dmg multiplier)">Gran EHP</th><th title="ΔTTD averaged across titans">Avg</th><th title="Avg ΔTTD ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Reef Armor</td><td class="gold">335</td><td>2.56</td><td>25444</td><td>2.44</td><td>24222</td><td>2.81</td><td>28222</td><td>2.60</td><td class="best">0.0078</td></tr>
+<tr ><td>Super Regen Spines</td><td class="gold">250</td><td>0.47</td><td>20995</td><td>0.44</td><td>19950</td><td>0.52</td><td>23370</td><td>0.48</td><td>0.0019</td></tr>
+<tr ><td>Casque of Valor</td><td class="gold">335</td><td>1.22</td><td>23129</td><td>1.17</td><td>22018</td><td>1.31</td><td>25654</td><td>1.23</td><td>0.0037</td></tr>
+<tr class="indent" ><td>↳ Bond active</td><td class="gold">335</td><td>2.01</td><td>24503</td><td>1.93</td><td>23326</td><td>2.20</td><td>27178</td><td>2.04</td><td>0.0061</td></tr>
+<tr ><td>Enchantress' Fluid</td><td class="gold">375</td><td>0.98</td><td>22515</td><td>0.97</td><td>21470</td><td>1.00</td><td>24890</td><td>0.98</td><td>0.0026</td></tr>
+<tr ><td>Heart of the Sea</td><td class="gold">340</td><td>0.63</td><td>21945</td><td>0.63</td><td>20900</td><td>0.65</td><td>24320</td><td>0.64</td><td>0.0019</td></tr>
+<tr ><td>Magic Armor</td><td class="gold">285</td><td>0.00</td><td>20995</td><td>0.00</td><td>19950</td><td>0.00</td><td>23370</td><td>0.00</td><td>0.0000</td></tr>
+</tbody></table></div>
+</div>
+<div class="sg"><p>Reef Armor best passive (0.007/g). But Casque with Bond active (0.011/g) actually beats it. Super Regen weak under burst. Magic Armor: 0 phys value (designed for magic defense).</p></div>
+<div class="ch"><strong>Casque:</strong> +200 → +350 HP · <strong>Super Regen:</strong> +12 → +16/s · <strong>Enchantress heal:</strong> 300 → 500 HP (8.3/s avg)</div>
+<h3>After Changes</h3>
+<div id="t2d-new"><div class="lvtabs"><button class=" active" data-lv="3" onclick="showLv('t2d-new',3)">Level 3</button><button class="" data-lv="6" onclick="showLv('t2d-new',6)">Level 6</button><button class="" data-lv="8" onclick="showLv('t2d-new',8)">Level 8</button></div>
+<div id="t2d-new-lv3" class="lv-panel active">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at Lv3 vs 36 supers">Luci ΔTTD</th><th title="Effective HP for Lucidious at Lv3 (HP ÷ dmg multiplier)">Luci EHP</th><th title="Extra seconds alive for Glacious at Lv3 vs 36 supers">Glac ΔTTD</th><th title="Effective HP for Glacious at Lv3 (HP ÷ dmg multiplier)">Glac EHP</th><th title="Extra seconds alive for Granitacles at Lv3 vs 36 supers">Gran ΔTTD</th><th title="Effective HP for Granitacles at Lv3 (HP ÷ dmg multiplier)">Gran EHP</th><th title="ΔTTD averaged across titans">Avg</th><th title="Avg ΔTTD ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Reef Armor</td><td class="gold">335</td><td>1.69</td><td>13378</td><td>1.63</td><td>12857</td><td>1.78</td><td>14246</td><td>1.70</td><td class="best">0.0051</td></tr>
+<tr ><td>Super Regen ★</td><td class="gold">250</td><td>0.22</td><td>10366</td><td>0.21</td><td>9940</td><td>0.24</td><td>11076</td><td>0.23</td><td>0.0009</td></tr>
+<tr ><td>Casque ★</td><td class="gold">335</td><td>1.08</td><td>12320</td><td>1.06</td><td>11858</td><td>1.12</td><td>13090</td><td>1.09</td><td>0.0033</td></tr>
+<tr class="indent" ><td>↳ Bond active</td><td class="gold">335</td><td>1.62</td><td>13280</td><td>1.58</td><td>12782</td><td>1.69</td><td>14110</td><td>1.63</td><td>0.0049</td></tr>
+<tr ><td>Enchantress' ★</td><td class="gold">375</td><td>0.71</td><td>11502</td><td>0.70</td><td>11076</td><td>0.71</td><td>12212</td><td>0.71</td><td>0.0019</td></tr>
+<tr ><td>Heart of the Sea</td><td class="gold">340</td><td>0.43</td><td>11076</td><td>0.43</td><td>10650</td><td>0.43</td><td>11786</td><td>0.43</td><td>0.0013</td></tr>
+<tr ><td>Magic Armor</td><td class="gold">285</td><td>0.00</td><td>10366</td><td>0.00</td><td>9940</td><td>0.00</td><td>11076</td><td>0.00</td><td>0.0000</td></tr>
+</tbody></table></div>
+<div id="t2d-new-lv6" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at Lv6 vs 36 supers">Luci ΔTTD</th><th title="Effective HP for Lucidious at Lv6 (HP ÷ dmg multiplier)">Luci EHP</th><th title="Extra seconds alive for Glacious at Lv6 vs 36 supers">Glac ΔTTD</th><th title="Effective HP for Glacious at Lv6 (HP ÷ dmg multiplier)">Glac EHP</th><th title="Extra seconds alive for Granitacles at Lv6 vs 36 supers">Gran ΔTTD</th><th title="Effective HP for Granitacles at Lv6 (HP ÷ dmg multiplier)">Gran EHP</th><th title="ΔTTD averaged across titans">Avg</th><th title="Avg ΔTTD ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Reef Armor</td><td class="gold">335</td><td>2.20</td><td>20302</td><td>2.11</td><td>19384</td><td>2.39</td><td>22240</td><td>2.23</td><td class="best">0.0067</td></tr>
+<tr ><td>Super Regen ★</td><td class="gold">250</td><td>0.44</td><td>16426</td><td>0.42</td><td>15652</td><td>0.48</td><td>18060</td><td>0.45</td><td>0.0018</td></tr>
+<tr ><td>Casque ★</td><td class="gold">335</td><td>1.37</td><td>18860</td><td>1.33</td><td>18032</td><td>1.44</td><td>20608</td><td>1.38</td><td>0.0041</td></tr>
+<tr class="indent" ><td>↳ Bond active</td><td class="gold">335</td><td>2.07</td><td>20090</td><td>2.00</td><td>19208</td><td>2.21</td><td>21952</td><td>2.09</td><td>0.0063</td></tr>
+<tr ><td>Enchantress' ★</td><td class="gold">375</td><td>0.92</td><td>17802</td><td>0.91</td><td>17028</td><td>0.94</td><td>19436</td><td>0.92</td><td>0.0025</td></tr>
+<tr ><td>Heart of the Sea</td><td class="gold">340</td><td>0.55</td><td>17286</td><td>0.55</td><td>16512</td><td>0.56</td><td>18920</td><td>0.55</td><td>0.0016</td></tr>
+<tr ><td>Magic Armor</td><td class="gold">285</td><td>0.00</td><td>16426</td><td>0.00</td><td>15652</td><td>0.00</td><td>18060</td><td>0.00</td><td>0.0000</td></tr>
+</tbody></table></div>
+<div id="t2d-new-lv8" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive for Lucidious at Lv8 vs 36 supers">Luci ΔTTD</th><th title="Effective HP for Lucidious at Lv8 (HP ÷ dmg multiplier)">Luci EHP</th><th title="Extra seconds alive for Glacious at Lv8 vs 36 supers">Glac ΔTTD</th><th title="Effective HP for Glacious at Lv8 (HP ÷ dmg multiplier)">Glac EHP</th><th title="Extra seconds alive for Granitacles at Lv8 vs 36 supers">Gran ΔTTD</th><th title="Effective HP for Granitacles at Lv8 (HP ÷ dmg multiplier)">Gran EHP</th><th title="ΔTTD averaged across titans">Avg</th><th title="Avg ΔTTD ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Reef Armor</td><td class="gold">335</td><td>2.56</td><td>25444</td><td>2.44</td><td>24222</td><td>2.81</td><td>28222</td><td>2.60</td><td class="best">0.0078</td></tr>
+<tr ><td>Super Regen ★</td><td class="gold">250</td><td>0.63</td><td>20995</td><td>0.60</td><td>19950</td><td>0.71</td><td>23370</td><td>0.65</td><td>0.0026</td></tr>
+<tr ><td>Casque ★</td><td class="gold">335</td><td>1.56</td><td>23735</td><td>1.51</td><td>22624</td><td>1.65</td><td>26260</td><td>1.57</td><td>0.0047</td></tr>
+<tr class="indent" ><td>↳ Bond active</td><td class="gold">335</td><td>2.37</td><td>25145</td><td>2.28</td><td>23968</td><td>2.56</td><td>27820</td><td>2.40</td><td>0.0072</td></tr>
+<tr ><td>Enchantress' ★</td><td class="gold">375</td><td>1.07</td><td>22515</td><td>1.06</td><td>21470</td><td>1.10</td><td>24890</td><td>1.08</td><td>0.0029</td></tr>
+<tr ><td>Heart of the Sea</td><td class="gold">340</td><td>0.63</td><td>21945</td><td>0.63</td><td>20900</td><td>0.65</td><td>24320</td><td>0.64</td><td>0.0019</td></tr>
+<tr ><td>Magic Armor</td><td class="gold">285</td><td>0.00</td><td>20995</td><td>0.00</td><td>19950</td><td>0.00</td><td>23370</td><td>0.00</td><td>0.0000</td></tr>
+</tbody></table></div>
+</div>
+<p>Casque ★ passive 0.004/g, Bond active 0.012/g. Closes gap with Reef passive 0.007/g. Active play rewarded.</p>
+<h2>T2 Offensive — Wall DPS</h2>
+<p>Δ wall DPS = extra structure DPS over naked titan vs 15-armor fortified wall.</p>
+<h3>Current</h3>
+<div id="t2o-cur"><div class="lvtabs"><button class=" active" data-lv="3" onclick="showLv('t2o-cur',3)">Level 3</button><button class="" data-lv="6" onclick="showLv('t2o-cur',6)">Level 6</button><button class="" data-lv="8" onclick="showLv('t2o-cur',8)">Level 8</button></div>
+<div id="t2o-cur-lv3" class="lv-panel active">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra wall DPS for Lucidious at Lv3 vs 15-armor fortified wall">Luci Δwall</th><th title="Extra wall DPS for Glacious at Lv3 vs 15-armor fortified wall">Glac Δwall</th><th title="Extra wall DPS for Granitacles at Lv3 vs 15-armor fortified wall">Gran Δwall</th><th title="Avg Δwall DPS across titans">Avg</th><th title="Avg Δwall DPS ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Titanic Tridents</td><td class="gold">355</td><td>33.6</td><td>28.3</td><td>23.6</td><td>28.5</td><td>0.0802</td></tr>
+<tr ><td>Warbanner (avg shout 8s/30s)</td><td class="gold">300</td><td>17.0</td><td>14.3</td><td>11.9</td><td>14.4</td><td>0.0480</td></tr>
+<tr class="indent" ><td>↳ no shout</td><td class="gold">300</td><td>13.2</td><td>11.1</td><td>9.3</td><td>11.2</td><td>0.0372</td></tr>
+<tr class="indent" ><td>↳ shout active</td><td class="gold">300</td><td>27.4</td><td>23.1</td><td>19.3</td><td>23.3</td><td>0.0776</td></tr>
+<tr ><td>Berserker's Gem</td><td class="gold">250</td><td>12.5</td><td>10.5</td><td>8.8</td><td>10.6</td><td>0.0425</td></tr>
+<tr ><td>Runic Axe</td><td class="gold">260</td><td>22.5</td><td>18.9</td><td>15.8</td><td>19.1</td><td>0.0734</td></tr>
+<tr ><td>Voodoo Doll (avg)</td><td class="gold">230</td><td>11.6</td><td>9.8</td><td>8.2</td><td>9.9</td><td>0.0428</td></tr>
+<tr class="indent" ><td>↳ no ward</td><td class="gold">230</td><td>5.6</td><td>4.7</td><td>3.9</td><td>4.7</td><td>0.0206</td></tr>
+<tr class="indent" ><td>↳ ward on target</td><td class="gold">230</td><td>11.6</td><td>9.8</td><td>8.2</td><td>9.9</td><td>0.0428</td></tr>
+<tr ><td>Gauntlets of Embers</td><td class="gold">200</td><td>25.0</td><td>25.0</td><td>25.0</td><td>25.0</td><td class="best">0.1250</td></tr>
+</tbody></table></div>
+<div id="t2o-cur-lv6" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra wall DPS for Lucidious at Lv6 vs 15-armor fortified wall">Luci Δwall</th><th title="Extra wall DPS for Glacious at Lv6 vs 15-armor fortified wall">Glac Δwall</th><th title="Extra wall DPS for Granitacles at Lv6 vs 15-armor fortified wall">Gran Δwall</th><th title="Avg Δwall DPS across titans">Avg</th><th title="Avg Δwall DPS ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Titanic Tridents</td><td class="gold">355</td><td>43.2</td><td>36.4</td><td>30.4</td><td>36.6</td><td>0.1032</td></tr>
+<tr ><td>Warbanner (avg shout 8s/30s)</td><td class="gold">300</td><td>19.4</td><td>16.3</td><td>13.6</td><td>16.5</td><td>0.0548</td></tr>
+<tr class="indent" ><td>↳ no shout</td><td class="gold">300</td><td>14.6</td><td>12.3</td><td>10.3</td><td>12.4</td><td>0.0412</td></tr>
+<tr class="indent" ><td>↳ shout active</td><td class="gold">300</td><td>32.6</td><td>27.5</td><td>23.0</td><td>27.7</td><td>0.0923</td></tr>
+<tr ><td>Berserker's Gem</td><td class="gold">250</td><td>15.2</td><td>12.8</td><td>10.7</td><td>12.9</td><td>0.0516</td></tr>
+<tr ><td>Runic Axe</td><td class="gold">260</td><td>23.5</td><td>19.8</td><td>16.6</td><td>20.0</td><td>0.0768</td></tr>
+<tr ><td>Voodoo Doll (avg)</td><td class="gold">230</td><td>13.4</td><td>11.3</td><td>9.4</td><td>11.3</td><td>0.0493</td></tr>
+<tr class="indent" ><td>↳ no ward</td><td class="gold">230</td><td>5.8</td><td>4.9</td><td>4.1</td><td>5.0</td><td>0.0215</td></tr>
+<tr class="indent" ><td>↳ ward on target</td><td class="gold">230</td><td>13.4</td><td>11.3</td><td>9.4</td><td>11.3</td><td>0.0493</td></tr>
+<tr ><td>Gauntlets of Embers</td><td class="gold">200</td><td>25.0</td><td>25.0</td><td>25.0</td><td>25.0</td><td class="best">0.1250</td></tr>
+</tbody></table></div>
+<div id="t2o-cur-lv8" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra wall DPS for Lucidious at Lv8 vs 15-armor fortified wall">Luci Δwall</th><th title="Extra wall DPS for Glacious at Lv8 vs 15-armor fortified wall">Glac Δwall</th><th title="Extra wall DPS for Granitacles at Lv8 vs 15-armor fortified wall">Gran Δwall</th><th title="Avg Δwall DPS across titans">Avg</th><th title="Avg Δwall DPS ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Titanic Tridents</td><td class="gold">355</td><td>50.0</td><td>42.1</td><td>35.2</td><td>42.4</td><td>0.1195</td></tr>
+<tr ><td>Warbanner (avg shout 8s/30s)</td><td class="gold">300</td><td>21.0</td><td>17.7</td><td>14.8</td><td>17.9</td><td>0.0595</td></tr>
+<tr class="indent" ><td>↳ no shout</td><td class="gold">300</td><td>15.5</td><td>13.1</td><td>10.9</td><td>13.2</td><td>0.0439</td></tr>
+<tr class="indent" ><td>↳ shout active</td><td class="gold">300</td><td>36.2</td><td>30.5</td><td>25.5</td><td>30.8</td><td>0.1025</td></tr>
+<tr ><td>Berserker's Gem</td><td class="gold">250</td><td>17.0</td><td>14.3</td><td>12.0</td><td>14.4</td><td>0.0577</td></tr>
+<tr ><td>Runic Axe</td><td class="gold">260</td><td>24.2</td><td>20.4</td><td>17.0</td><td>20.5</td><td>0.0790</td></tr>
+<tr ><td>Voodoo Doll (avg)</td><td class="gold">230</td><td>14.6</td><td>12.3</td><td>10.3</td><td>12.4</td><td>0.0539</td></tr>
+<tr class="indent" ><td>↳ no ward</td><td class="gold">230</td><td>6.0</td><td>5.1</td><td>4.2</td><td>5.1</td><td>0.0222</td></tr>
+<tr class="indent" ><td>↳ ward on target</td><td class="gold">230</td><td>14.6</td><td>12.3</td><td>10.3</td><td>12.4</td><td>0.0539</td></tr>
+<tr ><td>Gauntlets of Embers</td><td class="gold">200</td><td>25.0</td><td>25.0</td><td>25.0</td><td>25.0</td><td class="best">0.1250</td></tr>
+</tbody></table></div>
+</div>
+<div class="sg"><p>Gauntlets 0.125/g = 2.5× Tridents. Runic Axe 0.076/g weakest DPS item. Voodoo ward gives +10.5% team phys (wall 15→12 armor).</p></div>
+<div class="ch"><strong>Gauntlets:</strong> 5% → 2.5% burn (20s duration) · <strong>Runic Axe:</strong> 35 → 45 magic · <strong>Voodoo:</strong> −3 → −4 armor</div>
+<h3>After Changes</h3>
+<div id="t2o-new"><div class="lvtabs"><button class=" active" data-lv="3" onclick="showLv('t2o-new',3)">Level 3</button><button class="" data-lv="6" onclick="showLv('t2o-new',6)">Level 6</button><button class="" data-lv="8" onclick="showLv('t2o-new',8)">Level 8</button></div>
+<div id="t2o-new-lv3" class="lv-panel active">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra wall DPS for Lucidious at Lv3 vs 15-armor fortified wall">Luci Δwall</th><th title="Extra wall DPS for Glacious at Lv3 vs 15-armor fortified wall">Glac Δwall</th><th title="Extra wall DPS for Granitacles at Lv3 vs 15-armor fortified wall">Gran Δwall</th><th title="Avg Δwall DPS across titans">Avg</th><th title="Avg Δwall DPS ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Titanic Tridents</td><td class="gold">355</td><td>33.6</td><td>28.3</td><td>23.6</td><td>28.5</td><td>0.0802</td></tr>
+<tr ><td>Warbanner (avg shout)</td><td class="gold">300</td><td>17.0</td><td>14.3</td><td>11.9</td><td>14.4</td><td>0.0480</td></tr>
+<tr class="indent" ><td>↳ no shout</td><td class="gold">300</td><td>13.2</td><td>11.1</td><td>9.3</td><td>11.2</td><td>0.0372</td></tr>
+<tr class="indent" ><td>↳ shout active</td><td class="gold">300</td><td>27.4</td><td>23.1</td><td>19.3</td><td>23.3</td><td>0.0776</td></tr>
+<tr ><td>Berserker's Gem</td><td class="gold">250</td><td>12.5</td><td>10.5</td><td>8.8</td><td>10.6</td><td>0.0425</td></tr>
+<tr ><td>Runic Axe ★</td><td class="gold">260</td><td>28.9</td><td>24.3</td><td>20.3</td><td>24.5</td><td class="best">0.0943</td></tr>
+<tr ><td>Voodoo Doll ★ (avg)</td><td class="gold">230</td><td>13.9</td><td>11.7</td><td>9.8</td><td>11.8</td><td>0.0513</td></tr>
+<tr class="indent" ><td>↳ no ward</td><td class="gold">230</td><td>5.6</td><td>4.7</td><td>3.9</td><td>4.7</td><td>0.0206</td></tr>
+<tr class="indent" ><td>↳ ward on target</td><td class="gold">230</td><td>13.9</td><td>11.7</td><td>9.8</td><td>11.8</td><td>0.0513</td></tr>
+<tr ><td>Gauntlets ★</td><td class="gold">200</td><td>12.5</td><td>12.5</td><td>12.5</td><td>12.5</td><td>0.0625</td></tr>
+</tbody></table></div>
+<div id="t2o-new-lv6" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra wall DPS for Lucidious at Lv6 vs 15-armor fortified wall">Luci Δwall</th><th title="Extra wall DPS for Glacious at Lv6 vs 15-armor fortified wall">Glac Δwall</th><th title="Extra wall DPS for Granitacles at Lv6 vs 15-armor fortified wall">Gran Δwall</th><th title="Avg Δwall DPS across titans">Avg</th><th title="Avg Δwall DPS ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Titanic Tridents</td><td class="gold">355</td><td>43.2</td><td>36.4</td><td>30.4</td><td>36.6</td><td class="best">0.1032</td></tr>
+<tr ><td>Warbanner (avg shout)</td><td class="gold">300</td><td>19.4</td><td>16.3</td><td>13.6</td><td>16.5</td><td>0.0548</td></tr>
+<tr class="indent" ><td>↳ no shout</td><td class="gold">300</td><td>14.6</td><td>12.3</td><td>10.3</td><td>12.4</td><td>0.0412</td></tr>
+<tr class="indent" ><td>↳ shout active</td><td class="gold">300</td><td>32.6</td><td>27.5</td><td>23.0</td><td>27.7</td><td>0.0923</td></tr>
+<tr ><td>Berserker's Gem</td><td class="gold">250</td><td>15.2</td><td>12.8</td><td>10.7</td><td>12.9</td><td>0.0516</td></tr>
+<tr ><td>Runic Axe ★</td><td class="gold">260</td><td>30.2</td><td>25.5</td><td>21.3</td><td>25.7</td><td>0.0987</td></tr>
+<tr ><td>Voodoo Doll ★ (avg)</td><td class="gold">230</td><td>16.2</td><td>13.7</td><td>11.4</td><td>13.8</td><td>0.0599</td></tr>
+<tr class="indent" ><td>↳ no ward</td><td class="gold">230</td><td>5.8</td><td>4.9</td><td>4.1</td><td>5.0</td><td>0.0215</td></tr>
+<tr class="indent" ><td>↳ ward on target</td><td class="gold">230</td><td>16.2</td><td>13.7</td><td>11.4</td><td>13.8</td><td>0.0599</td></tr>
+<tr ><td>Gauntlets ★</td><td class="gold">200</td><td>12.5</td><td>12.5</td><td>12.5</td><td>12.5</td><td>0.0625</td></tr>
+</tbody></table></div>
+<div id="t2o-new-lv8" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra wall DPS for Lucidious at Lv8 vs 15-armor fortified wall">Luci Δwall</th><th title="Extra wall DPS for Glacious at Lv8 vs 15-armor fortified wall">Glac Δwall</th><th title="Extra wall DPS for Granitacles at Lv8 vs 15-armor fortified wall">Gran Δwall</th><th title="Avg Δwall DPS across titans">Avg</th><th title="Avg Δwall DPS ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Titanic Tridents</td><td class="gold">355</td><td>50.0</td><td>42.1</td><td>35.2</td><td>42.4</td><td class="best">0.1195</td></tr>
+<tr ><td>Warbanner (avg shout)</td><td class="gold">300</td><td>21.0</td><td>17.7</td><td>14.8</td><td>17.9</td><td>0.0595</td></tr>
+<tr class="indent" ><td>↳ no shout</td><td class="gold">300</td><td>15.5</td><td>13.1</td><td>10.9</td><td>13.2</td><td>0.0439</td></tr>
+<tr class="indent" ><td>↳ shout active</td><td class="gold">300</td><td>36.2</td><td>30.5</td><td>25.5</td><td>30.8</td><td>0.1025</td></tr>
+<tr ><td>Berserker's Gem</td><td class="gold">250</td><td>17.0</td><td>14.3</td><td>12.0</td><td>14.4</td><td>0.0577</td></tr>
+<tr ><td>Runic Axe ★</td><td class="gold">260</td><td>31.1</td><td>26.2</td><td>21.9</td><td>26.4</td><td>0.1016</td></tr>
+<tr ><td>Voodoo Doll ★ (avg)</td><td class="gold">230</td><td>17.9</td><td>15.1</td><td>12.6</td><td>15.2</td><td>0.0660</td></tr>
+<tr class="indent" ><td>↳ no ward</td><td class="gold">230</td><td>6.0</td><td>5.1</td><td>4.2</td><td>5.1</td><td>0.0222</td></tr>
+<tr class="indent" ><td>↳ ward on target</td><td class="gold">230</td><td>17.9</td><td>15.1</td><td>12.6</td><td>15.2</td><td>0.0660</td></tr>
+<tr ><td>Gauntlets ★</td><td class="gold">200</td><td>12.5</td><td>12.5</td><td>12.5</td><td>12.5</td><td>0.0625</td></tr>
+</tbody></table></div>
+</div>
+<p>Gauntlets 0.125→0.063/g (in line). Runic Axe 0.076→0.098/g (closer to Tridents 0.101). Voodoo ward: −4 arm = +13.7% team phys.</p>
+<h2>T3 Offensive — Wall DPS</h2>
+<p>Actives: Rage 10s/30s, War Cry 10s/60s, Fervor ~70% avg stacks, Foreteller spell buff ~33%. Separate rows show passive vs active.</p>
+<h3>Current</h3>
+<div id="t3o-cur"><div class="lvtabs"><button class=" active" data-lv="3" onclick="showLv('t3o-cur',3)">Level 3</button><button class="" data-lv="6" onclick="showLv('t3o-cur',6)">Level 6</button><button class="" data-lv="8" onclick="showLv('t3o-cur',8)">Level 8</button></div>
+<div id="t3o-cur-lv3" class="lv-panel active">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra wall DPS for Lucidious at Lv3 vs 15-armor fortified wall">Luci Δwall</th><th title="Extra wall DPS for Glacious at Lv3 vs 15-armor fortified wall">Glac Δwall</th><th title="Extra wall DPS for Granitacles at Lv3 vs 15-armor fortified wall">Gran Δwall</th><th title="Avg Δwall DPS across titans">Avg</th><th title="Avg Δwall DPS ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Poseidon (avg rage)</td><td class="gold">930</td><td>69.3</td><td>58.4</td><td>48.8</td><td>58.8</td><td>0.0632</td></tr>
+<tr class="indent" ><td>↳ no rage</td><td class="gold">930</td><td>62.6</td><td>52.8</td><td>44.1</td><td>53.1</td><td>0.0571</td></tr>
+<tr class="indent" ><td>↳ rage active</td><td class="gold">930</td><td>82.6</td><td>69.6</td><td>58.2</td><td>70.1</td><td>0.0754</td></tr>
+<tr ><td>Mace (avg warcry)</td><td class="gold">1000</td><td>79.7</td><td>65.5</td><td>58.4</td><td>67.9</td><td>0.0679</td></tr>
+<tr class="indent" ><td>↳ no warcry</td><td class="gold">1000</td><td>60.4</td><td>49.9</td><td>44.0</td><td>51.4</td><td>0.0514</td></tr>
+<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>175.9</td><td>143.6</td><td>130.4</td><td>150.0</td><td>0.1500</td></tr>
+<tr ><td>Spear of Fervor</td><td class="gold">750</td><td>32.0</td><td>27.0</td><td>22.6</td><td>27.2</td><td>0.0363</td></tr>
+<tr class="indent" ><td>↳ no fervor</td><td class="gold">750</td><td>25.0</td><td>21.1</td><td>17.6</td><td>21.2</td><td>0.0283</td></tr>
+<tr class="indent" ><td>↳ full fervor</td><td class="gold">750</td><td>32.0</td><td>27.0</td><td>22.6</td><td>27.2</td><td>0.0363</td></tr>
+<tr ><td>Helmet of Damned</td><td class="gold">765</td><td>41.0</td><td>34.6</td><td>28.9</td><td>34.8</td><td>0.0455</td></tr>
+<tr class="indent" ><td>↳ no ward</td><td class="gold">765</td><td>26.3</td><td>22.2</td><td>18.6</td><td>22.4</td><td>0.0292</td></tr>
+<tr class="indent" ><td>↳ ward on target</td><td class="gold">765</td><td>41.0</td><td>34.6</td><td>28.9</td><td>34.8</td><td>0.0455</td></tr>
+<tr ><td>Foreteller (base 3%)</td><td class="gold">860</td><td>70.3</td><td>64.9</td><td>48.9</td><td>61.4</td><td>0.0714</td></tr>
+<tr class="indent" ><td>↳ spell buff (8%)</td><td class="gold">860</td><td>166.7</td><td>155.5</td><td>115.6</td><td>145.9</td><td class="best">0.1697</td></tr>
+<tr ><td>Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>0.1500</td></tr>
+<tr ><td>Highseer Slippers</td><td class="gold">750</td><td>32.1</td><td>27.1</td><td>22.6</td><td>27.3</td><td>0.0363</td></tr>
+</tbody></table></div>
+<div id="t3o-cur-lv6" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra wall DPS for Lucidious at Lv6 vs 15-armor fortified wall">Luci Δwall</th><th title="Extra wall DPS for Glacious at Lv6 vs 15-armor fortified wall">Glac Δwall</th><th title="Extra wall DPS for Granitacles at Lv6 vs 15-armor fortified wall">Gran Δwall</th><th title="Avg Δwall DPS across titans">Avg</th><th title="Avg Δwall DPS ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Poseidon (avg rage)</td><td class="gold">930</td><td>96.5</td><td>81.3</td><td>68.0</td><td>81.9</td><td>0.0881</td></tr>
+<tr class="indent" ><td>↳ no rage</td><td class="gold">930</td><td>88.1</td><td>74.3</td><td>62.0</td><td>74.8</td><td>0.0804</td></tr>
+<tr class="indent" ><td>↳ rage active</td><td class="gold">930</td><td>113.4</td><td>95.5</td><td>79.8</td><td>96.2</td><td>0.1035</td></tr>
+<tr ><td>Mace (avg warcry)</td><td class="gold">1000</td><td>99.0</td><td>80.9</td><td>74.2</td><td>84.7</td><td>0.0847</td></tr>
+<tr class="indent" ><td>↳ no warcry</td><td class="gold">1000</td><td>73.4</td><td>60.2</td><td>54.5</td><td>62.7</td><td>0.0627</td></tr>
+<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>227.2</td><td>184.2</td><td>172.8</td><td>194.7</td><td>0.1947</td></tr>
+<tr ><td>Spear of Fervor</td><td class="gold">750</td><td>38.9</td><td>32.8</td><td>27.4</td><td>33.0</td><td>0.0440</td></tr>
+<tr class="indent" ><td>↳ no fervor</td><td class="gold">750</td><td>30.4</td><td>25.6</td><td>21.4</td><td>25.8</td><td>0.0344</td></tr>
+<tr class="indent" ><td>↳ full fervor</td><td class="gold">750</td><td>38.9</td><td>32.8</td><td>27.4</td><td>33.0</td><td>0.0440</td></tr>
+<tr ><td>Helmet of Damned</td><td class="gold">765</td><td>47.5</td><td>40.0</td><td>33.4</td><td>40.3</td><td>0.0527</td></tr>
+<tr class="indent" ><td>↳ no ward</td><td class="gold">765</td><td>29.5</td><td>24.9</td><td>20.8</td><td>25.1</td><td>0.0328</td></tr>
+<tr class="indent" ><td>↳ ward on target</td><td class="gold">765</td><td>47.5</td><td>40.0</td><td>33.4</td><td>40.3</td><td>0.0527</td></tr>
+<tr ><td>Foreteller (base 3%)</td><td class="gold">860</td><td>93.0</td><td>91.7</td><td>64.8</td><td>83.2</td><td>0.0967</td></tr>
+<tr class="indent" ><td>↳ spell buff (8%)</td><td class="gold">860</td><td>222.7</td><td>223.3</td><td>155.0</td><td>200.3</td><td class="best">0.2329</td></tr>
+<tr ><td>Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>0.1500</td></tr>
+<tr ><td>Highseer Slippers</td><td class="gold">750</td><td>33.6</td><td>28.3</td><td>23.7</td><td>28.5</td><td>0.0380</td></tr>
+</tbody></table></div>
+<div id="t3o-cur-lv8" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra wall DPS for Lucidious at Lv8 vs 15-armor fortified wall">Luci Δwall</th><th title="Extra wall DPS for Glacious at Lv8 vs 15-armor fortified wall">Glac Δwall</th><th title="Extra wall DPS for Granitacles at Lv8 vs 15-armor fortified wall">Gran Δwall</th><th title="Avg Δwall DPS across titans">Avg</th><th title="Avg Δwall DPS ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Poseidon (avg rage)</td><td class="gold">930</td><td>115.7</td><td>97.6</td><td>81.5</td><td>98.3</td><td>0.1057</td></tr>
+<tr class="indent" ><td>↳ no rage</td><td class="gold">930</td><td>106.1</td><td>89.4</td><td>74.7</td><td>90.1</td><td>0.0968</td></tr>
+<tr class="indent" ><td>↳ rage active</td><td class="gold">930</td><td>135.1</td><td>113.8</td><td>95.1</td><td>114.7</td><td>0.1233</td></tr>
+<tr ><td>Mace (avg warcry)</td><td class="gold">1000</td><td>112.6</td><td>91.7</td><td>85.4</td><td>96.5</td><td>0.0965</td></tr>
+<tr class="indent" ><td>↳ no warcry</td><td class="gold">1000</td><td>82.4</td><td>67.5</td><td>61.9</td><td>70.6</td><td>0.0706</td></tr>
+<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>263.3</td><td>212.8</td><td>202.7</td><td>226.3</td><td>0.2263</td></tr>
+<tr ><td>Spear of Fervor</td><td class="gold">750</td><td>43.5</td><td>36.6</td><td>30.6</td><td>36.9</td><td>0.0492</td></tr>
+<tr class="indent" ><td>↳ no fervor</td><td class="gold">750</td><td>34.0</td><td>28.6</td><td>23.9</td><td>28.8</td><td>0.0384</td></tr>
+<tr class="indent" ><td>↳ full fervor</td><td class="gold">750</td><td>43.5</td><td>36.6</td><td>30.6</td><td>36.9</td><td>0.0492</td></tr>
+<tr ><td>Helmet of Damned</td><td class="gold">765</td><td>51.9</td><td>43.7</td><td>36.5</td><td>44.0</td><td>0.0576</td></tr>
+<tr class="indent" ><td>↳ no ward</td><td class="gold">765</td><td>31.7</td><td>26.7</td><td>22.3</td><td>26.9</td><td>0.0351</td></tr>
+<tr class="indent" ><td>↳ ward on target</td><td class="gold">765</td><td>51.9</td><td>43.7</td><td>36.5</td><td>44.0</td><td>0.0576</td></tr>
+<tr ><td>Foreteller (base 3%)</td><td class="gold">860</td><td>108.8</td><td>110.5</td><td>75.9</td><td>98.4</td><td>0.1145</td></tr>
+<tr class="indent" ><td>↳ spell buff (8%)</td><td class="gold">860</td><td>261.9</td><td>270.9</td><td>182.6</td><td>238.5</td><td class="best">0.2773</td></tr>
+<tr ><td>Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>0.1500</td></tr>
+<tr ><td>Highseer Slippers</td><td class="gold">750</td><td>34.6</td><td>29.1</td><td>24.3</td><td>29.4</td><td>0.0391</td></tr>
+</tbody></table></div>
+</div>
+<div class="sg"><p>Foreteller already 0.094/g = best /gold among expensive T3. No buff needed. Spear (0.043/g) and Highseer (0.038/g) lag. Molten Blade 0.150/g best but only burn, no AD.</p></div>
+<div class="ch"><strong>Spear:</strong> +50% → +60% AS, Fervor 20% → 25% · <strong>Helmet:</strong> −5 → −6 armor</div>
+<p>Foreteller unchanged (already strongest /gold). Spear and Helmet buffed to close gap.</p>
+<h3>After Changes</h3>
+<div id="t3o-new"><div class="lvtabs"><button class=" active" data-lv="3" onclick="showLv('t3o-new',3)">Level 3</button><button class="" data-lv="6" onclick="showLv('t3o-new',6)">Level 6</button><button class="" data-lv="8" onclick="showLv('t3o-new',8)">Level 8</button></div>
+<div id="t3o-new-lv3" class="lv-panel active">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra wall DPS for Lucidious at Lv3 vs 15-armor fortified wall">Luci Δwall</th><th title="Extra wall DPS for Glacious at Lv3 vs 15-armor fortified wall">Glac Δwall</th><th title="Extra wall DPS for Granitacles at Lv3 vs 15-armor fortified wall">Gran Δwall</th><th title="Avg Δwall DPS across titans">Avg</th><th title="Avg Δwall DPS ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Poseidon (avg rage)</td><td class="gold">930</td><td>69.3</td><td>58.4</td><td>48.8</td><td>58.8</td><td>0.0632</td></tr>
+<tr class="indent" ><td>↳ no rage</td><td class="gold">930</td><td>62.6</td><td>52.8</td><td>44.1</td><td>53.1</td><td>0.0571</td></tr>
+<tr class="indent" ><td>↳ rage active</td><td class="gold">930</td><td>82.6</td><td>69.6</td><td>58.2</td><td>70.1</td><td>0.0754</td></tr>
+<tr ><td>Mace (avg warcry)</td><td class="gold">1000</td><td>79.7</td><td>65.5</td><td>58.4</td><td>67.9</td><td>0.0679</td></tr>
+<tr class="indent" ><td>↳ no warcry</td><td class="gold">1000</td><td>60.4</td><td>49.9</td><td>44.0</td><td>51.4</td><td>0.0514</td></tr>
+<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>175.9</td><td>143.6</td><td>130.4</td><td>150.0</td><td>0.1500</td></tr>
+<tr ><td>Spear ★</td><td class="gold">750</td><td>38.8</td><td>32.7</td><td>27.3</td><td>32.9</td><td>0.0439</td></tr>
+<tr class="indent" ><td>↳ no fervor</td><td class="gold">750</td><td>30.0</td><td>25.3</td><td>21.1</td><td>25.5</td><td>0.0340</td></tr>
+<tr class="indent" ><td>↳ full fervor</td><td class="gold">750</td><td>38.8</td><td>32.7</td><td>27.3</td><td>32.9</td><td>0.0439</td></tr>
+<tr ><td>Helmet ★</td><td class="gold">765</td><td>44.7</td><td>37.6</td><td>31.5</td><td>37.9</td><td>0.0496</td></tr>
+<tr class="indent" ><td>↳ no ward</td><td class="gold">765</td><td>26.3</td><td>22.2</td><td>18.6</td><td>22.4</td><td>0.0292</td></tr>
+<tr class="indent" ><td>↳ ward on target</td><td class="gold">765</td><td>44.7</td><td>37.6</td><td>31.5</td><td>37.9</td><td>0.0496</td></tr>
+<tr ><td>Foreteller (base 3%)</td><td class="gold">860</td><td>70.3</td><td>64.9</td><td>48.9</td><td>61.4</td><td>0.0714</td></tr>
+<tr class="indent" ><td>↳ spell buff (8%)</td><td class="gold">860</td><td>166.7</td><td>155.5</td><td>115.6</td><td>145.9</td><td class="best">0.1697</td></tr>
+<tr ><td>Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>0.1500</td></tr>
+<tr ><td>Highseer Slippers</td><td class="gold">750</td><td>32.1</td><td>27.1</td><td>22.6</td><td>27.3</td><td>0.0363</td></tr>
+</tbody></table></div>
+<div id="t3o-new-lv6" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra wall DPS for Lucidious at Lv6 vs 15-armor fortified wall">Luci Δwall</th><th title="Extra wall DPS for Glacious at Lv6 vs 15-armor fortified wall">Glac Δwall</th><th title="Extra wall DPS for Granitacles at Lv6 vs 15-armor fortified wall">Gran Δwall</th><th title="Avg Δwall DPS across titans">Avg</th><th title="Avg Δwall DPS ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Poseidon (avg rage)</td><td class="gold">930</td><td>96.5</td><td>81.3</td><td>68.0</td><td>81.9</td><td>0.0881</td></tr>
+<tr class="indent" ><td>↳ no rage</td><td class="gold">930</td><td>88.1</td><td>74.3</td><td>62.0</td><td>74.8</td><td>0.0804</td></tr>
+<tr class="indent" ><td>↳ rage active</td><td class="gold">930</td><td>113.4</td><td>95.5</td><td>79.8</td><td>96.2</td><td>0.1035</td></tr>
+<tr ><td>Mace (avg warcry)</td><td class="gold">1000</td><td>99.0</td><td>80.9</td><td>74.2</td><td>84.7</td><td>0.0847</td></tr>
+<tr class="indent" ><td>↳ no warcry</td><td class="gold">1000</td><td>73.4</td><td>60.2</td><td>54.5</td><td>62.7</td><td>0.0627</td></tr>
+<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>227.2</td><td>184.2</td><td>172.8</td><td>194.7</td><td>0.1947</td></tr>
+<tr ><td>Spear ★</td><td class="gold">750</td><td>47.1</td><td>39.7</td><td>33.2</td><td>40.0</td><td>0.0533</td></tr>
+<tr class="indent" ><td>↳ no fervor</td><td class="gold">750</td><td>36.5</td><td>30.7</td><td>25.7</td><td>31.0</td><td>0.0413</td></tr>
+<tr class="indent" ><td>↳ full fervor</td><td class="gold">750</td><td>47.1</td><td>39.7</td><td>33.2</td><td>40.0</td><td>0.0533</td></tr>
+<tr ><td>Helmet ★</td><td class="gold">765</td><td>51.9</td><td>43.7</td><td>36.5</td><td>44.1</td><td>0.0576</td></tr>
+<tr class="indent" ><td>↳ no ward</td><td class="gold">765</td><td>29.5</td><td>24.9</td><td>20.8</td><td>25.1</td><td>0.0328</td></tr>
+<tr class="indent" ><td>↳ ward on target</td><td class="gold">765</td><td>51.9</td><td>43.7</td><td>36.5</td><td>44.1</td><td>0.0576</td></tr>
+<tr ><td>Foreteller (base 3%)</td><td class="gold">860</td><td>93.0</td><td>91.7</td><td>64.8</td><td>83.2</td><td>0.0967</td></tr>
+<tr class="indent" ><td>↳ spell buff (8%)</td><td class="gold">860</td><td>222.7</td><td>223.3</td><td>155.0</td><td>200.3</td><td class="best">0.2329</td></tr>
+<tr ><td>Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>0.1500</td></tr>
+<tr ><td>Highseer Slippers</td><td class="gold">750</td><td>33.6</td><td>28.3</td><td>23.7</td><td>28.5</td><td>0.0380</td></tr>
+</tbody></table></div>
+<div id="t3o-new-lv8" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra wall DPS for Lucidious at Lv8 vs 15-armor fortified wall">Luci Δwall</th><th title="Extra wall DPS for Glacious at Lv8 vs 15-armor fortified wall">Glac Δwall</th><th title="Extra wall DPS for Granitacles at Lv8 vs 15-armor fortified wall">Gran Δwall</th><th title="Avg Δwall DPS across titans">Avg</th><th title="Avg Δwall DPS ÷ gold cost">/gold</th></tr></thead><tbody>
+<tr ><td>Poseidon (avg rage)</td><td class="gold">930</td><td>115.7</td><td>97.6</td><td>81.5</td><td>98.3</td><td>0.1057</td></tr>
+<tr class="indent" ><td>↳ no rage</td><td class="gold">930</td><td>106.1</td><td>89.4</td><td>74.7</td><td>90.1</td><td>0.0968</td></tr>
+<tr class="indent" ><td>↳ rage active</td><td class="gold">930</td><td>135.1</td><td>113.8</td><td>95.1</td><td>114.7</td><td>0.1233</td></tr>
+<tr ><td>Mace (avg warcry)</td><td class="gold">1000</td><td>112.6</td><td>91.7</td><td>85.4</td><td>96.5</td><td>0.0965</td></tr>
+<tr class="indent" ><td>↳ no warcry</td><td class="gold">1000</td><td>82.4</td><td>67.5</td><td>61.9</td><td>70.6</td><td>0.0706</td></tr>
+<tr class="indent" ><td>↳ warcry active</td><td class="gold">1000</td><td>263.3</td><td>212.8</td><td>202.7</td><td>226.3</td><td>0.2263</td></tr>
+<tr ><td>Spear ★</td><td class="gold">750</td><td>52.6</td><td>44.4</td><td>37.1</td><td>44.7</td><td>0.0596</td></tr>
+<tr class="indent" ><td>↳ no fervor</td><td class="gold">750</td><td>40.7</td><td>34.3</td><td>28.7</td><td>34.6</td><td>0.0461</td></tr>
+<tr class="indent" ><td>↳ full fervor</td><td class="gold">750</td><td>52.6</td><td>44.4</td><td>37.1</td><td>44.7</td><td>0.0596</td></tr>
+<tr ><td>Helmet ★</td><td class="gold">765</td><td>56.8</td><td>47.9</td><td>40.0</td><td>48.3</td><td>0.0631</td></tr>
+<tr class="indent" ><td>↳ no ward</td><td class="gold">765</td><td>31.7</td><td>26.7</td><td>22.3</td><td>26.9</td><td>0.0351</td></tr>
+<tr class="indent" ><td>↳ ward on target</td><td class="gold">765</td><td>56.8</td><td>47.9</td><td>40.0</td><td>48.3</td><td>0.0631</td></tr>
+<tr ><td>Foreteller (base 3%)</td><td class="gold">860</td><td>108.8</td><td>110.5</td><td>75.9</td><td>98.4</td><td>0.1145</td></tr>
+<tr class="indent" ><td>↳ spell buff (8%)</td><td class="gold">860</td><td>261.9</td><td>270.9</td><td>182.6</td><td>238.5</td><td class="best">0.2773</td></tr>
+<tr ><td>Molten Blade</td><td class="gold">500</td><td>75.0</td><td>75.0</td><td>75.0</td><td>75.0</td><td>0.1500</td></tr>
+<tr ><td>Highseer Slippers</td><td class="gold">750</td><td>34.6</td><td>29.1</td><td>24.3</td><td>29.4</td><td>0.0391</td></tr>
+</tbody></table></div>
+</div>
+<h2>T3 Defensive</h2>
+<p>Dawnkeeper Call of Valor: 10s/45s, 25% share (titan takes 75%), +5 armor, +50 regen. Essence Immortality: 2.5s invuln + 1500 heal / 90s.</p>
+<div id="t3d-cur"><div class="lvtabs"><button class=" active" data-lv="3" onclick="showLv('t3d-cur',3)">Level 3</button><button class="" data-lv="6" onclick="showLv('t3d-cur',6)">Level 6</button><button class="" data-lv="8" onclick="showLv('t3d-cur',8)">Level 8</button></div>
+<div id="t3d-cur-lv3" class="lv-panel active">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive at Lv3">Luci ΔTTD</th><th title="Effective HP at Lv3">Luci EHP</th><th title="Extra seconds alive at Lv3">Glac ΔTTD</th><th title="Effective HP at Lv3">Glac EHP</th><th title="Extra seconds alive at Lv3">Gran ΔTTD</th><th title="Effective HP at Lv3">Gran EHP</th><th>Avg</th><th>/gold</th></tr></thead><tbody>
+<tr ><td>Armor of Tides</td><td class="gold">785</td><td>2.82</td><td>14833</td><td>2.72</td><td>14269</td><td>2.98</td><td>15771</td><td>2.84</td><td>0.0036</td></tr>
+<tr ><td>Dawnkeeper</td><td class="gold">860</td><td>2.18</td><td>14276</td><td>2.12</td><td>13760</td><td>2.27</td><td>15136</td><td>2.19</td><td>0.0025</td></tr>
+<tr class="indent" ><td>↳ Call of Valor active</td><td class="gold">860</td><td>9.01</td><td>22355</td><td>8.66</td><td>21547</td><td>9.53</td><td>23701</td><td>9.07</td><td class="best">0.0105</td></tr>
+<tr ><td>Robe of Spellcraft</td><td class="gold">920</td><td>1.80</td><td>13588</td><td>1.74</td><td>13072</td><td>1.89</td><td>14448</td><td>1.81</td><td>0.0020</td></tr>
+<tr ><td>Essence of Pure Magic</td><td class="gold">910</td><td>0.94</td><td>12070</td><td>0.94</td><td>11644</td><td>0.94</td><td>12780</td><td>0.94</td><td>0.0010</td></tr>
+<tr ><td>↳ w/ Immortality avg</td><td class="gold">910</td><td>1.11</td><td>12070</td><td>1.11</td><td>11644</td><td>1.13</td><td>12780</td><td>1.12</td><td>0.0012</td></tr>
+<tr ><td>Enchanted Magic Armor</td><td class="gold">715</td><td>0.17</td><td>10366</td><td>0.16</td><td>9940</td><td>0.18</td><td>11076</td><td>0.17</td><td>0.0002</td></tr>
+<tr ><td>Mistlord's Cape</td><td class="gold">745</td><td>0.17</td><td>10366</td><td>0.16</td><td>9940</td><td>0.18</td><td>11076</td><td>0.17</td><td>0.0002</td></tr>
+</tbody></table></div>
+<div id="t3d-cur-lv6" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive at Lv6">Luci ΔTTD</th><th title="Effective HP at Lv6">Luci EHP</th><th title="Extra seconds alive at Lv6">Glac ΔTTD</th><th title="Effective HP at Lv6">Glac EHP</th><th title="Extra seconds alive at Lv6">Gran ΔTTD</th><th title="Effective HP at Lv6">Gran EHP</th><th>Avg</th><th>/gold</th></tr></thead><tbody>
+<tr ><td>Armor of Tides</td><td class="gold">785</td><td>3.84</td><td>22164</td><td>3.68</td><td>21182</td><td>4.16</td><td>24239</td><td>3.89</td><td>0.0050</td></tr>
+<tr ><td>Dawnkeeper</td><td class="gold">860</td><td>2.76</td><td>21311</td><td>2.67</td><td>20402</td><td>2.93</td><td>23230</td><td>2.79</td><td>0.0032</td></tr>
+<tr class="indent" ><td>↳ Call of Valor active</td><td class="gold">860</td><td>13.29</td><td>32635</td><td>12.67</td><td>31243</td><td>14.48</td><td>35573</td><td>13.48</td><td class="best">0.0157</td></tr>
+<tr ><td>Robe of Spellcraft</td><td class="gold">920</td><td>2.31</td><td>20503</td><td>2.23</td><td>19594</td><td>2.48</td><td>22422</td><td>2.34</td><td>0.0025</td></tr>
+<tr ><td>Essence of Pure Magic</td><td class="gold">910</td><td>1.14</td><td>18490</td><td>1.14</td><td>17716</td><td>1.15</td><td>20124</td><td>1.14</td><td>0.0013</td></tr>
+<tr ><td>↳ w/ Immortality avg</td><td class="gold">910</td><td>1.48</td><td>18490</td><td>1.46</td><td>17716</td><td>1.51</td><td>20124</td><td>1.49</td><td>0.0016</td></tr>
+<tr ><td>Enchanted Magic Armor</td><td class="gold">715</td><td>0.33</td><td>16426</td><td>0.31</td><td>15652</td><td>0.36</td><td>18060</td><td>0.33</td><td>0.0005</td></tr>
+<tr ><td>Mistlord's Cape</td><td class="gold">745</td><td>0.33</td><td>16426</td><td>0.31</td><td>15652</td><td>0.36</td><td>18060</td><td>0.33</td><td>0.0004</td></tr>
+</tbody></table></div>
+<div id="t3d-cur-lv8" class="lv-panel">
+<table><thead><tr><th style="text-align:left">Item</th><th title="Total gold cost">Gold</th><th title="Extra seconds alive at Lv8">Luci ΔTTD</th><th title="Effective HP at Lv8">Luci EHP</th><th title="Extra seconds alive at Lv8">Glac ΔTTD</th><th title="Effective HP at Lv8">Glac EHP</th><th title="Extra seconds alive at Lv8">Gran ΔTTD</th><th title="Effective HP at Lv8">Gran EHP</th><th>Avg</th><th>/gold</th></tr></thead><tbody>
+<tr ><td>Armor of Tides</td><td class="gold">785</td><td>4.58</td><td>27580</td><td>4.37</td><td>26278</td><td>5.03</td><td>30539</td><td>4.66</td><td>0.0059</td></tr>
+<tr ><td>Dawnkeeper</td><td class="gold">860</td><td>3.15</td><td>26510</td><td>3.04</td><td>25300</td><td>3.38</td><td>29260</td><td>3.19</td><td>0.0037</td></tr>
+<tr class="indent" ><td>↳ Call of Valor active</td><td class="gold">860</td><td>16.65</td><td>40167</td><td>15.80</td><td>38333</td><td>18.42</td><td>44333</td><td>16.95</td><td class="best">0.0197</td></tr>
+<tr ><td>Robe of Spellcraft</td><td class="gold">920</td><td>2.66</td><td>25630</td><td>2.55</td><td>24420</td><td>2.89</td><td>28380</td><td>2.70</td><td>0.0029</td></tr>
+<tr ><td>Essence of Pure Magic</td><td class="gold">910</td><td>1.27</td><td>23275</td><td>1.27</td><td>22230</td><td>1.28</td><td>25650</td><td>1.27</td><td>0.0014</td></tr>
+<tr ><td>↳ w/ Immortality avg</td><td class="gold">910</td><td>1.75</td><td>23275</td><td>1.72</td><td>22230</td><td>1.80</td><td>25650</td><td>1.76</td><td>0.0019</td></tr>
+<tr ><td>Enchanted Magic Armor</td><td class="gold">715</td><td>0.47</td><td>20995</td><td>0.44</td><td>19950</td><td>0.52</td><td>23370</td><td>0.48</td><td>0.0007</td></tr>
+<tr ><td>Mistlord's Cape</td><td class="gold">745</td><td>0.47</td><td>20995</td><td>0.44</td><td>19950</td><td>0.52</td><td>23370</td><td>0.48</td><td>0.0006</td></tr>
+</tbody></table></div>
+</div>
+<p>AoT leads raw survivability. Dawnkeeper with Call of Valor active is strongest but 22% uptime. Essence Immortality provides invuln burst survival. No stat changes needed — balance via active identity.</p>
+<h2>All Suggested Changes</h2>
+<table><thead><tr><th style="text-align:left">Item</th><th>Stat</th><th>Before</th><th>After</th><th style="text-align:left">Key metric</th></tr></thead><tbody>
+<tr><td style="text-align:left"><strong>Tide's Heart</strong></td><td>HP</td><td class="bad">+200</td><td class="good">+325</td><td style="text-align:left">RS/TH: 1.85× → ~1.1× at Lv3</td></tr>
+<tr><td style="text-align:left"><strong>Regen Spines</strong></td><td>Regen</td><td class="bad">+3/s</td><td class="good">+5/s</td><td style="text-align:left">Feeds T2 scaling path</td></tr>
+<tr><td style="text-align:left"><strong>Casque</strong></td><td>HP</td><td class="bad">+200</td><td class="good">+350</td><td style="text-align:left">Passive /g: 0.003→0.004 (Reef=0.007)</td></tr>
+<tr><td style="text-align:left"><strong>Super Regen</strong></td><td>Regen</td><td class="bad">+12/s</td><td class="good">+16/s</td><td style="text-align:left">Crisis: 24→32/s</td></tr>
+<tr><td style="text-align:left"><strong>Enchantress</strong></td><td>Heal</td><td class="bad">300 HP</td><td class="good">500 HP</td><td style="text-align:left">5→8.3 HP/s avg</td></tr>
+<tr><td style="text-align:left"><strong>Gauntlets</strong></td><td>Burn</td><td class="bad">5%/s</td><td class="good">2.5%/s (20s)</td><td style="text-align:left">0.125→0.063/g</td></tr>
+<tr><td style="text-align:left"><strong>Runic Axe</strong></td><td>Magic</td><td class="bad">35</td><td class="good">45</td><td style="text-align:left">0.076→0.098/g</td></tr>
+<tr><td style="text-align:left"><strong>Voodoo Doll</strong></td><td>Decay</td><td class="bad">−3</td><td class="good">−4</td><td style="text-align:left">Team: +10.5→+13.7% phys</td></tr>
+<tr><td style="text-align:left"><strong>Spear of Fervor</strong></td><td>AS/Fervor</td><td class="bad">50%/20%</td><td class="good">60%/25%</td><td style="text-align:left">Sustained DPS up ~20%</td></tr>
+<tr><td style="text-align:left"><strong>Helmet</strong></td><td>Decay</td><td class="bad">−5</td><td class="good">−6</td><td style="text-align:left">Team: +16.1→+21.4% phys</td></tr>
+</tbody></table>
+</div></div></body></html>
