@@ -51,9 +51,10 @@ html, body { overflow: auto !important; height: auto !important; }
   vertical-align: middle;
 }
 .item-strip table td:first-child {
-  font-weight: 600;
-  color: var(--accent);
-  width: 180px;
+  font-weight: 700;
+  color: var(--text);
+  width: 200px;
+  white-space: nowrap;
 }
 .item-strip table input {
   width: 60px;
@@ -68,22 +69,11 @@ html, body { overflow: auto !important; height: auto !important; }
 .item-strip table input:focus { border-color: var(--accent); outline: none; }
 .item-strip table input.changed { border-color: #fbbf24; background: rgba(251,191,36,.08); }
 .item-strip .orig { color: var(--text-muted); font-size: 11px; opacity: 0.6; margin-left: 4px; }
-.item-card { display: none; /* not used anymore */ }
-}
-.item-card h4 { font-size: 13px; margin: 0 0 4px; color: var(--accent); }
-.item-card .cost { font-size: 11px; color: #fbbf24; margin-bottom: 6px; }
 
-/* Stat editing rows inside cards */
-.stat-row { display: flex; align-items: center; gap: 6px; margin: 3px 0; font-size: 12px; }
-.stat-row label { color: var(--text-muted); flex: 1; min-width: 55px; font-size: 13px; }
-.stat-row input {
-  width: 56px; background: var(--bg); border: 1px solid var(--border); color: var(--text);
-  padding: 3px 5px; border-radius: 4px; font-size: 12px; text-align: right;
-  font-family: inherit;
-}
-.stat-row input:focus { border-color: var(--accent); outline: none; }
-.stat-row .orig { color: var(--text-muted); font-size: 11px; opacity: 0.6; min-width: 32px; text-align: right; }
-.stat-row input.changed { border-color: #fbbf24; background: rgba(251,191,36,.08); }
+/* ─── Sub-rows for active/buff details ─── */
+.res-tbl tr.sub-row td { font-size: 12px; color: var(--text-muted); border-top: none; padding-top: 2px; }
+.res-tbl tr.sub-row td:first-child { padding-left: 22px; font-weight: 400; }
+.res-tbl tr.sub-row:hover td { background: rgba(88,166,255,.03); }
 
 /* ─── Level tabs ─── */
 .lv-tabs { display: flex; gap: 6px; margin: 12px 0 8px; }
@@ -491,7 +481,7 @@ function renderItemCards(cat) {
     const editableFields = item.fields.filter(f => !f.readonly);
     if (editableFields.length === 0) return;
     // Item name row
-    h += '<tr><td>' + item.name + ' <span style="color:#fbbf24;font-size:11px">(' + item.cost + 'g)</span></td>';
+    h += '<tr><td>' + item.name + ' <span style="color:#fbbf24;font-size:11px;font-weight:400">(' + item.cost + 'g)</span></td>';
     // Each field as a cell in the same row
     editableFields.forEach((f, fi) => {
       const realFi = item.fields.indexOf(f);
@@ -519,13 +509,18 @@ function renderResultTable(cat, lv) {
 
   let h = '<div class="res-wrap"><table class="res-tbl"><thead>';
   // Top row: titan names
-  h += '<tr><th rowspan="2" style="text-align:left">Item</th><th rowspan="2">Gold</th>';
+  h += '<tr><th rowspan="2" style="text-align:left">Item</th><th rowspan="2" title="Total item cost including all components">Gold</th>';
   TKS.forEach(tk => {
     const t = TITANS[tk];
     h += '<th colspan="' + colsPerTitan + '" class="col-' + t.color + '" style="text-align:center;font-size:13px">' + t.name + '</th>';
   });
-  h += '<th rowspan="2">Avg</th><th rowspan="2">/gold</th>';
-  if (isDef) h += '<th rowspan="2" title="Delta TTD during Bond/Call of Valor active">Bond</th>';
+  if (isDef) {
+    h += '<th rowspan="2" title="Average \u0394TTD across all titans">Avg</th>';
+    h += '<th rowspan="2" title="Average \u0394TTD per gold spent">/gold</th>';
+  } else {
+    h += '<th rowspan="2" title="Average wall DPS across all titans">Avg</th>';
+    h += '<th rowspan="2" title="Average wall DPS per gold spent">/gold</th>';
+  }
   h += '</tr>';
 
   // Sub row: metric labels
@@ -533,12 +528,12 @@ function renderResultTable(cat, lv) {
   TKS.forEach(tk => {
     const c = TITANS[tk].color;
     if (isDef) {
-      h += '<th class="col-' + c + '" title="Extra seconds alive vs 36 supers">\u0394TTD</th>';
-      h += '<th class="col-' + c + '" title="Effective HP = HP / damage multiplier">EHP</th>';
+      h += '<th class="col-' + c + '" title="Extra seconds alive vs 36 super towers (1850 DPS ranged) compared to no items">\u0394TTD</th>';
+      h += '<th class="col-' + c + '" title="Effective HP = raw HP \u00f7 damage multiplier (accounts for armor and damage reduction)">EHP</th>';
     } else {
-      h += '<th class="col-' + c + '" title="Wall DPS with no active buffs">No buff</th>';
-      h += '<th class="col-' + c + '" title="Wall DPS with active uptime averaged">Avg</th>';
-      h += '<th class="col-' + c + '" title="Wall DPS with all buffs active">Buffed</th>';
+      h += '<th class="col-' + c + '" title="Wall DPS with item stats only, no active abilities">No buff</th>';
+      h += '<th class="col-' + c + '" title="Wall DPS averaged over active cooldown cycle">Avg</th>';
+      h += '<th class="col-' + c + '" title="Wall DPS during active ability window">Buffed</th>';
     }
   });
   h += '</tr></thead><tbody>';
@@ -582,13 +577,23 @@ function renderResultTable(cat, lv) {
       });
       h += '<td>' + fmt(row.avg, 2) + '</td>';
       h += '<td' + (bestDpg > 0 ? bestCls : '') + '>' + fmt(row.dpg, 4) + '</td>';
-      // Bond column
-      const bondVal = row.vals.find(r => r.dt_bond !== null);
-      if (bondVal) {
+      h += '</tr>';
+      // Sub-row for Bond / Call of Valor active
+      const hasBond = row.vals.some(r => r.dt_bond !== null);
+      if (hasBond) {
+        const bondName = row.name.includes('Dawnkeeper') ? 'Call of Valor' : 'Bond';
         const bondAvg = row.vals.reduce((s, r) => s + (r.dt_bond || 0), 0) / TKS.length;
+        h += '<tr class="sub-row"><td>\u21b3 ' + bondName + ' active</td><td></td>';
+        row.vals.forEach((r, i) => {
+          const c = TITANS[TKS[i]].color;
+          h += '<td class="col-' + c + '" style="color:#4ade80">' + (r.dt_bond !== null ? fmt(r.dt_bond, 2) : '\u2014') + '</td>';
+          h += '<td class="col-' + c + '" style="color:#4ade80">' + (r.ehp_bond !== null ? fmt(r.ehp_bond, 0) : '\u2014') + '</td>';
+        });
         h += '<td style="color:#4ade80">' + fmt(bondAvg, 2) + '</td>';
+        h += '<td></td>';
+        h += '</tr>';
       } else {
-        h += '<td class="dim">\u2014</td>';
+        // No sub-row needed
       }
     } else {
       row.vals.forEach((r, i) => {
@@ -599,8 +604,8 @@ function renderResultTable(cat, lv) {
       });
       h += '<td>' + fmt(row.avg, 1) + '</td>';
       h += '<td' + (bestDpg > 0 ? bestCls : '') + '>' + fmt(row.dpg, 4) + '</td>';
+      h += '</tr>';
     }
-    h += '</tr>';
   });
   h += '</tbody></table></div>';
   return h;
