@@ -353,38 +353,44 @@ function computeDef(fields, tk, lv) {
   const tfa = g('tf_red') && fields.find(f => f.key === 'tf_red')?.note !== 'phys' ? g('tf_red') : 0;
   const tfp = g('tf_red') && fields.find(f => f.key === 'tf_red')?.note === 'phys' ? g('tf_red') : 0;
   const crisis = g('crisis');
-  const burst_heal = g('active_heal') || 0;  // one-time heal, NOT averaged
+  const burst_heal = g('active_heal') || 0;
+  const smash_pct = g('smash_pct') || 0;
+  const col_pct = g('col_pct') || 0;
+  const as_pct = g('as') || 0;
+  const warcry_dur = g('warcry_dur') || 0;
+  const warcry_cd = g('warcry_cd') || 0;
+
+  // Smash sustain: heals 2% max HP over 2s per hit. While attacking at APS,
+  // each hit refreshes the 2s HoT. Effective sustain = smash% * totalHP / 2 per second
+  // (the HoT ticks smash%*HP over 2s = smash%*HP/2 per second, refreshed each hit)
+  const totalHP = s.hp + hp;
+  const itemAPS = (1 + s.bas + as_pct / 100) / s.BAT;
+  const smash_hps = smash_pct > 0 ? (smash_pct / 100) * totalHP / 2 : 0;
 
   const e0 = edps(s.armor);
   const t0 = ttd(s.hp, e0, s.hpr);
 
-  // Passive TTD (no burst heal — just stats + regen)
+  // Passive TTD (stats + regen + smash sustain while attacking)
   let t1;
+  const totalReg = s.hpr + reg + smash_hps;
   const e1 = edps(s.armor + armor, tfa, tfp);
   if (crisis) {
-    const hpt = s.hp + hp;
-    const n1 = e1 - (s.hpr + reg);
-    const n2 = e1 - (s.hpr + reg * 2);
-    t1 = (n1 > 0 && n2 > 0) ? (hpt * .5) / n1 + (hpt * .5) / n2 : Infinity;
+    const n1 = e1 - (s.hpr + reg + smash_hps);
+    const n2 = e1 - (s.hpr + reg * 2 + smash_hps);
+    t1 = (n1 > 0 && n2 > 0) ? (totalHP * .5) / n1 + (totalHP * .5) / n2 : Infinity;
   } else {
-    t1 = ttd(s.hp + hp, e1, s.hpr + reg);
+    t1 = ttd(totalHP, e1, totalReg);
   }
-  const ehp1 = ehpCalc(s.hp + hp, s.armor + armor, tfa, tfp);
+  const ehp1 = ehpCalc(totalHP, s.armor + armor, tfa, tfp);
 
-  // TTD with burst heal: you survive t1 seconds, then pop heal for +burst_heal HP
-  // Extra time = burst_heal / net_dps (net_dps = eff_dps - regen)
+  // Burst heal sub-row (Enchantress 300 HP, Essence 1500 HP)
   let t_heal = null, ehp_heal = null;
   if (burst_heal > 0) {
-    const net = crisis
-      ? e1 - (s.hpr + reg * 2)   // worst case: crisis regen phase
-      : e1 - (s.hpr + reg);
+    const net = crisis ? e1 - (s.hpr + reg * 2 + smash_hps) : e1 - totalReg;
     if (net > 0) {
-      t_heal = t1 + burst_heal / net;  // total TTD after using heal
+      t_heal = t1 + burst_heal / net;
       ehp_heal = ehp1 + burst_heal / (HF * am(s.armor + armor) * (1 - tfa/100) * (1 - tfp/100));
-    } else {
-      t_heal = Infinity;
-      ehp_heal = Infinity;
-    }
+    } else { t_heal = Infinity; ehp_heal = Infinity; }
   }
 
   // Bond / Call of Valor active
@@ -394,14 +400,31 @@ function computeDef(fields, tk, lv) {
     const share = g('bond_share') / 100;
     const e_bond = TW * HF * am(ba) * (1 - share) * (1 - tfa / 100) * (1 - tfp / 100);
     const bond_reg = g('bond_reg') || 0;
-    t_bond = ttd(s.hp + hp, e_bond, s.hpr + reg + bond_reg);
-    ehp_bond = (s.hp + hp) / ((1 - share) * am(ba) * HF * (1 - tfa / 100) * (1 - tfp / 100));
+    t_bond = ttd(totalHP, e_bond, totalReg + bond_reg);
+    ehp_bond = totalHP / ((1 - share) * am(ba) * HF * (1 - tfa / 100) * (1 - tfp / 100));
   }
 
+  // Build tooltip breakdown
+  const parts = [];
+  parts.push('HP: ' + s.hp + ' base + ' + hp + ' item = ' + totalHP);
+  parts.push('Armor: ' + s.armor + ' base + ' + armor + ' item = ' + (s.armor+armor));
+  if (tfa) parts.push('All dmg reduction: ' + tfa + '%');
+  if (tfp) parts.push('Phys dmg reduction: ' + tfp + '%');
+  parts.push('Regen: ' + s.hpr.toFixed(1) + ' base + ' + reg.toFixed(1) + ' item' + (smash_hps > 0 ? ' + ' + smash_hps.toFixed(1) + ' Smash (' + smash_pct + '% of ' + totalHP + ' HP / 2s)' : '') + ' = ' + totalReg.toFixed(1) + '/s');
+  parts.push('Tower eff DPS: ' + e1.toFixed(1) + ' (1850 × 0.5 × ' + am(s.armor+armor).toFixed(4) + (tfa ? ' × ' + (1-tfa/100) : '') + (tfp ? ' × ' + (1-tfp/100) : '') + ')');
+  parts.push('Net DPS: ' + (e1 - totalReg).toFixed(1));
+  if (crisis) parts.push('Crisis Regen: item regen doubled below 50% HP');
+  parts.push('TTD: ' + totalHP + ' / ' + (e1-totalReg).toFixed(1) + ' = ' + fmt(t1, 2) + 's');
+  parts.push('ΔTTD: ' + fmt(t1-t0, 2) + 's (naked TTD: ' + fmt(t0, 2) + 's)');
+  const tip = parts.join('\n');
+  const ehp_tip = 'EHP = ' + totalHP + ' / (' + HF + ' × ' + am(s.armor+armor).toFixed(4) + (tfa ? ' × '+(1-tfa/100) : '') + (tfp ? ' × '+(1-tfp/100) : '') + ') = ' + fmt(ehp1, 0);
+
   return {
-    dt: t1 - t0, ehp: ehp1,
+    dt: t1 - t0, ehp: ehp1, tip, ehp_tip,
     dt_bond: t_bond !== null ? t_bond - t0 : null, ehp_bond,
-    dt_heal: t_heal !== null ? t_heal - t0 : null, ehp_heal
+    dt_heal: t_heal !== null ? t_heal - t0 : null, ehp_heal,
+    heal_tip: burst_heal > 0 ? 'Burst heal: +' + burst_heal + ' HP. Extra time: ' + burst_heal + ' / ' + (crisis ? (e1-(s.hpr+reg*2+smash_hps)).toFixed(1) : (e1-totalReg).toFixed(1)) + ' = ' + (t_heal !== null ? fmt(t_heal-t1, 2) : '∞') + 's' : null,
+    bond_tip: t_bond !== null ? 'Bond: titan takes ' + (100-g('bond_share')) + '% damage, +' + g('bond_arm') + ' armor' + (g('bond_reg') ? ', +' + g('bond_reg') + ' regen' : '') + '. TTD: ' + fmt(t_bond, 2) + 's' : null
   };
 }
 
@@ -457,8 +480,30 @@ function computeOff(fields, tk, lv) {
   // Active (full buffs, ward up, spell buff)
   const wall_active = calc(1, 1, 1, 1, rw_spell_mult, true) - bw;
 
+  // Build tooltip
+  const tp = [];
+  tp.push('Base AD: ' + s.bd + ' + ' + ad + ' item = ' + (s.bd + ad));
+  if (col_pct > 0) { const thp = s.hp + hp_x; tp.push('Colossus: ' + col_pct + '% of ' + thp + ' HP = ' + (col_pct/100*thp).toFixed(1) + ' phys/hit (goes through armor+fortified)'); }
+  const fas = s.bas + as_pct / 100;
+  tp.push('APS: (1 + ' + s.bas.toFixed(3) + ' base + ' + (as_pct/100).toFixed(2) + ' item) / ' + s.BAT + ' = ' + ((1+fas)/s.BAT).toFixed(3));
+  if (ferv_max > 0) tp.push('Fervor: +' + ferv_max + '% AS max (' + (ferv_max*0.7).toFixed(0) + '% avg at 70% stacks)');
+  tp.push('Wall armor: ' + WA + (voo_arm > 0 ? ' - ' + voo_arm + ' decay = ' + (WA-voo_arm) : '') + ' → mult ' + am(Math.max(WA - (voo_arm||0), 0)).toFixed(4));
+  tp.push('Fortified: ×0.55');
+  if (runic > 0) tp.push('Runic Mark: ' + runic + ' magic/2nd hit = ' + (runic/2).toFixed(1) + ' avg/hit (ignores wall armor)');
+  if (rw_pct > 0) { const tm = s.mana + mana_x; tp.push('Runic Wrath: ' + rw_pct + '% × ' + tm + ' mana = ' + (rw_pct/100*tm).toFixed(1) + ' magic/hit (uncapped vs walls)'); }
+  if (rw_spell > 0) tp.push('Spell buff: mana pool +' + rw_spell + '% → ' + rw_pct + '% × mana × ' + (1+rw_spell/100).toFixed(2));
+  const crush = crush_cap > 0 ? Math.min(crush_b + crush_plv * lv, crush_cap) : 0;
+  if (crush > 0) tp.push('Crusher: ' + crush_b + '+' + crush_plv + '×' + lv + ' = ' + crush + ' pure/hit');
+  if (burn_pct > 0 || burn_flat > 0) tp.push('Burn: ' + (burn_pct > 0 ? burn_pct + '% of ' + WH + ' HP' : '') + (burn_flat > 0 ? ' + ' + burn_flat + ' flat' : '') + ' = ' + ((burn_pct/100)*WH + burn_flat).toFixed(1) + ' DPS');
+  if (shout_pct > 0) tp.push('War Shout: +' + shout_pct + '% base AD for ' + shout_dur + 's/' + shout_cd + 's cd');
+  if (rage_pct > 0) tp.push('Unleashed Rage: +' + rage_pct + '% base AD for ' + rage_dur + 's/' + rage_cd + 's cd');
+  if (warcry_dur > 0) tp.push('War Cry: +5% HP as AD + Colossus 2× for ' + warcry_dur + 's/' + warcry_cd + 's cd');
+  tp.push('Passive Δwall: ' + fmt(wall_passive, 1) + ' DPS (naked wall: ' + fmt(bw, 1) + ')');
+  if (wall_active !== wall_passive) tp.push('Buffed Δwall: ' + fmt(wall_active, 1) + ' DPS');
+  const wall_tip = tp.join('\n');
+
   return {
-    wall_passive, wall_avg, wall_active,
+    wall_passive, wall_avg, wall_active, wall_tip,
     has_active: (shout_pct > 0 || rage_pct > 0 || warcry_dur > 0 || ferv_max > 0 || rw_spell > 0 || voo_arm > 0)
   };
 }
@@ -589,8 +634,8 @@ function renderResultTable(cat, lv) {
     if (isDef) {
       row.vals.forEach((r, i) => {
         const c = TITANS[TKS[i]].color;
-        h += '<td class="col-' + c + '">' + fmt(r.dt, 2) + '</td>';
-        h += '<td class="col-' + c + '">' + fmt(r.ehp, 0) + '</td>';
+        h += '<td class="col-' + c + '" title="' + (r.tip||'').replace(/"/g,'&quot;') + '">' + fmt(r.dt, 2) + '</td>';
+        h += '<td class="col-' + c + '" title="' + (r.ehp_tip||'').replace(/"/g,'&quot;') + '">' + fmt(r.ehp, 0) + '</td>';
       });
       h += '<td>' + fmt(row.avg, 2) + '</td>';
       h += '<td' + (bestDpg > 0 ? bestCls : '') + '>' + fmt(row.dpg, 4) + '</td>';
@@ -603,7 +648,7 @@ function renderResultTable(cat, lv) {
         h += '<tr class="sub-row"><td>\u21b3 ' + bondName + ' active</td><td></td>';
         row.vals.forEach((r, i) => {
           const c = TITANS[TKS[i]].color;
-          h += '<td class="col-' + c + '" style="color:#4ade80">' + (r.dt_bond !== null ? fmt(r.dt_bond, 2) : '\u2014') + '</td>';
+          h += '<td class="col-' + c + '" style="color:#4ade80" title="' + (r.bond_tip||'').replace(/"/g,'&quot;') + '">' + (r.dt_bond !== null ? fmt(r.dt_bond, 2) : '\u2014') + '</td>';
           h += '<td class="col-' + c + '" style="color:#4ade80">' + (r.ehp_bond !== null ? fmt(r.ehp_bond, 0) : '\u2014') + '</td>';
         });
         h += '<td style="color:#4ade80">' + fmt(bondAvg, 2) + '</td><td></td></tr>';
@@ -615,7 +660,7 @@ function renderResultTable(cat, lv) {
         h += '<tr class="sub-row"><td>\u21b3 After heal</td><td></td>';
         row.vals.forEach((r, i) => {
           const c = TITANS[TKS[i]].color;
-          h += '<td class="col-' + c + '" style="color:#4ade80">' + (r.dt_heal !== null ? fmt(r.dt_heal, 2) : '\u2014') + '</td>';
+          h += '<td class="col-' + c + '" style="color:#4ade80" title="' + (r.heal_tip||'').replace(/"/g,'&quot;') + '">' + (r.dt_heal !== null ? fmt(r.dt_heal, 2) : '\u2014') + '</td>';
           h += '<td class="col-' + c + '" style="color:#4ade80">' + (r.ehp_heal !== null ? fmt(r.ehp_heal, 0) : '\u2014') + '</td>';
         });
         h += '<td style="color:#4ade80">' + fmt(healAvg, 2) + '</td><td></td></tr>';
@@ -624,7 +669,7 @@ function renderResultTable(cat, lv) {
       // Main row: passive wall DPS
       row.vals.forEach((r, i) => {
         const c = TITANS[TKS[i]].color;
-        h += '<td class="col-' + c + '">' + fmt(r.wall_passive, 1) + '</td>';
+        h += '<td class="col-' + c + '" title="' + (r.wall_tip||'').replace(/"/g,'&quot;') + '">' + fmt(r.wall_passive, 1) + '</td>';
       });
       const passiveAvg = row.vals.reduce((s,r) => s + r.wall_passive, 0) / TKS.length;
       h += '<td>' + fmt(passiveAvg, 1) + '</td>';
