@@ -404,7 +404,7 @@ function computeOff(fields, tk, lv) {
   const rage_pct = g('rage_pct'), rage_dur = g('rage_dur'), rage_cd = g('rage_cd');
   const warcry_dur = g('warcry_dur'), warcry_cd = g('warcry_cd');
 
-  function calc(shout_up, rage_up, warcry_up, ferv_frac, rw_mult) {
+  function calc(shout_up, rage_up, warcry_up, ferv_frac, rw_mult, useVoo) {
     const thp = s.hp + hp_x;
     const tm = s.mana + mana_x;
     let iad = ad;
@@ -418,7 +418,7 @@ function computeOff(fields, tk, lv) {
     const fas = s.bas + as_pct / 100;
     const afv = ferv_max > 0 ? ferv_max / 100 * ferv_frac : 0;
     const taps = (1 + fas + afv) / s.BAT;
-    const ewa = Math.max(WA - voo_arm, 0);
+    const ewa = Math.max(WA - (useVoo ? voo_arm : 0), 0);
     const ph = ead * FT * am(ewa);
     const cr = crush_cap > 0 ? Math.min(crush_b + crush_plv * lv, crush_cap) : 0;
     const mg = runic > 0 ? runic / 2 : 0;
@@ -431,16 +431,16 @@ function computeOff(fields, tk, lv) {
   const warcry_avg = warcry_cd > 0 ? warcry_dur / warcry_cd : 0;
   const rw_spell_mult = rw_spell > 0 ? 1 + rw_spell / 100 : 1;
 
-  // Passive (no buffs)
-  const wall_passive = calc(0, 0, 0, 0, 1) - bw;
-  // Avg (averaged active uptime)
-  const wall_avg = calc(shout_avg, rage_avg, warcry_avg, 0.7, 1) - bw;
-  // Active (full buffs)
-  const wall_active = calc(1, 1, 1, 1, rw_spell_mult) - bw;
+  // Passive (no buffs, no ward)
+  const wall_passive = calc(0, 0, 0, 0, 1, false) - bw;
+  // Avg (averaged active uptime, ward assumed up)
+  const wall_avg = calc(shout_avg, rage_avg, warcry_avg, 0.7, 1, true) - bw;
+  // Active (full buffs, ward up, spell buff)
+  const wall_active = calc(1, 1, 1, 1, rw_spell_mult, true) - bw;
 
   return {
     wall_passive, wall_avg, wall_active,
-    has_active: (shout_pct > 0 || rage_pct > 0 || warcry_dur > 0 || ferv_max > 0 || rw_spell > 0)
+    has_active: (shout_pct > 0 || rage_pct > 0 || warcry_dur > 0 || ferv_max > 0 || rw_spell > 0 || voo_arm > 0)
   };
 }
 
@@ -505,7 +505,7 @@ function renderItemCards(cat) {
 function renderResultTable(cat, lv) {
   const items = categories[cat];
   const isDef = cat.endsWith('d');
-  const colsPerTitan = isDef ? 2 : 3;
+  const colsPerTitan = isDef ? 2 : 1;
 
   let h = '<div class="res-wrap"><table class="res-tbl"><thead>';
   // Top row: titan names
@@ -531,9 +531,7 @@ function renderResultTable(cat, lv) {
       h += '<th class="col-' + c + '" title="Extra seconds alive vs 36 super towers (1850 DPS ranged) compared to no items">\u0394TTD</th>';
       h += '<th class="col-' + c + '" title="Effective HP = raw HP \u00f7 damage multiplier (accounts for armor and damage reduction)">EHP</th>';
     } else {
-      h += '<th class="col-' + c + '" title="Wall DPS with item stats only, no active abilities">No buff</th>';
-      h += '<th class="col-' + c + '" title="Wall DPS averaged over active cooldown cycle">Avg</th>';
-      h += '<th class="col-' + c + '" title="Wall DPS during active ability window">Buffed</th>';
+      h += '<th class="col-' + c + '" title="Wall DPS with item passive stats only">\u0394 Wall DPS</th>';
     }
   });
   h += '</tr></thead><tbody>';
@@ -596,15 +594,25 @@ function renderResultTable(cat, lv) {
         // No sub-row needed
       }
     } else {
+      // Main row: passive wall DPS
       row.vals.forEach((r, i) => {
         const c = TITANS[TKS[i]].color;
         h += '<td class="col-' + c + '">' + fmt(r.wall_passive, 1) + '</td>';
-        h += '<td class="col-' + c + '">' + fmt(r.wall_avg, 1) + '</td>';
-        h += '<td class="col-' + c + '">' + fmt(r.wall_active, 1) + '</td>';
       });
-      h += '<td>' + fmt(row.avg, 1) + '</td>';
+      const passiveAvg = row.vals.reduce((s,r) => s + r.wall_passive, 0) / TKS.length;
+      h += '<td>' + fmt(passiveAvg, 1) + '</td>';
       h += '<td' + (bestDpg > 0 ? bestCls : '') + '>' + fmt(row.dpg, 4) + '</td>';
       h += '</tr>';
+      // Sub-row: buffed wall DPS (only if item has actives)
+      if (row.vals[0].has_active) {
+        const buffAvg = row.vals.reduce((s,r) => s + r.wall_active, 0) / TKS.length;
+        h += '<tr class="sub-row"><td>\u21b3 Buffs active</td><td></td>';
+        row.vals.forEach((r, i) => {
+          const c = TITANS[TKS[i]].color;
+          h += '<td class="col-' + c + '" style="color:#4ade80">' + fmt(r.wall_active, 1) + '</td>';
+        });
+        h += '<td style="color:#4ade80">' + fmt(buffAvg, 1) + '</td><td></td></tr>';
+      }
     }
   });
   h += '</tbody></table></div>';
